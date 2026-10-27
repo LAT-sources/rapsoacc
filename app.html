@@ -237,39 +237,105 @@ body.point-selecting .c-label{cursor:pointer}
 .xl-msg{margin-top:8px;font-size:12px}
 .xl-adv{margin-top:10px;font-size:12px}
 .xl-adv summary{cursor:pointer;font-weight:600;margin-bottom:6px}
+
+/* ===== Ajustements finaux : menu, barre de filtres, points, fenêtres ===== */
+.toolbar{gap:8px;align-items:center}
+.toolbar .tb-btn,.toolbar .menu-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px}
+.menu-wrap{position:relative}
+.app-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;min-width:240px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:6px}
+.app-menu.open{display:block}
+.app-menu button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;padding:9px 11px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12.5px;color:inherit}
+.app-menu button:hover{background:var(--accent-light,#e7efff)}
+.app-menu button svg{flex:none;color:var(--accent,#2b6be6)}
+.app-menu button span{display:flex;flex-direction:column;line-height:1.25}
+.app-menu button small{color:#667085;font-size:11px;font-weight:400}
+.am-sep{height:1px;background:#eceff4;margin:4px 6px}
+.filterbar{display:flex!important;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 9px!important;text-align:left!important}
+.filterbar .stat-badge b{font-weight:800}
+.stat-badge.active{background:var(--accent,#2b6be6)!important;border-color:var(--accent,#2b6be6)!important;color:#fff!important}
+.stat-badge.f.active{background:var(--f-color,#2e7d32)!important;border-color:var(--f-color,#2e7d32)!important}
+.stat-badge.d.active{background:var(--d-color,#c62828)!important;border-color:var(--d-color,#c62828)!important}
+.stat-badge.so.active{background:var(--so-color,#1565c0)!important;border-color:var(--so-color,#1565c0)!important}
+#btnToggleAll{min-width:30px;justify-content:center;font-size:12px}
+.lvl-wrap{position:relative}
+.lvl-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;width:176px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:8px;gap:5px;flex-wrap:wrap}
+.lvl-menu.open{display:flex}
+.lvl-menu button{min-width:34px;padding:5px 9px;border:1px solid var(--border,#dde2ea);border-radius:999px;background:#fff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
+.lvl-menu button:hover{background:var(--accent-light,#e7efff);border-color:var(--accent,#2b6be6)}
+.lvl-menu button.on{background:var(--accent,#2b6be6);border-color:var(--accent,#2b6be6);color:#fff}
+.btn-points{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:9px 12px;border:0;border-radius:10px;background:var(--accent,#2b6be6);color:#fff;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:0 2px 6px rgba(43,107,230,.35);transition:background .15s,transform .05s}
+.btn-points:hover{background:#1f57c8}.btn-points:active{transform:translateY(1px)}
+#selBanner{position:sticky;top:0;z-index:60;flex-wrap:wrap;gap:8px 14px!important;padding:8px 14px!important}
+#selBanner .sb-txt{flex:1 1 300px;min-width:0}
+#selBanner .sb-ins{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+#selBanner .sb-done{margin-left:auto;flex:none;border:0;border-radius:8px;background:#1b9a4b;color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:7px 18px;cursor:pointer;box-shadow:0 2px 6px rgba(27,154,75,.4)}
+#selBanner .sb-done:hover{background:#15803d}
+/* fenêtre « Ajouter des points » */
+#pointsModal .modal{max-width:940px;border-radius:16px}
+#pointsModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
+#pointsModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
+#pointsModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
+#pointsModal .modal-body{padding:18px 20px;background:#f7f9fc}
+.pt-left{background:#fff;border:1px solid #e3e8f0;border-radius:12px;padding:10px;width:290px;gap:6px}
+.pt-item{border:1px solid #e3e8f0;border-radius:10px;padding:8px 10px;background:#fff;font-size:12.5px;transition:all .12s}
+.pt-item:hover{border-color:#9db9f2;background:#f4f8ff}
+.pt-item.sel{border-color:#2b6be6;background:#e7efff;box-shadow:inset 3px 0 0 #2b6be6}
+.pt-n{background:#2b6be6;color:#fff;border-radius:999px;padding:0 8px;font-weight:700;font-size:11px}
+.pt-left>button{border:1.5px dashed #9db9f2;background:#fff;color:#2b6be6;border-radius:10px;padding:8px;font-weight:700;font-size:12.5px;cursor:pointer;margin-top:4px}
+.pt-left>button:hover{background:#e7efff}
+.pt-right{background:#fff;border:1px solid #e3e8f0;border-radius:12px;padding:14px 16px;gap:7px}
+.pt-right input[type=text],.pt-right textarea,.pt-right input[type=number]{border:1px solid #d5dbe6!important;border-radius:8px!important;padding:7px 10px!important;font-size:13px!important}
+.pt-right input:focus,.pt-right textarea:focus{outline:none;border-color:#2b6be6!important;box-shadow:0 0 0 3px rgba(43,107,230,.15)}
+.pt-actions button{border-radius:8px;padding:7px 14px;font-weight:600;font-size:12.5px;cursor:pointer;border:1px solid #d5dbe6;background:#fff}
+.pt-actions button:first-child{background:#2b6be6;color:#fff;border-color:#2b6be6}
+.pt-actions button:first-child:hover{background:#1f57c8}
+.pt-lbl{color:#344054;font-size:12px}
+.pt-rlist{border-radius:10px;border-color:#e3e8f0;background:#fafbfd}
+/* fenêtre « Données générales » */
+#infoModal .modal{max-width:780px;border-radius:16px}
+#infoModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
+#infoModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
+#infoModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
+#infoModal .modal-body{padding:16px 20px;background:#f7f9fc}
+.info-grid{gap:9px 14px!important;grid-template-columns:200px 1fr!important}
+.info-grid>label{align-self:center;color:#344054;font-weight:600}
+.info-grid h4{margin:12px 0 2px!important;padding:6px 10px;background:#e7efff;color:#1f57c8!important;border:0!important;border-radius:8px;font-size:12.5px!important;letter-spacing:.2px}
+.info-grid input,.info-grid textarea{border:1px solid #d5dbe6!important;border-radius:8px!important;padding:7px 10px!important;font-size:13px!important;background:#fff}
+.info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:#2b6be6!important;box-shadow:0 0 0 3px rgba(43,107,230,.15)}
+/* fenêtres simples PDF / Excel */
+.simple-exp{text-align:center;padding:26px 28px!important}
+.se-ic{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff}
+.se-ic.pdf{background:linear-gradient(135deg,#e5484d,#c0392b)}
+.se-ic.xls{background:linear-gradient(135deg,#2f9e63,#1b7f4c)}
+.simple-exp p{margin:0 0 16px;font-size:13.5px;color:#344054}
+.simple-exp .xl-go{width:100%;margin:0;padding:12px 16px;font-size:14px;border-radius:12px;background:#1b7f4c}
+.simple-exp .xl-go.pdf{background:#c0392b}
+.simple-exp .xl-msg{margin-top:12px;min-height:18px}
 </style>
 </head>
 <body>
 
 <div class="toolbar">
-  <button onclick="expandAll()">▼ Tout déplier</button>
-  <button onclick="collapseAll()">► Tout replier</button>
+  <div class="menu-wrap">
+    <button class="menu-btn" onclick="toggleAppMenu(event)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg> Menu</button>
+    <div id="appMenu" class="app-menu">
+      <button onclick="appMenuDo('savejson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span><b>Enregistrer en local</b><small>Fichier JSON</small></span></button>
+      <button onclick="appMenuDo('openjson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span><b>Ouvrir un dossier local</b><small>Fichier JSON</small></span></button>
+      <div class="am-sep"></div>
+      <button onclick="appMenuDo('pdf')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span><b>Imprimer le PDF</b><small>Rapport complet</small></span></button>
+      <button onclick="appMenuDo('excel')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span><b>Télécharger l'Excel</b><small>Classeur rempli</small></span></button>
+    </div>
+  </div>
   <div class="sep"></div>
-  <button onclick="saveNode()">💾 Enregistrer l'avis</button>
-  <button onclick="clearNode()">↺ Réinitialiser</button>
-  <div class="sep"></div>
-  <button onclick="saveToLocalStorage()">Sauvegarder</button>
-  <button onclick="loadFromLocalStorage()">Restaurer</button>
-  <div class="sep"></div>
-  <button onclick="openReport()">📊 Rapport</button>
-  <button onclick="exportCSV()">📄 Export CSV</button>
-  <div class="sep"></div>
-  <button onclick="openPoints()">📌 Points</button>
-  <button onclick="openInfo()">ℹ️ Infos rapport</button>
-  <button onclick="openExport()">📤 Export Excel</button>
-  <div class="stats">
-    <span class="stat-badge" id="filterTotal" onclick="resetFilters()" title="Afficher toutes les rubriques">
-      <span id="statTotalLabel">Total</span> <b id="statTotal">0</b>
-    </span>
-    <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Filtrer les rubriques Favorables">
-      F <b id="statF">0</b>
-    </span>
-    <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Filtrer les rubriques Défavorables">
-      D <b id="statD">0</b>
-    </span>
-    <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Filtrer les rubriques Sans objet">
-      SO <b id="statSO">0</b>
-    </span>
+  <button class="tb-btn" onclick="openInfo()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Données générales</button>
+  <div id="legacyBtns" style="display:none">
+    <button onclick="saveNode()">💾 Enregistrer l'avis</button>
+    <button onclick="clearNode()">↺ Réinitialiser</button>
+    <button onclick="saveToLocalStorage()">Sauvegarder</button>
+    <button onclick="loadFromLocalStorage()">Restaurer</button>
+    <button onclick="openReport()">📊 Rapport</button>
+    <button onclick="exportCSV()">📄 Export CSV</button>
+    <button onclick="openExport()">📤 Export Excel</button>
   </div>
 </div>
 
@@ -277,7 +343,17 @@ body.point-selecting .c-label{cursor:pointer}
 
 <div class="workspace">
   <div class="panel-left">
-    <div class="panel-left-header">Toutes les rubriques (attestation), [HAND] uniquement.</div>
+    <div class="panel-left-header filterbar">
+      <span class="stat-badge" id="btnToggleAll" onclick="toggleAll()" title="Tout déplier / replier">▼</span>
+      <div class="lvl-wrap">
+        <span class="stat-badge" id="btnLevel" onclick="toggleLevelMenu(event)" title="Afficher les rubriques jusqu'au niveau choisi">Niveau ▾</span>
+        <div id="levelMenu" class="lvl-menu"><button onclick="setLevel(0)">Tous</button><button onclick="setLevel(1)">1</button><button onclick="setLevel(2)">2</button><button onclick="setLevel(3)">3</button><button onclick="setLevel(4)">4</button><button onclick="setLevel(5)">5</button><button onclick="setLevel(6)">6</button><button onclick="setLevel(7)">7</button></div>
+      </div>
+      <span class="stat-badge" id="filterTotal" onclick="toggleFilter('T')" title="Rubriques renseignées (avis, HM, description, référence, commentaire)"><span id="statTotalLabel">Total</span> <b id="statTotal">0</b></span>
+      <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Filtrer les rubriques Favorables">F <b id="statF">0</b></span>
+      <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Filtrer les rubriques Défavorables">D <b id="statD">0</b></span>
+      <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Filtrer les rubriques Sans objet">SO <b id="statSO">0</b></span>
+    </div>
     <div class="rubriques-scroll" id="rubriquesScroll">
       <table class="rubriques">
         <thead><tr><th class="c-code">•</th><th class="c-rub">Rubrique</th><th class="c-avis">Avis</th></tr></thead>
@@ -292,6 +368,7 @@ body.point-selecting .c-label{cursor:pointer}
       <button id="rvSomBtn" class="rv-som-btn" onclick="toggleRvSommaire()">▸ Renvois de l'article</button>
       <div id="rvSommaire" style="display:none"></div>
     </div>
+    <button class="btn-points" onclick="openPoints()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M8 8h.01M14 11v6M11 14h6"/></svg> Ajouter points</button>
   </div>
 </div>
 
@@ -340,14 +417,14 @@ body.point-selecting .c-label{cursor:pointer}
 
 <div class="modal-overlay" id="pointsModal">
   <div class="modal" style="max-width:900px">
-    <div class="modal-header"><span>📌 Points (annexes / remarques)</span><button onclick="closeModal('pointsModal')">×</button></div>
+    <div class="modal-header"><span>Ajouter des points</span><button onclick="closeModal('pointsModal')">×</button></div>
     <div class="modal-body"><div class="pt-wrap" id="pointsBody"></div></div>
     <div class="modal-footer"><button onclick="closeModal('pointsModal')">Fermer</button></div>
   </div>
 </div>
 <div class="modal-overlay" id="infoModal">
   <div class="modal" style="max-width:760px">
-    <div class="modal-header"><span>ℹ️ Infos du rapport (page de garde et commentaires)</span><button onclick="closeModal('infoModal')">×</button></div>
+    <div class="modal-header"><span>Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
     <div class="modal-body"><div class="info-grid" id="infoBody"></div></div>
     <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
   </div>
@@ -357,6 +434,29 @@ body.point-selecting .c-label{cursor:pointer}
     <div class="modal-header"><span>📤 Export vers le classeur Excel</span><button onclick="closeModal('exportModal')">×</button></div>
     <div class="modal-body exp-box" id="exportBody"></div>
     <div class="modal-footer"><button onclick="closeModal('exportModal')">Fermer</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pdfModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><span>Imprimer le PDF</span><button onclick="closeModal('pdfModal')">×</button></div>
+    <div class="modal-body simple-exp">
+      <div class="se-ic pdf"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 14h2a1.5 1.5 0 0 0 0-3H8v5M13 16v-5h1.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+      <p>Rapport complet au format PDF.</p>
+      <button id="pdfGo2" class="xl-go pdf" onclick="exportPdf('pdfMsg','pdfGo2')" disabled>⬇ Télécharger le PDF</button>
+      <div id="pdfMsg" class="xl-msg"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="xlsModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header"><span>Télécharger l'Excel</span><button onclick="closeModal('xlsModal')">×</button></div>
+    <div class="modal-body simple-exp">
+      <div class="se-ic xls"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+      <p>Classeur Excel du rapport, rempli avec vos avis.</p>
+      <button id="xlsGo" class="xl-go" onclick="exportXlsx('xlsMsg','xlsGo')" disabled>⬇ Télécharger l'Excel</button>
+      <div id="xlsMsg" class="xl-msg"></div>
+    </div>
   </div>
 </div>
 
@@ -2267,7 +2367,7 @@ let currentNodePath = [];
 let currentTab = 'desc';
 
 /* ✅ Filtres F / D / SO (0 = inactif, 1 = actif) */
-let filterF = 0, filterD = 0, filterSO = 0;
+let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, levelFilter = 0;
 
 const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(8,d(TREE_DATA)); })();
 
@@ -2294,9 +2394,11 @@ function findPathToNode(nodes, target, cur = []) {
 }
 function flattenTree(nodes, parentVisible = true, result = []) {
   nodes.forEach(node => {
-    if (node.ins && !renvoiOpen[node.cf] && !(typeof filterF !== 'undefined' && (filterF || filterD || filterSO))) return;
+    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT);
+    if (node.ins && !renvoiOpen[node.cf] && !flt) return;
+    if (levelFilter && (node.level || 1) > levelFilter) return;
     const hasChildren = node.children && node.children.length > 0;
-    const isCollapsed = collapsedState[node.code] === true;
+    const isCollapsed = !levelFilter && collapsedState[node.code] === true;
     if (parentVisible) {
       result.push({ ...node, hasChildren, level: node.level || 1 });
     }
@@ -2316,13 +2418,18 @@ function findParentArticle(code) {
 }
 
 /* Vérifie si un nœud passe le filtre (lui-même OU un de ses enfants) */
+function isFilled(code) {
+  const s = nodesState[code] || {};
+  return !!(s.avis || isHM(code) || (s.desc && s.desc.trim()) || (s.reference && s.reference.trim()) || (s.obs && s.obs.trim()));
+}
 function nodeMatchesFilter(node) {
-  if (!filterF && !filterD && !filterSO) return true;
+  if (!filterF && !filterD && !filterSO && !filterT) return true;
   const state = nodesState[node.code] || {};
   const av = state.avis;
   if (av === 'F' && filterF) return true;
   if (av === 'D' && filterD) return true;
   if (av === 'SO' && filterSO) return true;
+  if (filterT && isFilled(node.code)) return true;
   if (node.children) {
     for (let c of node.children) {
       if (nodeMatchesFilter(c)) return true;
@@ -2336,7 +2443,7 @@ function renderRubriquesTable() {
   const flat = flattenTree(TREE_DATA);
   let html = '';
   flat.forEach(node => {
-    if ((filterF || filterD || filterSO) && !nodeMatchesFilter(node)) return;
+    if ((filterF || filterD || filterSO || filterT) && !nodeMatchesFilter(node)) return;
 
     const state = nodesState[node.code] || {};
     const avis = state.avis || '';
@@ -2436,6 +2543,7 @@ function toggleCollapse(event, code) {
 }
 function expandAll() {
   collapsedState = {};
+  levelFilter = 0; if (typeof updateLevelBtn === 'function') updateLevelBtn();
   renderRubriquesTable();
   if (selectedNode) {
     const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
@@ -2463,11 +2571,12 @@ function toggleFilter(type) {
   if (type === 'F') filterF = filterF ? 0 : 1;
   else if (type === 'D') filterD = filterD ? 0 : 1;
   else if (type === 'SO') filterSO = filterSO ? 0 : 1;
+  else if (type === 'T') filterT = filterT ? 0 : 1;
   updateFilterUI();
   renderRubriquesTable();
 }
 function resetFilters() {
-  filterF = filterD = filterSO = 0;
+  filterF = filterD = filterSO = filterT = 0;
   updateFilterUI();
   renderRubriquesTable();
 }
@@ -2475,10 +2584,7 @@ function updateFilterUI() {
   document.getElementById('filterF').classList.toggle('active', !!filterF);
   document.getElementById('filterD').classList.toggle('active', !!filterD);
   document.getElementById('filterSO').classList.toggle('active', !!filterSO);
-  const anyActive = filterF || filterD || filterSO;
-  document.getElementById('filterTotal').classList.toggle('active', !!anyActive);
-  const lbl = document.getElementById('statTotalLabel');
-  if (lbl) lbl.textContent = anyActive ? 'Tout' : 'Total';
+  document.getElementById('filterTotal').classList.toggle('active', !!filterT);
 }
 
 function initSommaire() {
@@ -2712,12 +2818,10 @@ function updateStats() {
   function collect(nodes) {
     nodes.forEach(n => {
       const s = nodesState[n.code] || {};
-      if (s.avis) {
-        t++;
-        if (s.avis === 'F') f++;
-        else if (s.avis === 'D') d++;
-        else if (s.avis === 'SO') so++;
-      }
+      if (isFilled(n.code)) t++;
+      if (s.avis === 'F') f++;
+      else if (s.avis === 'D') d++;
+      else if (s.avis === 'SO') so++;
       if (n.children) collect(n.children);
     });
   }
@@ -2932,9 +3036,9 @@ function updateSelBanner(){
   const b = el('selBanner'); const p = points.find(x => x.id === selPoint);
   if (!p) { b.style.display = 'none'; b.innerHTML = ''; return; }
   b.style.display = 'flex';
-  b.innerHTML = `<b>Point ${p.id}</b> ${esc(p.title)} — cochez les rubriques concernées (${p.codes.length} rattachées, passées en NR ; une case sur un article ou une branche coche tout son contenu)
-    <label><input type="checkbox" ${selIncludeIns ? 'checked' : ''} onchange="selIncludeIns=this.checked"> inclure les renvois insérés</label>
-    <button onclick="endSelect()">✔ Terminer</button>`;
+  b.innerHTML = `<span class="sb-txt"><b>Point ${p.id}</b> ${esc(p.title)} — cliquez sur les rubriques concernées (${p.codes.length} rattachées, passées en NR)</span>
+    <label class="sb-ins"><input type="checkbox" ${selIncludeIns ? 'checked' : ''} onchange="selIncludeIns=this.checked"> inclure les renvois</label>
+    <button class="sb-done" onclick="endSelect()">✔ Terminer</button>`;
 }
 function startSelect(id){ selPoint = id; document.body.classList.add('point-selecting'); closeModal('pointsModal'); updateSelBanner(); renderRubriquesTable(); }
 function endSelect(){ selPoint = null; document.body.classList.remove('point-selecting'); updateSelBanner(); renderRubriquesTable(); renderPointsInfo(); openPoints(); }
@@ -2992,11 +3096,10 @@ const INFO_FIELDS = [
   { k: 'ref', l: 'Référence du rapport', sheet: 'Page de garde', cell: 'C34' },
   { k: 'charge', l: "Chargé d'affaire", sheet: 'Page de garde', cell: 'C47' },
   { k: 'tutore', l: 'Tutoré', sheet: 'Page de garde', cell: 'G47' },
-  { g: 'Page 2 (contrat de vérification technique)' },
+  { g: 'Contrat de vérification technique' },
   { k: 'contrat', l: 'Contrat n°', p2: 1 },
   { k: 'cdate', l: 'Date du contrat (jj/mm/aaaa)', p2: 1 },
   { k: 'moa', l: "Société (maître d'ouvrage)", p2: 1 },
-  { k: 'docs', l: 'Documents remis au vérificateur (1 par ligne, 8 max.)', area: 1, docs: 1 },
   { g: 'Commentaires généraux' },
   { k: 'locaux', l: 'Locaux non visités (complément)', sheet: 'Commentaires', cell: 'A7', pre: BASE7 + '\n', area: 1 },
   { k: 'derog', l: 'Dérogations obtenues', sheet: 'Commentaires', cell: 'A9', pre: 'Dérogations obtenues:\n', area: 1 },
@@ -3450,11 +3553,12 @@ function renderRvSommaire(){
 }
 
 /* ===== Export Excel direct : classeur modèle rempli (.xlsx), sans macro ===== */
+const APP_BASE = (typeof window.RAPSO_BASE === 'string') ? window.RAPSO_BASE : '';   // dossier de la page (utile quand l'application est chargée dans le portail)
 const MODELE_URL = 'modele.xlsm';   // à placer à côté de index.html si le modèle peut être hébergé ; sinon il est choisi une fois puis mémorisé dans le navigateur
 const EXCELJS_URLS = ['lib/exceljs.min.js', 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'];
 const XL_PAGE_PT = 757;             // hauteur utile d'une page A4 portrait (marges du modèle)
 let xlModele = null;                // {name, buf}
-function loadScript(url){ return new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = url; sc.onload = ok; sc.onerror = () => ko(new Error(url)); document.head.appendChild(sc); }); }
+function loadScript(url){ return new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = /^(https?:)?\/\//.test(url) ? url : APP_BASE + url; sc.onload = ok; sc.onerror = () => ko(new Error(url)); document.head.appendChild(sc); }); }
 async function ensureExcelJS(){
   if (window.ExcelJS) return;
   for (const u of EXCELJS_URLS) { try { await loadScript(u); if (window.ExcelJS) return; } catch (e) {} }
@@ -3465,8 +3569,7 @@ function idbOpen(){ return new Promise((ok, ko) => { const r = indexedDB.open('a
 async function kvGet(k){ const db = await idbOpen(); return new Promise((ok, ko) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => ok(q.result); q.onerror = () => ko(q.error); }); }
 async function kvSet(k, v){ const db = await idbOpen(); return new Promise((ok, ko) => { const q = db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); q.onsuccess = () => ok(); q.onerror = () => ko(q.error); }); }
 async function findModele(){
-  try { const r = await fetch(MODELE_URL, { cache: 'no-cache' }); if (r.ok) { const b = await r.arrayBuffer(); if (isZip(b)) return { name: MODELE_URL, buf: b }; } } catch (e) {}
-  try { const c = await kvGet('modele'); if (c && isZip(c.buf)) return c; } catch (e) {}
+  try { const r = await fetch(APP_BASE + MODELE_URL, { cache: 'no-cache' }); if (r.ok) { const b = await r.arrayBuffer(); if (isZip(b)) return { name: MODELE_URL, buf: b }; } } catch (e) {}
   return null;
 }
 function chooseModele(){
@@ -3516,7 +3619,7 @@ function xlPages(ws, last){ let h = 0; for (let r = 1; r <= last; r++) h += xlRo
 async function fillWorkbook(o){
   await ensureExcelJS();
   if (!xlModele) xlModele = await findModele();
-  if (!xlModele) throw new Error('Modèle Excel introuvable : choisissez le classeur SQ-04.');
+  if (!xlModele) throw new Error('Modèle Excel introuvable : le fichier modele.xlsm doit être présent dans le dépôt, à côté de la page.');
   const x = buildExport();
   const wb = new ExcelJS.Workbook(); await wb.xlsx.load(xlModele.buf);
   const miss = new Set(); const un = t => String(t || '').replace(/<LF>/g, '\n');
@@ -3599,19 +3702,19 @@ function downloadBlob(name, blob){
   a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 function xlOpts(){
-  return { toutes: document.querySelector('input[name=xlL]:checked').value === 'all', tousArticles: el('xlTous').checked, masquerFeuilles: el('xlHide').checked, annexes: el('xlAnnexes').checked, ecrirePages: el('xlPages').checked };
+  return { toutes: true, tousArticles: true, masquerFeuilles: true, annexes: true, ecrirePages: true };   // options par défaut (toutes les lignes, annexes comprises)
 }
-async function exportXlsx(){
-  const msg = el('xlMsg'), go = el('xlGo');
+async function exportXlsx(msgId, btnId){
+  const msg = el(msgId || 'xlMsg'), go = el(btnId || 'xlGo');
   const o = xlOpts();
   go.disabled = true; msg.textContent = 'Génération du classeur…';
   try {
     const r = await buildXlsx(o);
     const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
     downloadBlob(name, new Blob([r.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé : ' + r.x.nM + " ligne(s) d'avis, " + r.arts + ' article(s) à imprimer, <b>' + r.total + ' page(s) estimée(s)</b> (à vérifier à l\'aperçu avant impression).' + (r.miss.length ? '<br>Feuilles introuvables : ' + esc(r.miss.join(', ')) : '');
+    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé.';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
-  go.disabled = !xlModele;
+  go.disabled = false;
 }
 
 /* ===== Export PDF direct : le classeur rempli est dessiné avec pdfmake (nombre de pages exact) ===== */
@@ -3819,16 +3922,16 @@ async function buildPdf(o){
   const buffer = await pdfRender(d2.def);
   return { buffer: buffer, pages: N, arts: f.arts, miss: f.miss, x: f.x };
 }
-async function exportPdf(){
-  const msg = el('xlMsg'), go = el('pdfGo');
-  go.disabled = true; msg.textContent = 'Génération du PDF… (deux passes pour compter les pages)';
+async function exportPdf(msgId, btnId){
+  const msg = el(msgId || 'xlMsg'), go = el(btnId || 'pdfGo');
+  go.disabled = true; msg.textContent = 'Génération du PDF…';
   try {
     const r = await buildPdf(xlOpts());
     const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
-    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé : ' + r.x.nM + " ligne(s) d'avis, " + r.arts + ' article(s), <b>' + r.pages + ' pages</b> (nombre exact).' + (r.miss.length ? '<br>Feuilles introuvables : ' + esc(r.miss.join(', ')) : '');
+    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
-  go.disabled = !xlModele;
+  go.disabled = false;
 }
 
 /* ===== Mode « portail » : l'application est embarquée dans index.html (RAPSOACC) ===== */
@@ -3869,8 +3972,8 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
       post({ type: 'rapso_inject_ack', data: m.data });
     } else if (m.type === 'rapso_action') {
       const a = m.action;
-      if (a === 'export') openExport(); else if (a === 'report') openReport(); else if (a === 'points') openPoints();
-      else if (a === 'info') openInfo(); else if (a === 'csv') exportCSV();
+      if (a === 'pdf') openPdfModal(); else if (a === 'excel') openXlsModal(); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
+      else if (a === 'points') openPoints(); else if (a === 'info') openInfo();
       else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = { affaire: window.RAPSO_AFFAIRE || '', dossier: window.RAPSO_DOSSIER || '' }; refreshUI(); sendSave(true); } }
     }
   });
@@ -3886,6 +3989,64 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
   }
   refreshUI();
 })();
+
+/* ===== Barre de filtres : dépliage, niveau, menu ===== */
+function isAllExpanded(){ return !levelFilter && !Object.keys(collapsedState).some(k => collapsedState[k]); }
+function updateToggleBtn(){
+  const b = document.getElementById('btnToggleAll'); if (!b) return;
+  const ex = isAllExpanded(); b.textContent = ex ? '▼' : '►'; b.title = ex ? 'Tout replier' : 'Tout déplier';
+}
+function toggleAll(){ levelFilter = 0; updateLevelBtn(); if (isAllExpanded()) collapseAll(); else expandAll(); }
+function updateLevelBtn(){
+  const b = document.getElementById('btnLevel'); if (!b) return;
+  b.textContent = levelFilter ? 'Niv. ' + levelFilter + ' ▾' : 'Niveau ▾'; b.classList.toggle('active', !!levelFilter);
+  document.querySelectorAll('#levelMenu button').forEach((x, i) => x.classList.toggle('on', (i === 0 && !levelFilter) || i === levelFilter));
+}
+function toggleLevelMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('appMenu').classList.remove('open'); document.getElementById('levelMenu').classList.toggle('open'); }
+function setLevel(n){ levelFilter = n; document.getElementById('levelMenu').classList.remove('open'); updateLevelBtn(); renderRubriquesTable(); }
+function toggleAppMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('levelMenu').classList.remove('open'); document.getElementById('appMenu').classList.toggle('open'); }
+document.addEventListener('click', () => { const a = document.getElementById('appMenu'), l = document.getElementById('levelMenu'); if (a) a.classList.remove('open'); if (l) l.classList.remove('open'); });
+(function(){ const _rrt = renderRubriquesTable; renderRubriquesTable = function(){ _rrt.apply(this, arguments); updateToggleBtn(); }; })();
+function refreshAllUI(){
+  renderRubriquesTable(); renderPointsInfo(); updateFilterUI();
+  if (selectedNode) { try { loadTabContent(); updateAvisButtons(); } catch (e) {} }
+}
+/* ===== Enregistrer / ouvrir un dossier local (JSON) ===== */
+function saveJsonLocal(){
+  try { saveTabContent(); } catch (e) {}
+  const data = { app: 'RAPSOACC', v: 1, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
+  const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'dossier') + '_' + new Date().toISOString().slice(0, 10) + '.json';
+  downloadBlob(name, new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
+}
+function openJsonLocal(){
+  if (typeof RO !== 'undefined' && RO) { alert('Dossier archivé : lecture seule.'); return; }
+  const i = document.createElement('input'); i.type = 'file'; i.accept = '.json,application/json';
+  i.onchange = async () => {
+    const f = i.files[0]; if (!f) return;
+    try {
+      const d = JSON.parse(await f.text());
+      if (!d || typeof d.nodes !== 'object' || !Array.isArray(d.points || [])) throw new Error('format');
+      if (!confirm('Remplacer toutes les données de ce dossier par celles du fichier « ' + f.name + ' » ?')) return;
+      nodesState = d.nodes || {}; points = d.points || []; reportInfo = d.info || {};
+      refreshAllUI();
+    } catch (e) { alert('Fichier JSON invalide : ce n\'est pas un dossier RAPSOACC.'); }
+  };
+  i.click();
+}
+/* ===== Fenêtres simples : PDF et Excel ===== */
+function appMenuDo(a){
+  document.getElementById('appMenu').classList.remove('open');
+  if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
+  else if (a === 'pdf') openSimpleExport('pdfModal', 'pdfMsg', 'pdfGo2'); else if (a === 'excel') openSimpleExport('xlsModal', 'xlsMsg', 'xlsGo');
+}
+async function openSimpleExport(modalId, msgId, btnId){
+  const msg = el(msgId), go = el(btnId); msg.textContent = ''; go.disabled = true; el(modalId).classList.add('open');
+  if (!xlModele) xlModele = await findModele();
+  go.disabled = !xlModele;
+  if (!xlModele) msg.innerHTML = '<span style="color:#b71c1c">Modèle Excel introuvable : le fichier <b>modele.xlsm</b> doit être présent dans le dépôt, à côté de la page.</span>';
+}
+function openPdfModal(){ openSimpleExport('pdfModal', 'pdfMsg', 'pdfGo2'); }
+function openXlsModal(){ openSimpleExport('xlsModal', 'xlsMsg', 'xlsGo'); }
 
 renderRubriquesTable();
 initSommaire();
