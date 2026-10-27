@@ -29,257 +29,14 @@
 }
 body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:12px;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;display:flex;flex-direction:column}
 
-/* ══════════════════════════════════════════════════════
-   RUBAN D'ONGLETS DONNÉES GÉNÉRALES (remplace la toolbar)
-   ══════════════════════════════════════════════════════ */
-.info-tabs-bar{
-  display:flex;
-  gap:2px;
-  padding:0 4px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  box-shadow:var(--shadow);
-  flex-shrink:0;
-  position:relative;
-  z-index:5;
-  align-items:center;
-}
-.info-tabs-bar .spacer{flex:1}
-.info-tab{
-  padding:10px 20px;
-  font-size:12.5px;
-  font-weight:600;
-  color:var(--text-muted);
-  background:transparent;
-  border:none;
-  border-bottom:2px solid transparent;
-  cursor:pointer;
-  transition:all .15s;
-  font-family:inherit;
-  position:relative;
-  outline:none;
-}
-.info-tab:hover{ color:var(--accent); background:rgba(58,110,165,.05); }
-.info-tab.active{ color:var(--accent); border-bottom-color:var(--accent); background:transparent; }
-.info-tab .badge-dot{
-  display:inline-block; width:6px; height:6px; border-radius:50%;
-  background:var(--accent); margin-left:6px; vertical-align:middle;
-  opacity:0; transition:opacity .15s;
-}
-.info-tab .badge-dot.on{opacity:1}
-
-/* Boutons d'action à droite du ruban */
-.info-tabs-bar .tab-actions{
-  display:flex; gap:6px; padding-right:6px;
-}
-.info-tabs-bar .tab-actions button{
-  display:flex; align-items:center; gap:6px;
-  padding:6px 12px;
-  font-size:12px; font-weight:600;
-  font-family:inherit;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  color:var(--text);
-  cursor:pointer;
-  transition:all .15s;
-}
-.info-tabs-bar .tab-actions button:hover{
-  background:var(--accent-light);
-  border-color:var(--accent);
-  color:var(--accent);
-}
-
-/* ══════════════════════════════════════════════════════
-   Pages DG (dans le modal)
-   ══════════════════════════════════════════════════════ */
-.info-pages{
-  display:flex;
-  flex-direction:column;
-}
-.info-page{display:none}
-.info-page.active{display:block}
-
-.info-page .field{
-  display:grid;
-  grid-template-columns:200px 1fr;
-  gap:10px 14px;
-  align-items:start;
-  margin-bottom:12px;
-}
-.info-page .field label{
-  align-self:center;
-  color:#344054;
-  font-weight:600;
-  font-size:12px;
-  padding-top:2px;
-}
-.info-page .field input[type=text],
-.info-page .field input[type=date],
-.info-page .field textarea{
-  width:100%;
-  font-family:inherit;
-  font-size:13px;
-  border:1px solid #d5dbe6;
-  border-radius:8px;
-  padding:8px 11px;
-  background:#fff;
-  outline:none;
-  transition:border-color .15s,box-shadow .15s;
-  color:var(--text);
-}
-.info-page .field input:focus,
-.info-page .field textarea:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(58,110,165,.15);
-}
-.info-page .field textarea{ resize:vertical; min-height:80px; line-height:1.4; }
-
-.ref-meta{
-  grid-column:2; font-size:11px; color:var(--text-muted);
-  margin-top:-4px; line-height:1.5;
-}
-.ref-meta b{color:var(--accent)}
-
-/* ══════════════════════════════════════════════════════
-   Bloc GESTION DES VERSIONS
-   ══════════════════════════════════════════════════════ */
-.versions-block{
-  margin-top:18px;
-  padding:14px 16px;
-  background:var(--surface-alt);
-  border:1px solid #e3e8f0;
-  border-radius:10px;
-}
-.versions-block h4{
-  font-size:12px; font-weight:700; color:var(--accent);
-  margin:0 0 10px; letter-spacing:.3px; text-transform:uppercase;
-  display:flex; align-items:center; gap:8px;
-}
-.versions-block h4 .version-badge{
-  background:var(--accent-light);
-  color:var(--accent);
-  border:1px solid #b9cdf7;
-  padding:2px 9px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:700;
-}
-.versions-empty{
-  font-size:11.5px;
-  color:var(--text-muted);
-  font-style:italic;
-  padding:4px 0;
-}
-.version-item{
-  display:grid;
-  grid-template-columns:60px 1fr 140px 30px;
-  gap:8px;
-  align-items:center;
-  padding:8px 10px;
-  background:#fff;
-  border:1px solid #e3e8f0;
-  border-radius:8px;
-  margin-bottom:6px;
-}
-.version-item:last-child{margin-bottom:0}
-.version-item .v-num{
-  font-size:11px;
-  font-weight:700;
-  color:var(--accent);
-  padding:2px 8px;
-  background:var(--accent-light);
-  border-radius:4px;
-  text-align:center;
-}
-.version-item .v-fields{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-.version-item input{
-  width:100%;
-  padding:4px 8px;
-  font-family:inherit;
-  font-size:12px;
-  border:1px solid #d5dbe6;
-  border-radius:5px;
-  outline:none;
-  transition:border-color .15s;
-  background:#fff;
-  color:var(--text);
-}
-.version-item input:focus{ border-color:var(--accent); }
-.version-item .v-remove{
-  width:26px; height:26px;
-  display:flex; align-items:center; justify-content:center;
-  border:none; background:transparent; color:#b0aea6;
-  cursor:pointer; border-radius:5px; font-size:14px;
-  line-height:1; transition:all .12s;
-}
-.version-item .v-remove:hover{ background:#ffebee; color:#b71c1c; }
-
-/* ══════════════════════════════════════════════════════
-   Bloc EXPORT
-   ══════════════════════════════════════════════════════ */
-.export-block{
-  margin-top:18px;
-  padding:14px 16px;
-  background:var(--surface-alt);
-  border:1px solid #e3e8f0;
-  border-radius:10px;
-}
-.export-block h4{
-  font-size:12px; font-weight:700; color:var(--accent);
-  margin:0 0 10px; letter-spacing:.3px; text-transform:uppercase;
-}
-.export-opts{
-  display:flex; flex-direction:column; gap:6px; margin-bottom:12px;
-}
-.export-opts label{
-  display:flex; align-items:center; gap:7px;
-  font-size:12px; color:#344054; cursor:pointer;
-}
-.export-opts label.sub{ margin-left:22px; }
-.export-opts input[type=radio],
-.export-opts input[type=checkbox]{ accent-color:var(--accent); }
-
-.export-buttons{
-  display:flex; gap:10px; flex-wrap:wrap;
-  margin-top:4px;
-}
-.export-buttons button{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:9px 16px; font-size:12.5px; font-weight:600;
-  font-family:inherit; border:none; border-radius:8px;
-  color:#fff; background:var(--accent);
-  cursor:pointer; transition:all .15s;
-  box-shadow:0 2px 6px rgba(58,110,165,.25);
-}
-.export-buttons button:hover{ background:#2f5a87; transform:translateY(-1px); }
-.export-buttons button:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
-.export-msg{
-  margin-top:10px; min-height:18px; font-size:12px; color:var(--text-muted);
-}
-
-/* ══════════════════════════════════════════════════════
-   Modal Données générales
-   ══════════════════════════════════════════════════════ */
-#infoModal .modal{max-width:780px;border-radius:16px}
-#infoModal .modal-header{
-  background:linear-gradient(135deg,#2b6be6,#1f57c8);
-  color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700;
-}
-#infoModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
-#infoModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
-#infoModal .modal-body{padding:16px 20px;background:#f7f9fc}
-
-/* ══════════════════════════════════════════════════════
-   Reste du style (inchangé)
-   ══════════════════════════════════════════════════════ */
-.toolbar{display:none}
+/* ---- Toolbar ---- */
+.toolbar{background:var(--surface);padding:4px 8px;border-bottom:1px solid var(--border);display:flex;gap:3px;align-items:center;flex-shrink:0;box-shadow:var(--shadow);position:relative;z-index:5}
+.toolbar button{font-size:11px;padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-family:inherit;color:var(--text);transition:all .15s}
+.toolbar button:hover{background:var(--accent-light);border-color:var(--accent)}
+.toolbar button:active{background:#d0d8e2}
 .sep{width:1px;height:18px;background:var(--border);margin:0 4px}
 
+/* ---- Stats / Filtres (badges cliquables) ---- */
 .stats{margin-left:auto;font-size:11px;margin-right:6px;display:flex;gap:6px;align-items:center}
 .stats b{font-weight:bold}
 .stat-badge{
@@ -288,7 +45,8 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:12px;background:var(--bg
   background:var(--surface-alt);color:var(--text-muted);
   border:1px solid var(--border);
   cursor:pointer;user-select:none;
-  transition:all .15s;position:relative;
+  transition:all .15s;
+  position:relative;
 }
 .stat-badge:hover{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
 .stat-badge.f{color:var(--f-color);background:var(--f-bg);border-color:#c8e0ca}
@@ -302,6 +60,7 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:12px;background:var(--bg
 .stat-badge#filterTotal.active::after{content:''}
 .stat-badge#filterTotal.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent);cursor:pointer}
 
+/* ---- Workspace ---- */
 .workspace{flex:1;display:flex;overflow:hidden;padding:4px;gap:4px;min-height:0}
 .panel-left{flex:1;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);min-width:0;box-shadow:var(--shadow);overflow:hidden}
 .panel-left-header{background:linear-gradient(to bottom,#f8f8f6,#ecebe6);border-bottom:1px solid var(--border);padding:4px 8px;font-weight:600;font-size:12px;text-align:center;color:var(--text)}
@@ -330,6 +89,7 @@ body.point-selecting .c-label{cursor:pointer}
 .i4{padding-left:50px!important}.i8{padding-left:114px!important}.i9{padding-left:130px!important}.i10{padding-left:146px!important}
 .i5{padding-left:66px!important}.i6{padding-left:82px!important}.i7{padding-left:98px!important}
 
+/* ---- Right panel ---- */
 .panel-right{width:540px;display:flex;flex-direction:column;gap:3px;padding:3px;background:transparent;flex-shrink:0}
 .sommaire-title{background:linear-gradient(to bottom,#f8f8f6,#ecebe6);border:1px solid var(--border);border-radius:var(--radius);padding:4px;text-align:center;font-weight:600;font-size:12px;margin-bottom:3px;color:var(--text)}
 .select-row{margin-bottom:2px}
@@ -339,6 +99,7 @@ body.point-selecting .c-label{cursor:pointer}
 .select-row select:disabled{background:#f0efe9;color:#bbb;cursor:not-allowed}
 .select-row select.filled{background:#fffbe6}
 
+/* ---- Bottom panel ---- */
 .panel-bottom{background:var(--surface-alt);border-top:1px solid var(--border);padding:6px;display:flex;flex-direction:column;gap:5px;flex-shrink:0}
 .detail-row{display:flex;gap:6px;align-items:center}
 .detail-row label{font-weight:bold;font-size:12px;min-width:105px;text-align:right;color:var(--text-muted)}
@@ -353,15 +114,18 @@ body.point-selecting .c-label{cursor:pointer}
 .tab-content textarea{width:100%;min-height:90px;font-family:inherit;font-size:12px;border:1px solid #ddd;border-radius:var(--radius);padding:5px;resize:vertical;transition:border-color .15s}
 .tab-content textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
 
+/* ---- Status bar ---- */
 .status-bar{background:var(--surface);border-top:1px solid var(--border);padding:3px 10px;font-size:11px;display:flex;justify-content:space-between;flex-shrink:0;gap:10px;color:var(--text-muted);box-shadow:0 -1px 2px rgba(0,0,0,.03)}
 .kbd-hint{font-size:10px;color:#7a5b00;background:#fffbe6;padding:1px 8px;border:1px solid #e0c860;border-radius:10px;font-family:'Courier New',monospace}
 
+/* ---- Avis buttons ---- */
 .avis-btn{display:inline-block;padding:2px 10px;margin-right:3px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:11px;font-weight:bold;min-width:30px;text-align:center;font-family:inherit;border-radius:var(--radius);transition:all .15s}
 .avis-btn:hover{background:#f0efe9;border-color:var(--border-strong)}
 .avis-btn.active-F{background:var(--f-color);color:#fff;border-color:var(--f-color)}
 .avis-btn.active-D{background:var(--d-color);color:#fff;border-color:var(--d-color)}
 .avis-btn.active-SO{background:var(--so-color);color:#fff;border-color:var(--so-color)}
 
+/* ---- Modals ---- */
 .modal-overlay{position:fixed;inset:0;background:rgba(30,30,30,.55);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface-alt);border:1px solid var(--border-strong);border-radius:6px;max-width:1100px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.25)}
@@ -373,6 +137,7 @@ body.point-selecting .c-label{cursor:pointer}
 .modal-footer button{font-size:11px;padding:4px 14px;cursor:pointer;font-family:inherit;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .15s}
 .modal-footer button:hover{background:var(--accent-light);border-color:var(--accent)}
 
+/* ---- Report ---- */
 .report-table{width:100%;border-collapse:collapse;font-size:11.5px}
 .report-table th,.report-table td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top}
 .report-table th{background:#eceae4;text-align:center;font-weight:600;color:var(--text-muted)}
@@ -385,12 +150,14 @@ body.point-selecting .c-label{cursor:pointer}
 .summary-card .l{font-size:10px;text-transform:uppercase;color:var(--text-muted)}
 .summary-card.f{background:var(--f-bg)}.summary-card.d{background:var(--d-bg)}.summary-card.so{background:var(--so-bg)}
 
+/* ---- Scrollbar ---- */
 ::-webkit-scrollbar{width:14px;height:14px}
 ::-webkit-scrollbar-track{background:#f0efe9}
 ::-webkit-scrollbar-thumb{background:linear-gradient(to bottom,#d4d2ca,#b0aea6);border:1px solid var(--border-strong);border-radius:7px}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(to bottom,#c4c2ba,#a0a098)}
 ::-webkit-scrollbar-button{background:#e8e7e2;border:1px solid var(--border);height:14px;width:14px;border-radius:var(--radius)}
 
+/* ---- Points / misc ---- */
 .pt{display:inline-block;background:#fff3cd;border:1px solid #d4b440;color:#7a5b00;font-size:9px;font-weight:bold;padding:0 3px;margin-left:4px;border-radius:3px}
 .selchk{margin:0 5px 0 0;vertical-align:middle;cursor:pointer;accent-color:var(--accent)}
 #selBanner{display:none;gap:10px;align-items:center;background:#fffbe6;border-bottom:1px solid #e0c860;padding:4px 10px;font-size:12px;flex-shrink:0}
@@ -418,10 +185,15 @@ body.point-selecting .c-label{cursor:pointer}
 .points-info{font-size:11px;color:var(--text-muted);margin-top:4px}
 .points-info a{cursor:pointer;color:var(--d-color);font-weight:bold;text-decoration:none}
 .points-info a:hover{text-decoration:underline}
-
+.info-grid{display:grid;grid-template-columns:190px 1fr;gap:5px 8px;font-size:12px;align-items:start}
+.info-grid input,.info-grid textarea{width:100%;font-family:inherit;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);padding:3px 5px;transition:border-color .15s}
+.info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
+.info-grid h4{grid-column:1/3;margin:10px 0 2px;font-size:12px;border-bottom:1px solid var(--border);padding-bottom:2px;color:var(--text-muted)}
 .exp-box{font-size:12px;line-height:1.6}
 .exp-box button{font-size:12px;padding:5px 14px;margin:6px 8px 6px 0;cursor:pointer;font-family:inherit;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .15s}
 .exp-box button:hover{background:var(--accent-light);border-color:var(--accent)}
+.exp-box ol{margin:6px 0 6px 20px;padding:0}
+.exp-box li{margin-bottom:4px}
 .rep-info{border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;font-size:12px;background:var(--surface-alt)}
 .rep-annex{margin-top:18px;font-size:12px}
 .rep-annex h3{font-size:13px;border-bottom:1px solid var(--border);margin:0 0 8px;padding-bottom:3px;color:var(--text-muted)}
@@ -453,7 +225,6 @@ body.point-selecting .c-label{cursor:pointer}
 #rvSommaire{margin-top:5px;padding:6px;border:1px dashed #b9cdf7;border-radius:var(--radius);background:var(--accent-light,#f2f6fe)}
 #rvSommaire .rv-help{font-size:11px;color:var(--text-muted,#667085);margin-bottom:4px}
 .c-label .num{display:inline-block;min-width:6ch;margin-right:10px;font-variant-numeric:tabular-nums;color:var(--text-muted,#667085);font-weight:600}
-
 .xl-box{border:1px solid var(--border,#dde2ea);border-radius:10px;padding:12px;margin:8px 0;background:var(--surface-alt,#f7f9fc)}
 .xl-opts{display:flex;flex-direction:column;gap:4px;margin:8px 0}
 .xl-opts label{display:flex;align-items:center;gap:6px;font-size:12px}
@@ -461,19 +232,24 @@ body.point-selecting .c-label{cursor:pointer}
 .xl-mod{margin:6px 0;font-size:12px}
 .xl-mod button,.xl-adv button{font-size:12px;padding:4px 10px;cursor:pointer}
 .xl-go{display:block;margin-top:8px;font-size:13px;font-weight:700;padding:8px 16px;border:0;border-radius:8px;background:var(--accent,#2b6be6);color:#fff;cursor:pointer}
+.xl-go.pdf{background:#c0392b;margin-top:6px}
 .xl-go:disabled{opacity:.45;cursor:not-allowed}
 .xl-msg{margin-top:8px;font-size:12px}
 .xl-adv{margin-top:10px;font-size:12px}
 .xl-adv summary{cursor:pointer;font-weight:600;margin-bottom:6px}
 
+/* ===== Ajustements finaux : menu, barre de filtres, points, fenêtres ===== */
 .toolbar{gap:8px;align-items:center}
+.toolbar .tb-btn,.toolbar .menu-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px}
 .menu-wrap{position:relative}
 .app-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;min-width:240px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:6px}
 .app-menu.open{display:block}
 .app-menu button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;padding:9px 11px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12.5px;color:inherit}
 .app-menu button:hover{background:var(--accent-light,#e7efff)}
+.app-menu button svg{flex:none;color:var(--accent,#2b6be6)}
+.app-menu button span{display:flex;flex-direction:column;line-height:1.25}
+.app-menu button small{color:#667085;font-size:11px;font-weight:400}
 .am-sep{height:1px;background:#eceff4;margin:4px 6px}
-
 .filterbar{display:flex!important;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 9px!important;text-align:left!important}
 .filterbar .stat-badge b{font-weight:800}
 .stat-badge.active{background:var(--accent,#2b6be6)!important;border-color:var(--accent,#2b6be6)!important;color:#fff!important}
@@ -494,6 +270,7 @@ body.point-selecting .c-label{cursor:pointer}
 #selBanner .sb-ins{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 #selBanner .sb-done{margin-left:auto;flex:none;border:0;border-radius:8px;background:#1b9a4b;color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:7px 18px;cursor:pointer;box-shadow:0 2px 6px rgba(27,154,75,.4)}
 #selBanner .sb-done:hover{background:#15803d}
+/* fenêtre « Ajouter des points » */
 #pointsModal .modal{max-width:940px;border-radius:16px}
 #pointsModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
 #pointsModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
@@ -514,96 +291,62 @@ body.point-selecting .c-label{cursor:pointer}
 .pt-actions button:first-child:hover{background:#1f57c8}
 .pt-lbl{color:#344054;font-size:12px}
 .pt-rlist{border-radius:10px;border-color:#e3e8f0;background:#fafbfd}
-
+/* fenêtre « Données générales » */
+#infoModal .modal{max-width:780px;border-radius:16px}
+#infoModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
+#infoModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
+#infoModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
+#infoModal .modal-body{padding:16px 20px;background:#f7f9fc}
 .info-grid{gap:9px 14px!important;grid-template-columns:200px 1fr!important}
 .info-grid>label{align-self:center;color:#344054;font-weight:600}
 .info-grid h4{margin:12px 0 2px!important;padding:6px 10px;background:#e7efff;color:#1f57c8!important;border:0!important;border-radius:8px;font-size:12.5px!important;letter-spacing:.2px}
-
-/* Drag & drop Documents */
-.drop-zone{
-  border:2px dashed #c8c4b8; border-radius:10px;
-  padding:20px; text-align:center; background:#fafbfd;
-  cursor:pointer; transition:all .15s; margin-bottom:12px;
-}
-.drop-zone:hover{ border-color:var(--accent); background:var(--accent-light); }
-.drop-zone.drag-over{ border-color:var(--accent); background:var(--accent-light); border-style:solid; }
-.drop-zone .dz-icon{ font-size:26px; margin-bottom:4px; opacity:.55; }
-.drop-zone .dz-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:3px; }
-.drop-zone .dz-hint{ font-size:11px; color:var(--text-muted); line-height:1.4; }
-
-.doc-list{ display:flex; flex-direction:column; gap:5px; margin-bottom:10px; min-height:16px; }
-.doc-item{
-  display:flex; align-items:center; gap:8px;
-  padding:6px 10px; border:1px solid #e3e8f0;
-  border-radius:8px; background:#fafbfd; transition:all .12s;
-}
-.doc-item:hover{ border-color:#9db9f2; background:#f4f8ff; }
-.doc-item .doc-icon{ color:var(--accent); flex-shrink:0; display:flex; align-items:center; }
-.doc-item input[type=text]{
-  flex:1; padding:4px 8px; font-size:12.5px;
-  border:1px solid transparent; background:transparent;
-  border-radius:5px; font-family:inherit; color:var(--text);
-}
-.doc-item input[type=text]:focus{ outline:none; border-color:var(--accent); background:#fff; }
-.doc-item .doc-remove{
-  width:22px; height:22px; display:flex; align-items:center; justify-content:center;
-  border:none; background:transparent; color:#b0aea6;
-  cursor:pointer; border-radius:5px; font-size:14px;
-  line-height:1; transition:all .12s; flex-shrink:0;
-}
-.doc-item .doc-remove:hover{ background:#ffebee; color:#b71c1c; }
-
-.doc-add-btn{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:6px 12px; font-size:12px; font-weight:600;
-  font-family:inherit; border:1.5px dashed #9db9f2;
-  background:#fff; color:var(--accent); border-radius:8px;
-  cursor:pointer; transition:all .15s;
-}
-.doc-add-btn:hover{ background:var(--accent-light); border-style:solid; }
-
-.doc-empty{
-  text-align:center; color:#a0a098;
-  font-size:11.5px; padding:10px; font-style:italic;
-}
+.info-grid input,.info-grid textarea{border:1px solid #d5dbe6!important;border-radius:8px!important;padding:7px 10px!important;font-size:13px!important;background:#fff}
+.info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:#2b6be6!important;box-shadow:0 0 0 3px rgba(43,107,230,.15)}
+/* fenêtres simples PDF / Excel */
+.simple-exp{text-align:center;padding:26px 28px!important}
+.se-ic{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff}
+.se-ic.pdf{background:linear-gradient(135deg,#e5484d,#c0392b)}
+.se-ic.xls{background:linear-gradient(135deg,#2f9e63,#1b7f4c)}
+.simple-exp p{margin:0 0 16px;font-size:13.5px;color:#344054}
+.simple-exp .xl-go{width:100%;margin:0;padding:12px 16px;font-size:14px;border-radius:12px;background:#1b7f4c}
+.simple-exp .xl-go.pdf{background:#c0392b}
+.simple-exp .xl-msg{margin-top:12px;min-height:18px}
+.exp-opts{display:flex;flex-direction:column;gap:7px;text-align:left;margin:0 0 18px;font-size:13px;color:#344054}
+.exp-opts label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.exp-opts .exp-sub{margin-left:24px}
+.simple-exp{text-align:left!important;padding:22px 26px!important}
+.plain-btn{display:block;width:100%;padding:10px 14px;border:1px solid #c7ced9;border-radius:10px;background:#f6f7f9;color:#1d2433;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
+.plain-btn:hover:not(:disabled){background:#eceff4;border-color:#9aa5b8}
+.plain-btn:disabled{opacity:.5;cursor:not-allowed}
+.ref-row{display:flex;gap:8px}.ref-row input{flex:1}
+.ref-row button{flex:none;border:1px solid #2b6be6;background:#fff;color:#2b6be6;border-radius:8px;padding:0 12px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit}
+.ref-row button:hover{background:#e7efff}
+.info-grid .ro-field{background:#f1f3f7!important;color:#475467}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     RUBAN D'ONGLETS DONNÉES GÉNÉRALES (remplace la toolbar)
-     ═══════════════════════════════════════════════════════ -->
-<div class="info-tabs-bar">
-  <button class="info-tab active" data-tab="relation" onclick="openInfoTab('relation')">
-    Relation<span class="badge-dot" id="dot-relation"></span>
-  </button>
-  <button class="info-tab" data-tab="affaire" onclick="openInfoTab('affaire')">
-    Affaire<span class="badge-dot" id="dot-affaire"></span>
-  </button>
-  <button class="info-tab" data-tab="documents" onclick="openInfoTab('documents')">
-    Documents<span class="badge-dot" id="dot-documents"></span>
-  </button>
-  <button class="info-tab" data-tab="commentaires" onclick="openInfoTab('commentaires')">
-    Commentaires<span class="badge-dot" id="dot-commentaires"></span>
-  </button>
-  <button class="info-tab" data-tab="livrable" onclick="openInfoTab('livrable')">
-    Livrable<span class="badge-dot" id="dot-livrable"></span>
-  </button>
-  <div class="spacer"></div>
-  <div class="tab-actions">
-    <button onclick="saveJsonLocal()" title="Enregistrer en local">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-        <path d="M17 21v-8H7v8M7 3v5h8"/>
-      </svg>
-      Enregistrer
-    </button>
-    <button onclick="openJsonLocal()" title="Ouvrir un dossier local">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      </svg>
-      Ouvrir
-    </button>
+<div class="toolbar">
+  <div class="menu-wrap">
+    <button class="menu-btn" onclick="toggleAppMenu(event)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg> Menu</button>
+    <div id="appMenu" class="app-menu">
+      <button onclick="appMenuDo('savejson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span><b>Enregistrer en local</b><small>Fichier JSON</small></span></button>
+      <button onclick="appMenuDo('openjson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span><b>Ouvrir un dossier local</b><small>Fichier JSON</small></span></button>
+      <div class="am-sep"></div>
+      <button onclick="appMenuDo('pdf')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span><b>Imprimer le PDF</b><small>Rapport complet</small></span></button>
+      <button onclick="appMenuDo('excel')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span><b>Télécharger l'Excel</b><small>Classeur rempli</small></span></button>
+    </div>
+  </div>
+  <div class="sep"></div>
+  <button class="tb-btn" onclick="openInfo()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Données générales</button>
+  <div id="legacyBtns" style="display:none">
+    <button onclick="saveNode()">💾 Enregistrer l'avis</button>
+    <button onclick="clearNode()">↺ Réinitialiser</button>
+    <button onclick="saveToLocalStorage()">Sauvegarder</button>
+    <button onclick="loadFromLocalStorage()">Restaurer</button>
+    <button onclick="openReport()">📊 Rapport</button>
+    <button onclick="exportCSV()">📄 Export CSV</button>
+    <button onclick="openExport()">📤 Export Excel</button>
   </div>
 </div>
 
@@ -636,13 +379,7 @@ body.point-selecting .c-label{cursor:pointer}
       <button id="rvSomBtn" class="rv-som-btn" onclick="toggleRvSommaire()">▸ Renvois de l'article</button>
       <div id="rvSommaire" style="display:none"></div>
     </div>
-    <button class="btn-points" onclick="openPoints()">
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/>
-        <path d="M8 8h.01M14 11v6M11 14h6"/>
-      </svg>
-      Ajouter points
-    </button>
+    <button class="btn-points" onclick="openPoints()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M8 8h.01M14 11v6M11 14h6"/></svg> Ajouter points</button>
   </div>
 </div>
 
@@ -677,22 +414,6 @@ body.point-selecting .c-label{cursor:pointer}
   <span id="statusAvis"></span>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MODAL DONNÉES GÉNÉRALES (5 pages)
-     ═══════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="infoModal">
-  <div class="modal" style="max-width:780px">
-    <div class="modal-header"><span id="infoModalTitle">Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
-    <div class="modal-body">
-      <div class="info-pages" id="infoPagesBody">
-        <!-- injecté dynamiquement par openInfoTab() -->
-      </div>
-    </div>
-    <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
-  </div>
-</div>
-
-<!-- Autres modals inchangés -->
 <div class="modal-overlay" id="reportModal">
   <div class="modal">
     <div class="modal-header"><span>📊 Rapport de conformité accessibilité</span><button onclick="closeReport()">×</button></div>
@@ -710,6 +431,55 @@ body.point-selecting .c-label{cursor:pointer}
     <div class="modal-header"><span>Ajouter des points</span><button onclick="closeModal('pointsModal')">×</button></div>
     <div class="modal-body"><div class="pt-wrap" id="pointsBody"></div></div>
     <div class="modal-footer"><button onclick="closeModal('pointsModal')">Fermer</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="infoModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-header"><span>Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
+    <div class="modal-body"><div class="info-grid" id="infoBody"></div></div>
+    <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="exportModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-header"><span>📤 Export vers le classeur Excel</span><button onclick="closeModal('exportModal')">×</button></div>
+    <div class="modal-body exp-box" id="exportBody"></div>
+    <div class="modal-footer"><button onclick="closeModal('exportModal')">Fermer</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pdfModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header"><span>Imprimer le PDF</span><button onclick="closeModal('pdfModal')">×</button></div>
+    <div class="modal-body simple-exp">
+      <div class="exp-opts">
+        <label class="exp-radio"><input type="radio" name="pdfL" value="ren" onchange="updateOptsUI('pdf')"> Lignes renseignées seulement</label>
+        <label class="exp-radio"><input type="radio" name="pdfL" value="all" checked onchange="updateOptsUI('pdf')"> Toutes les lignes, même vides</label>
+        <label class="exp-sub"><input type="checkbox" id="pdfTous" checked> Garder aussi les articles sans avis</label>
+        <label><input type="checkbox" id="pdfHide" checked> Masquer les feuilles d'articles non imprimées</label>
+        <label><input type="checkbox" id="pdfAnn" checked> Inclure les annexes Art. 14 et Art. 19 (schémas)</label>
+        <label><input type="checkbox" id="pdfPages" checked> Écrire le nombre de pages estimé en Page 2</label>
+      </div>
+      <button id="pdfGo2" class="plain-btn" onclick="exportPdf('pdfMsg','pdfGo2')" disabled>Télécharger le PDF</button>
+      <div id="pdfMsg" class="xl-msg"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="xlsModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header"><span>Télécharger l'Excel</span><button onclick="closeModal('xlsModal')">×</button></div>
+    <div class="modal-body simple-exp">
+      <div class="exp-opts">
+        <label class="exp-radio"><input type="radio" name="xlsL" value="ren" onchange="updateOptsUI('xls')"> Lignes renseignées seulement</label>
+        <label class="exp-radio"><input type="radio" name="xlsL" value="all" checked onchange="updateOptsUI('xls')"> Toutes les lignes, même vides</label>
+        <label class="exp-sub"><input type="checkbox" id="xlsTous" checked> Garder aussi les articles sans avis</label>
+        <label><input type="checkbox" id="xlsHide" checked> Masquer les feuilles d'articles non imprimées</label>
+        <label><input type="checkbox" id="xlsAnn" checked> Inclure les annexes Art. 14 et Art. 19 (schémas)</label>
+        <label><input type="checkbox" id="xlsPages" checked> Écrire le nombre de pages estimé en Page 2</label>
+      </div>
+      <button id="xlsGo" class="plain-btn" onclick="exportXlsx('xlsMsg','xlsGo')" disabled>Télécharger l'Excel</button>
+      <div id="xlsMsg" class="xl-msg"></div>
+    </div>
   </div>
 </div>
 
@@ -2570,9 +2340,8 @@ const TREE_DATA = [
 ]}
 ];
 
-/* ============================================================
-   IMBRICATION & NUMÉROTATION
-   ============================================================ */
+/* Imbrication hiérarchique des rubriques d'article selon `level`
+   (le sommaire déroulant s'appuie sur children, pas sur level) */
 (function nestArticles(){
   function nest(flat){
     const root=[], stack=[];
@@ -2596,6 +2365,8 @@ const TREE_DATA = [
   }
   walk(TREE_DATA);
 })();
+
+/* Numérotation hiérarchique : 2, 2.1, 2.2, 2.2.1 … (les articles portent leur numéro) */
 (function numberNodes(){
   function num(nodes,prefix){ nodes.forEach((n,i)=>{ n.num=prefix+(i+1); if(n.children) num(n.children,n.num+'.'); }); }
   TREE_DATA.forEach(ch=>{ (ch.children||[]).forEach(a=>{
@@ -2614,9 +2385,11 @@ let selectedNode = null;
 let selectedAvis = null;
 let nodesState = {};
 let collapsedState = {};
-let renvoiOpen = {};
+let renvoiOpen = {};   // lignes insérées par un renvoi : masquées tant que le bouton + de la rubrique citante n'est pas activé
 let currentNodePath = [];
 let currentTab = 'desc';
+
+/* ✅ Filtres F / D / SO (0 = inactif, 1 = actif) */
 let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, levelFilter = 0;
 
 const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(8,d(TREE_DATA)); })();
@@ -2624,7 +2397,10 @@ const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map
 function findNodeByCode(nodes, code) {
   for (let n of nodes) {
     if (n.code === code) return n;
-    if (n.children) { const f = findNodeByCode(n.children, code); if (f) return f; }
+    if (n.children) {
+      const f = findNodeByCode(n.children, code);
+      if (f) return f;
+    }
   }
   return null;
 }
@@ -2632,19 +2408,26 @@ function findPathToNode(nodes, target, cur = []) {
   for (let n of nodes) {
     const np = [...cur, n];
     if (n.code === target) return np;
-    if (n.children) { const f = findPathToNode(n.children, target, np); if (f) return f; }
+    if (n.children) {
+      const f = findPathToNode(n.children, target, np);
+      if (f) return f;
+    }
   }
   return null;
 }
 function flattenTree(nodes, parentVisible = true, result = []) {
   nodes.forEach(node => {
-    const flt = (filterF || filterD || filterSO || filterT);
+    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT);
     if (node.ins && !renvoiOpen[node.cf] && !flt) return;
     if (levelFilter && (node.level || 1) > levelFilter) return;
     const hasChildren = node.children && node.children.length > 0;
     const isCollapsed = !levelFilter && collapsedState[node.code] === true;
-    if (parentVisible) result.push({ ...node, hasChildren, level: node.level || 1 });
-    if (hasChildren) flattenTree(node.children, parentVisible && !isCollapsed, result);
+    if (parentVisible) {
+      result.push({ ...node, hasChildren, level: node.level || 1 });
+    }
+    if (hasChildren) {
+      flattenTree(node.children, parentVisible && !isCollapsed, result);
+    }
   });
   return result;
 }
@@ -2657,6 +2440,7 @@ function findParentArticle(code) {
   return null;
 }
 
+/* Vérifie si un nœud passe le filtre (lui-même OU un de ses enfants) */
 function isFilled(code) {
   const s = nodesState[code] || {};
   return !!(s.avis || isHM(code) || (s.desc && s.desc.trim()) || (s.reference && s.reference.trim()) || (s.obs && s.obs.trim()));
@@ -2669,7 +2453,11 @@ function nodeMatchesFilter(node) {
   if (av === 'D' && filterD) return true;
   if (av === 'SO' && filterSO) return true;
   if (filterT && isFilled(node.code)) return true;
-  if (node.children) { for (let c of node.children) { if (nodeMatchesFilter(c)) return true; } }
+  if (node.children) {
+    for (let c of node.children) {
+      if (nodeMatchesFilter(c)) return true;
+    }
+  }
   return false;
 }
 
@@ -2679,12 +2467,16 @@ function renderRubriquesTable() {
   let html = '';
   flat.forEach(node => {
     if ((filterF || filterD || filterSO || filterT) && !nodeMatchesFilter(node)) return;
+
     const state = nodesState[node.code] || {};
     const avis = state.avis || '';
     const isSel = selectedNode && selectedNode.code === node.code;
     const indentClass = 'i' + Math.min(node.level, 10);
     const bullet = node.hasChildren ? (collapsedState[node.code] ? '►' : '▼') : '•';
-    const labelOnclick = selPoint != null ? `togglePointNode('${node.code}', event)` : `handleRowClick('${node.code}', event)`;
+    const labelOnclick = selPoint != null
+      ? `togglePointNode('${node.code}', event)`
+      : `handleRowClick('${node.code}', event)`;
+
     html += `<tr data-code="${node.code}" class="${isSel ? 'sel' : ''}" onclick="handleRowClick('${node.code}', event)">
       <td class="c-code" onclick="toggleCollapse(event, '${node.code}')">${bullet}</td>
       <td class="c-label ${indentClass}${node.ins?' ins':''}" title="${escAttr((node.ref?node.ref+' – ':'')+(node.long||node.label))}" onclick="${labelOnclick}">${rvBtn(node)}${selPoint!=null?`<input type="checkbox" class="selchk" ${(points.find(p=>p.id===selPoint)||{codes:[]}).codes.includes(node.code)?'checked':''} onclick="togglePointNode('${node.code}', event)">`:''}${numHtml(node)}${esc(node.label)}${pointsOf(node.code).map(id=>`<span class="pt">P${id}</span>`).join('')}${isHM(node.code)?'<span class="pt hm" title="Hors mission">HM</span>':''}</td>
@@ -2700,19 +2492,25 @@ function handleRowClick(code, event) {
   const node = findNodeByCode(TREE_DATA, code);
   if (!node) return;
   if (node.ins && node.cf) renvoiOpen[node.cf] = true;
+
   selectedNode = node;
   const state = nodesState[code] || {};
   selectedAvis = state.avis || null;
+
   const parentArticle = findParentArticle(code);
   document.getElementById('inputArticle').value = node.ref || (parentArticle ? parentArticle.label : '');
   document.getElementById('inputLibelle').value = state.libelle || node.long || node.label || '';
   loadTabContent();
   renderPointsInfo();
+
   updateAvisButtons();
+
   expandParents(code);
   const path = findPathToNode(TREE_DATA, code);
   if (path) updateSommaireFromPath(path);
+
   renderRubriquesTable();
+
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + node.code + ' – ' + node.label;
   document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis';
   document.getElementById('kbdHint').style.display = 'inline-block';
@@ -2728,13 +2526,19 @@ function toggleRenvoi(code, event){
   if (event) event.stopPropagation();
   renvoiOpen[code] = !renvoiOpen[code];
   renderRubriquesTable();
-  if (selectedNode) { const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`); if (row) row.classList.add('sel'); }
+  if (selectedNode) {
+    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
+    if (row) row.classList.add('sel');
+  }
 }
 function expandParents(code) {
   const path = findPathToNode(TREE_DATA, code);
   if (!path) return;
-  for (let i = 0; i < path.length - 1; i++) { collapsedState[path[i].code] = false; }
+  for (let i = 0; i < path.length - 1; i++) {
+    collapsedState[path[i].code] = false;
+  }
 }
+
 function scrollToRowFlash(code) {
   const row = document.querySelector(`tr[data-code="${code}"]`);
   if (!row) return;
@@ -2743,35 +2547,59 @@ function scrollToRowFlash(code) {
   const rowTop = row.getBoundingClientRect().top;
   const offset = rowTop - containerTop + container.scrollTop;
   container.scrollTo({ top: Math.max(0, offset - 30), behavior: 'smooth' });
-  row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
+  row.classList.remove('flash');
+  void row.offsetWidth;
+  row.classList.add('flash');
   setTimeout(() => row.classList.remove('flash'), 950);
 }
+
 function toggleCollapse(event, code) {
   event.stopPropagation();
   const node = findNodeByCode(TREE_DATA, code);
   if (!node || !node.children || node.children.length === 0) return;
   collapsedState[code] = !collapsedState[code];
   renderRubriquesTable();
-  if (selectedNode) { const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`); if (row) row.classList.add('sel'); }
+  if (selectedNode) {
+    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
+    if (row) row.classList.add('sel');
+  }
 }
 function expandAll() {
   collapsedState = {};
   levelFilter = 0; if (typeof updateLevelBtn === 'function') updateLevelBtn();
   renderRubriquesTable();
+  if (selectedNode) {
+    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
+    if (row) row.classList.add('sel');
+  }
 }
 function collapseAll() {
   const codes = [];
-  function collect(nodes) { nodes.forEach(n => { if (n.children && n.children.length) { codes.push(n.code); collect(n.children); } }); }
+  function collect(nodes) {
+    nodes.forEach(n => {
+      if (n.children && n.children.length) {
+        codes.push(n.code);
+        collect(n.children);
+      }
+    });
+  }
   collect(TREE_DATA);
   codes.forEach(c => collapsedState[c] = true);
   renvoiOpen = {};
   renderRubriquesTable();
 }
+
+/* ---- Gestion des filtres (badges Total / F / D / SO) ---- */
 function toggleFilter(type) {
   if (type === 'F') filterF = filterF ? 0 : 1;
   else if (type === 'D') filterD = filterD ? 0 : 1;
   else if (type === 'SO') filterSO = filterSO ? 0 : 1;
   else if (type === 'T') filterT = filterT ? 0 : 1;
+  updateFilterUI();
+  renderRubriquesTable();
+}
+function resetFilters() {
+  filterF = filterD = filterSO = filterT = 0;
   updateFilterUI();
   renderRubriquesTable();
 }
@@ -2791,52 +2619,75 @@ function initSommaire() {
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + TREE_DATA[0].code + ' – ' + TREE_DATA[0].label;
   updateFilterUI();
 }
+
 function updateSommaireFromPath(path) {
   currentNodePath = path || [];
   const container = document.getElementById('sommaireSelects');
   let html = '';
+
   for (let i = 0; i < SOMMAIRE_LEVELS; i++) {
-    let options = [], selectedCode = '', disabled = false;
-    if (i === 0) options = TREE_DATA;
-    else if (currentNodePath[i - 1]) options = currentNodePath[i - 1].children || [];
-    else disabled = true;
+    let options = [];
+    let selectedCode = '';
+    let disabled = false;
+
+    if (i === 0) {
+      options = TREE_DATA;
+    } else if (currentNodePath[i - 1]) {
+      options = currentNodePath[i - 1].children || [];
+    } else {
+      disabled = true;
+    }
+
     if (currentNodePath[i]) selectedCode = currentNodePath[i].code;
     options = options.filter(o => !o.ins || o.code === selectedCode);
+
     const filledClass = selectedCode ? 'filled' : '';
     const disabledAttr = (disabled || options.length === 0) ? 'disabled' : '';
+
     html += `<div class="select-row"><select class="${filledClass}" ${disabledAttr} onchange="onSommaireChange(${i}, this.value)">`;
+
     options.forEach(opt => {
       const sel = opt.code === selectedCode ? 'selected' : '';
       const fullLabel = nodeLabel(opt);
       const shortLabel = fullLabel.length > 80 ? fullLabel.substring(0, 80) + '…' : fullLabel;
       html += `<option value="${opt.code}" ${sel} title="${escAttr((opt.ref?opt.ref+' – ':'')+(opt.long||fullLabel))}">${shortLabel}</option>`;
     });
+
     html += `</select></div>`;
   }
+
   container.innerHTML = html;
 }
+
 function onSommaireChange(level, code) {
   if (!code) return;
   const node = findNodeByCode(TREE_DATA, code);
   if (!node) return;
+
   const newPath = currentNodePath.slice(0, level);
   newPath.push(node);
+
   selectedNode = node;
   const state = nodesState[node.code] || {};
   selectedAvis = state.avis || null;
+
   const parentArticle = findParentArticle(code);
   document.getElementById('inputArticle').value = node.ref || (parentArticle ? parentArticle.label : '');
   document.getElementById('inputLibelle').value = state.libelle || node.long || node.label || '';
   loadTabContent();
+
   updateAvisButtons();
+
   expandParents(node.code);
   updateSommaireFromPath(newPath);
   renderRubriquesTable();
+
   setTimeout(() => {
     scrollToRowFlash(node.code);
     const row = document.querySelector(`tr[data-code="${node.code}"]`);
     if (row) row.classList.add('sel');
   }, 30);
+
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + node.code + ' – ' + node.label;
   document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis';
   document.getElementById('kbdHint').style.display = 'inline-block';
@@ -2866,8 +2717,8 @@ function updateAvisButtons() {
     const b = document.getElementById('btn' + v);
     b.classList.toggle('active-' + v, selectedAvis === v);
   });
-  if (typeof syncHM === 'function') syncHM();
 }
+
 function loadTabContent() {
   const ta = document.getElementById('inputTabContent');
   const state = selectedNode ? (nodesState[selectedNode.code] || {}) : {};
@@ -2880,7 +2731,7 @@ function saveTabContent() {
   if (!selectedNode) return;
   const ta = document.getElementById('inputTabContent');
   const code = selectedNode.code;
-  if (((nodesState[code] || {})[currentTab] || '') === ta.value) return;
+  if (((nodesState[code] || {})[currentTab] || '') === ta.value) return;   // rien de changé : on ne crée pas d'entrée vide
   if (!nodesState[code]) nodesState[code] = {};
   nodesState[code][currentTab] = ta.value;
 }
@@ -2897,8 +2748,10 @@ document.addEventListener('keydown', function(e) {
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
   if (e.ctrlKey || e.altKey || e.metaKey) return;
   if (!selectedNode) return;
+
   const key = e.key.toUpperCase();
   const code = selectedNode.code;
+
   if (key === 'F') { setInlineAvis(code, 'F'); e.preventDefault(); }
   else if (key === 'D') { setInlineAvis(code, 'D'); e.preventDefault(); }
   else if (key === 'S') { setInlineAvis(code, 'SO'); e.preventDefault(); }
@@ -2908,7 +2761,10 @@ document.addEventListener('keydown', function(e) {
     const idx = flat.findIndex(n => n.code === code);
     if (idx === -1) return;
     let nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
-    if (nextIdx >= 0 && nextIdx < flat.length) { handleRowClick(flat[nextIdx].code, null); e.preventDefault(); }
+    if (nextIdx >= 0 && nextIdx < flat.length) {
+      handleRowClick(flat[nextIdx].code, null);
+      e.preventDefault();
+    }
   }
 });
 
@@ -2934,6 +2790,52 @@ function setInlineAvis(code, value) {
   if (row && selectedNode && selectedNode.code === code) row.classList.add('sel');
 }
 
+function saveNode() {
+  if (!selectedNode) { alert('Sélectionnez une rubrique.'); return; }
+  const code = selectedNode.code;
+  if (!nodesState[code]) nodesState[code] = {};
+  nodesState[code].avis = selectedAvis;
+  nodesState[code].article = document.getElementById('inputArticle').value.trim();
+  nodesState[code].libelle = document.getElementById('inputLibelle').value.trim();
+  saveTabContent();
+  renderRubriquesTable();
+  const row = document.querySelector(`tr[data-code="${code}"]`);
+  if (row) row.classList.add('sel');
+  alert('Avis enregistré pour ' + code + '.');
+}
+function clearNode() {
+  if (!selectedNode) return;
+  selectedAvis = null;
+  document.getElementById('inputLibelle').value = selectedNode.long || selectedNode.label || '';
+  document.getElementById('inputTabContent').value = '';
+  updateAvisButtons();
+  if (nodesState[selectedNode.code]) {
+    delete nodesState[selectedNode.code].avis;
+    delete nodesState[selectedNode.code][currentTab];
+    renderRubriquesTable();
+    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
+    if (row) row.classList.add('sel');
+  }
+  document.getElementById('statusAvis').textContent = 'Aucun avis';
+}
+function saveToLocalStorage() {
+  saveTabContent();
+  localStorage.setItem('adapth_attestation_v18', JSON.stringify({ v: 2, nodes: nodesState, points: points, info: reportInfo }));
+  const c = Object.keys(nodesState).filter(k => nodesState[k].avis).length;
+  alert('Session sauvegardée (' + c + ' avis saisis).');
+}
+function loadFromLocalStorage() {
+  const d = localStorage.getItem('adapth_attestation_v18');
+  if (d) {
+    const o = JSON.parse(d);
+    if (o && o.v === 2) { nodesState = o.nodes || {}; points = o.points || []; reportInfo = o.info || {}; }
+    else { nodesState = o; points = []; }
+    renderRubriquesTable();
+    renderPointsInfo();
+    alert('Session restaurée.');
+  } else alert('Aucune sauvegarde trouvée.');
+}
+
 function updateStats() {
   let t = 0, f = 0, d = 0, so = 0;
   function collect(nodes) {
@@ -2953,20 +2855,96 @@ function updateStats() {
   document.getElementById('statSO').textContent = so;
 }
 
-/* ===================== POINTS / EXPORT ===================== */
+function openReport() {
+  saveTabContent();
+  const modal = document.getElementById('reportModal');
+  const body = document.getElementById('reportBody');
+  let t = 0, f = 0, d = 0, so = 0;
+  function collectStats(nodes) {
+    nodes.forEach(n => {
+      const s = nodesState[n.code] || {};
+      if (s.avis) {
+        t++;
+        if (s.avis === 'F') f++;
+        else if (s.avis === 'D') d++;
+        else if (s.avis === 'SO') so++;
+      }
+      if (n.children) collectStats(n.children);
+    });
+  }
+  collectStats(TREE_DATA);
+  let rows = '';
+  function buildRows(nodes, depth) {
+    nodes.forEach(n => {
+      const s = nodesState[n.code] || {};
+      const av = s.avis || '';
+      const lc = n.level <= 2 ? 'l' + n.level : '';
+      const ind = depth * 12;
+      const pa = findParentArticle(n.code);
+      const articleTxt = n.ref || (pa ? pa.label : '');
+      rows += `<tr class="${lc}">
+        <td style="padding-left:${6 + ind}px"><b>${n.code}</b></td>
+        <td>${nodeLabel(n)}</td>
+        <td class="ac">${av || '—'}</td>
+        <td>${articleTxt}</td>
+        <td>${s.desc || ''}</td>
+        <td>${s.reference || ''}</td>
+        <td>${esc(remarkFor(n)).replace(/\n/g,'<br>')}</td>
+      </tr>`;
+      if (n.children) buildRows(n.children, depth + 1);
+    });
+  }
+  buildRows(TREE_DATA, 0);
+  body.innerHTML = `${infoHtml()}
+    <div class="report-summary">
+      <div class="summary-card"><div class="n">${t}</div><div class="l">Avis saisis</div></div>
+      <div class="summary-card f"><div class="n">${f}</div><div class="l">Favorables</div></div>
+      <div class="summary-card d"><div class="n">${d}</div><div class="l">Défavorables</div></div>
+      <div class="summary-card so"><div class="n">${so}</div><div class="l">Sans objet</div></div>
+    </div>
+    <table class="report-table">
+      <thead><tr>
+        <th style="width:90px">Code</th>
+        <th style="width:220px">Rubrique</th>
+        <th style="width:36px">Avis</th>
+        <th style="width:160px">Article réglementaire</th>
+        <th>Conception - Description</th>
+        <th>Référence</th>
+        <th>Observations</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>${annexHtml()}`;
+  modal.classList.add('open');
+}
+function closeReport() { document.getElementById('reportModal').classList.remove('open'); }
+
+function exportCSV() {
+  saveTabContent();
+  const rows = [['N°', 'Code', 'Rubrique', 'Libellé long', 'Avis', 'Article réglementaire', 'Conception-Description', 'Référence', 'Observations', 'Points', 'Remarque Excel']];
+  function collect(nodes) {
+    nodes.forEach(n => {
+      const s = nodesState[n.code] || {};
+      const pa = findParentArticle(n.code);
+      const articleTxt = n.ref || (pa ? pa.label : '');
+      rows.push([n.num || '', n.code, n.label, s.libelle || n.long || n.label, s.avis || '', articleTxt, s.desc || '', s.reference || '', s.obs || '', pointsOf(n.code).join(', '), remarkFor(n)]);
+      if (n.children) collect(n.children);
+    });
+  }
+  collect(TREE_DATA);
+  const csv = rows.map(r => r.map(c => `"${(c || '').replace(/"/g, '""')}"`).join(';')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'attestation_accessibilite_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+/* =====================  POINTS  /  EXPORT EXCEL  ===================== */
 let points = [];
-let reportInfo = {
-  // Relation
-  client: '', adr1: '', adr2: '', attn: '', mail: '', ville: '',
-  // Affaire
-  dossier: '', contrat: '', cdate: '', moa: '',
-  // Livrable
-  date: '', ref: '', charge: '', tutore: '',
-  version: '1',
-  versions: [],   // historique : [{ref, date}, ...]
-  // Documents / Commentaires
-  docs: '', locaux: '', derog: '', equiv: ''
-};
+let reportInfo = {};
 let selPoint = null;
 let selIncludeIns = false;
 let curPointId = null;
@@ -2978,25 +2956,6 @@ function esc(x){ return String(x == null ? '' : x).replace(/&/g,'&amp;').replace
 function closeModal(id){ el(id).classList.remove('open'); }
 function pointsOf(code){ return points.filter(p => p.codes.includes(code)).map(p => p.id).sort((a,b)=>a-b); }
 function curPoint(){ return points.find(p => p.id === curPointId); }
-
-function remarkFor(n){
-  const s = nodesState[n.code] || {}; const parts = [];
-  if (isHM(n.code)) parts.push('Hors Mission');
-  const ids = pointsOf(n.code);
-  if (ids.length) parts.push((ids.length > 1 ? 'Voir points ' : 'Voir point ') + ids.join(', '));
-  if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
-  return parts.join('\n');
-}
-
-/* ... le reste des fonctions points/export/PDF/Excel reste identique ... */
-/* (recopier ici : exportRemark, attach, detach, collectBranch, togglePointNode,
-   updateSelBanner, startSelect, endSelect, openPoints, addPoint, changePointId,
-   deletePoint, detachFromModal, detachSelected, renderPointsModal, renderPointsInfo,
-   buildExport, VBA_MACRO, openExport, doExport, doMacro, PRESET_HM_CODES,
-   isHM, setHM, syncHM, fitLibelle, renderRvSommaire, toggleRvSommaire,
-   ensureExcelJS, fillWorkbook, buildXlsx, exportXlsx, pdf functions, exportPdf,
-   downloadBlob, saveJsonLocal, openJsonLocal, etc.) */
-
 function remarkFor(n){
   const s = nodesState[n.code] || {}; const parts = [];
   if (isHM(n.code)) parts.push('Hors Mission');
@@ -3155,25 +3114,62 @@ const INFO_FIELDS = [
   { k: 'attn', l: "À l'attention de", sheet: 'Page de garde', cell: 'F12', pre: "A l'attention de " },
   { k: 'mail', l: 'Adresse mail', sheet: 'Page de garde', cell: 'F13' },
   { k: 'affaire', l: 'Affaire (nom, aussi repris en page 2)', sheet: 'Page de garde', cell: 'A22', also: [{ sheet: 'Page 2', cell: 'A5' }] },
-  { k: 'dossier', l: 'Dossier SOCOTEC', sheet: 'Page de garde', cell: 'C30' },
-  { k: 'date', l: 'Date', sheet: 'Page de garde', cell: 'C32' },
-  { k: 'ref', l: 'Référence du rapport', sheet: 'Page de garde', cell: 'C34' },
+  { k: 'dossier', l: 'Dossier SOCOTEC (n° du dossier)', sheet: 'Page de garde', cell: 'C30' },
+  { k: 'date', l: 'Date', type: 'date', sheet: 'Page de garde', cell: 'C32' },
+  { k: 'ref', l: 'Référence du rapport', type: 'ref', sheet: 'Page de garde', cell: 'C34' },
+  { k: 'versionTxt', l: 'Version du rapport', type: 'ro' },
+  { k: 'prevDate', l: 'Date de la version précédente', type: 'ro' },
+  { k: 'prevRef', l: 'Référence de la version précédente', type: 'ro' },
   { k: 'charge', l: "Chargé d'affaire", sheet: 'Page de garde', cell: 'C47' },
   { k: 'tutore', l: 'Tutoré', sheet: 'Page de garde', cell: 'G47' },
   { g: 'Contrat de vérification technique' },
-  { k: 'contrat', l: 'Contrat n°', p2: 1 },
-  { k: 'cdate', l: 'Date du contrat (jj/mm/aaaa)', p2: 1 },
+  { k: 'contrat', l: 'Contrat n° (Dossier SOCOTEC du portail)', p2: 1 },
+  { k: 'cdate', l: 'Date du contrat', type: 'date', p2: 1 },
   { k: 'moa', l: "Société (maître d'ouvrage)", p2: 1 },
   { g: 'Commentaires généraux' },
   { k: 'locaux', l: 'Locaux non visités (complément)', sheet: 'Commentaires', cell: 'A7', pre: BASE7 + '\n', area: 1 },
   { k: 'derog', l: 'Dérogations obtenues', sheet: 'Commentaires', cell: 'A9', pre: 'Dérogations obtenues:\n', area: 1 },
   { k: 'equiv', l: "Solutions d'effet équivalent", sheet: 'Commentaires', cell: 'A11', pre: "Solutions d'effet équivalent:\n", area: 1 }
 ];
+function fmtFr(d){ return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
+function todayFr(){ return fmtFr(new Date()); }
+function frToIso(v){ const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; }
+function isoToFr(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+function verNum(){ return Math.max(1, parseInt(reportInfo.version, 10) || 1); }
+function versionText(){ const v = verNum(); return v > 1 ? 'Version ' + v + ' (annule et remplace la version ' + (v - 1) + ')' : 'Version 1'; }
+function ensureInfoDefaults(){ if (!reportInfo.date) reportInfo.date = todayFr(); }
+function computeRef(v){
+  const ri = k => (reportInfo[k] || '').trim(); const u = (window.RAPSO_USER && window.RAPSO_USER.initiales) || '';
+  return [ri('contrat'), String(u).toUpperCase(), 'DIAG', ri('dossier')].filter(Boolean).join('-') + '-V' + v;
+}
+/* La référence est injectée une seule fois ; une nouvelle référence = nouvelle version du rapport (avec avertissement). */
+function injectRef(manual){
+  const ri = k => (reportInfo[k] || '').trim();
+  if (!ri('contrat') || !ri('dossier')) { if (manual) alert('Renseignez d\'abord le Contrat n° et le Dossier SOCOTEC.'); return false; }
+  const v = verNum();
+  if (!ri('ref')) { reportInfo.version = 1; reportInfo.ref = computeRef(1); return true; }
+  if (ri('ref') === computeRef(v)) { if (manual) alert('La référence du rapport est déjà à jour.'); return false; }
+  if (!manual) return false;
+  if (!confirm('⚠ Une nouvelle référence va remplacer « ' + ri('ref') + ' ».\n\nCela correspond à une NOUVELLE VERSION du rapport : version ' + (v + 1) + ' (annule et remplace la version ' + v + ').\nLa référence et la date actuelles deviennent « version précédente ».\n\nContinuer ?')) return false;
+  reportInfo.prevRef = ri('ref'); reportInfo.prevDate = ri('date') || todayFr();
+  reportInfo.version = v + 1; reportInfo.ref = computeRef(v + 1); reportInfo.date = todayFr();
+  return true;
+}
+function infoRoValue(k){ return k === 'versionTxt' ? versionText() : (reportInfo[k] || (k === 'prevDate' || k === 'prevRef' ? '—' : '')); }
 function openInfo(){
-  el('infoBody').innerHTML = INFO_FIELDS.map(f => f.g ? `<h4>${f.g}</h4>` :
-    `<label>${f.l}</label>` + (f.area ? `<textarea rows="3" oninput="reportInfo['${f.k}']=this.value">${esc(reportInfo[f.k] || '')}</textarea>` : `<input type="text" value="${escAttr(reportInfo[f.k] || '')}" oninput="reportInfo['${f.k}']=this.value">`)).join('');
+  ensureInfoDefaults(); injectRef(false);
+  el('infoBody').innerHTML = INFO_FIELDS.map(f => {
+    if (f.g) return `<h4>${f.g}</h4>`;
+    const lab = `<label>${f.l}</label>`, v = reportInfo[f.k] || '';
+    if (f.type === 'ro') return lab + `<input type="text" class="ro-field" readonly value="${escAttr(infoRoValue(f.k))}">`;
+    if (f.type === 'date') return lab + `<input type="date" value="${frToIso(v)}" onchange="reportInfo['${f.k}']=isoToFr(this.value)">`;
+    if (f.type === 'ref') return lab + `<div class="ref-row"><input type="text" id="infoRef" class="ro-field" readonly value="${escAttr(v)}" placeholder="Générée à partir du contrat, de vos initiales et du dossier"><button type="button" onclick="injectRefClick()">Injecter la référence</button></div>`;
+    if (f.area) return lab + `<textarea rows="3" oninput="reportInfo['${f.k}']=this.value">${esc(v)}</textarea>`;
+    return lab + `<input type="text" value="${escAttr(v)}" oninput="reportInfo['${f.k}']=this.value">`;
+  }).join('');
   el('infoModal').classList.add('open');
 }
+function injectRefClick(){ if (injectRef(true)) openInfo(); }
 function infoHtml(){
   const g = k => (reportInfo[k] || '').trim();
   const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('ref')], ['Date', g('date')]].filter(r => r[1]);
@@ -3226,11 +3222,18 @@ function buildExport(){
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
   let nW = 0, nM = 0, nNR = 0, nR = 0, nSO = 0;
   INFO_FIELDS.forEach(f => {
-    if (f.g || f.p2 || f.docs) return;
+    if (f.g || f.p2 || f.docs || !f.sheet) return;
     const v = (reportInfo[f.k] || '').trim(); if (!v) return;
     L.push(['W', f.sheet, f.cell, t((f.pre || '') + v)].join('\t')); nW++;
     (f.also || []).forEach(o => { L.push(['W', o.sheet, o.cell, t(v)].join('\t')); nW++; });
   });
+  // Page de garde, lignes 36 et 37 : version du rapport (la version 1 garde le texte du modèle)
+  if (verNum() > 1) {
+    L.push(['W', 'Page de garde', 'A36', t(versionText())].join('\t'));
+    L.push(['W', 'Page de garde', 'F36', t('Date de la version précédente : ' + (reportInfo.prevDate || ''))].join('\t'));
+    L.push(['W', 'Page de garde', 'A37', t('Référence de la version précédente :')].join('\t'));
+    L.push(['W', 'Page de garde', 'F37', t(reportInfo.prevRef || '')].join('\t')); nW += 4;
+  }
   const ri = k => (reportInfo[k] || '').trim();
   if (ri('contrat') || ri('cdate') || ri('moa')) {
     L.push(['W', 'Page 2', 'A4', t('Par contrat de vérification technique n° ' + (ri('contrat') || 'XXXX') + ' en date du ' + (ri('cdate') || 'xx/xx/xxxx') + ', la société ' + (ri('moa') || 'XXXX') + ', maître d’ouvrage de l’opération de construction suivante :')].join('\t')); nW++;
@@ -3765,12 +3768,17 @@ function downloadBlob(name, blob){
   const url = URL.createObjectURL(blob); const a = document.createElement('a');
   a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
-function xlOpts(){
-  return { toutes: true, tousArticles: true, masquerFeuilles: true, annexes: true, ecrirePages: true };   // options par défaut (toutes les lignes, annexes comprises)
+function readOpts(px){
+  const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
+  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked };
 }
+function updateOptsUI(px){
+  const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all'; const t = document.getElementById(px + 'Tous'); t.disabled = !all; if (!all) t.checked = false; else if (!t.dataset.touched) t.checked = true;
+}
+function xlOpts(){ return { toutes: true, tousArticles: true, masquerFeuilles: true, annexes: true, ecrirePages: true }; }
 async function exportXlsx(msgId, btnId){
   const msg = el(msgId || 'xlMsg'), go = el(btnId || 'xlGo');
-  const o = xlOpts();
+  const o = readOpts('xls');
   go.disabled = true; msg.textContent = 'Génération du classeur…';
   try {
     const r = await buildXlsx(o);
@@ -3922,7 +3930,8 @@ function pdfCover(ws, wb, ctx, theme, W){
   nodes.push({ table: { widths: ['*'], body: [[{ text: v('A15'), bold: true, alignment: 'center', fontSize: 9.5, lineHeight: 1.4, fillColor: banner, margin: [0, 12, 0, 12] }]] }, layout: 'noBorders', margin: [0, 38, 0, 0] });
   nodes.push({ text: '', margin: [0, 118, 0, 0] });
   nodes.push(row(v('A30'), 'dossier', LW, BW)); nodes.push(row(v('A32'), 'date', LW, BW)); nodes.push(row(v('A34'), 'ref', LW, BW));
-  nodes.push({ text: v('A36'), fontSize: 7, margin: [2, 0, 0, 0] });
+  nodes.push({ columns: [{ width: LW + BW + 11, text: v('A36'), fontSize: 7 }, { width: '*', text: v('F36'), fontSize: 7 }], margin: [2, 0, 0, 0] });
+  if (v('A37') && v('F37')) nodes.push({ columns: [{ width: LW + BW + 11, text: v('A37'), fontSize: 7 }, { width: '*', text: v('F37'), fontSize: 7 }], margin: [2, 1, 0, 0] });
   nodes.push({ text: v('A41'), italics: true, alignment: 'center', fontSize: 8.5, lineHeight: 1.3, margin: [0, 80, 0, 0] });
   nodes.push({ columns: [{ width: LW, text: v('A47'), fontSize: 9, margin: [2, 4, 0, 0] }, { width: BW, stack: [box(ri('charge'), BW)] }, { width: 65, text: v('F47'), fontSize: 9, margin: [11, 4, 0, 0] }, { width: 154, stack: [box(ri('tutore'), 154)] }], margin: [0, 62, 0, 0] });
   nodes.push({ columns: [{ width: LW + BW + 11, text: v('A50'), fontSize: 9, margin: [2, 0, 0, 0] }, { width: '*', text: v('F50'), fontSize: 9 }], margin: [0, 24, 0, 0] });
@@ -3935,7 +3944,7 @@ function pdfSectionNodes(wb, ws, theme, ctx){
     let last = 38; for (let r = 1; r <= 60; r++) if (xlText(ws.getCell(r, 1)).trim() === 'A supprimer') { last = r - 1; break; }
     const g = pdfGrid(ws, theme, PDF_W.other, { lines: false, bullets: true, rowTo: last, defCols: 6, fsc: 0.86, hsc: 0.9 });
     // total de pages exact dans la phrase du modèle
-    g.node.table.body.forEach(rw => { const c = rw[0]; if (c && Array.isArray(c.text) && c.text.map(t => t.text).join('').indexOf('Ce document comporte') === 0) { c.text = [{ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: c.text[0].fontSize }]; } });
+    if (ctx.writePages !== false) g.node.table.body.forEach(rw => { const c = rw[0]; if (c && Array.isArray(c.text) && c.text.map(t => t.text).join('').indexOf('Ce document comporte') === 0) { c.text = [{ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: c.text[0].fontSize }]; } });
     const nodes = [g.node]; const lg = ws.getImages(); if (lg.length) { const im = pdfImage(wb, lg[0].imageId); if (im) nodes.unshift({ image: im, width: 26, absolutePosition: { x: PDF_PAGE.w - ((PDF_PAGE.w - PDF_W.other) / 2) - 28, y: 40 } }); }
     return nodes;
   }
@@ -3979,10 +3988,10 @@ async function buildPdf(o){
   await ensurePdfMake();
   const f = await fillWorkbook(Object.assign({}, o, { ecrirePages: false }));
   const info = { pageCount: 0, starts: {} };
-  const d1 = pdfDoc(f.wb, { N: '00', info: info, starts: null });
+  const d1 = pdfDoc(f.wb, { N: '00', info: info, starts: null, writePages: o.ecrirePages !== false });
   await pdfRender(d1.def);
   const N = info.pageCount;
-  const d2 = pdfDoc(f.wb, { N: String(N), info: null, starts: info.starts });
+  const d2 = pdfDoc(f.wb, { N: String(N), info: null, starts: info.starts, writePages: o.ecrirePages !== false });
   const buffer = await pdfRender(d2.def);
   return { buffer: buffer, pages: N, arts: f.arts, miss: f.miss, x: f.x };
 }
@@ -3990,7 +3999,7 @@ async function exportPdf(msgId, btnId){
   const msg = el(msgId || 'xlMsg'), go = el(btnId || 'pdfGo');
   go.disabled = true; msg.textContent = 'Génération du PDF…';
   try {
-    const r = await buildPdf(xlOpts());
+    const r = await buildPdf(readOpts('pdf'));
     const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
@@ -4018,8 +4027,14 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
   // état initial envoyé par le portail
   let init = {}; try { init = JSON.parse(window.RAPSO_SYNTH_DATA || '{}'); } catch (e) {}
   applySynth(init); lastSent = ser();
-  if (!reportInfo.affaire && window.RAPSO_AFFAIRE) reportInfo.affaire = window.RAPSO_AFFAIRE;
-  if (!reportInfo.dossier && window.RAPSO_DOSSIER) reportInfo.dossier = window.RAPSO_DOSSIER;
+  function prefillFromPortal(){
+    if (!reportInfo.affaire && window.RAPSO_AFFAIRE) reportInfo.affaire = window.RAPSO_AFFAIRE;
+    if (!reportInfo.client && window.RAPSO_CLIENT) reportInfo.client = window.RAPSO_CLIENT;
+    if (!reportInfo.ville && window.RAPSO_VILLE) reportInfo.ville = window.RAPSO_VILLE;
+    if (!reportInfo.contrat && window.RAPSO_DOSSIER) reportInfo.contrat = window.RAPSO_DOSSIER;   // Dossier SOCOTEC du portail -> Contrat n°
+    ensureInfoDefaults(); injectRef(false);
+  }
+  prefillFromPortal();
   lastAffaire = reportInfo.affaire || '';
   function sendSave(force){
     const cur = ser(); if (!force && cur === lastSent) return; if (RO) return;
@@ -4038,7 +4053,7 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
       const a = m.action;
       if (a === 'pdf') openPdfModal(); else if (a === 'excel') openXlsModal(); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
       else if (a === 'points') openPoints(); else if (a === 'info') openInfo();
-      else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = { affaire: window.RAPSO_AFFAIRE || '', dossier: window.RAPSO_DOSSIER || '' }; refreshUI(); sendSave(true); } }
+      else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = {}; prefillFromPortal(); refreshUI(); sendSave(true); } }
     }
   });
   // sauvegarde / restauration locales : remplacées par le portail
@@ -4112,369 +4127,7 @@ async function openSimpleExport(modalId, msgId, btnId){
 function openPdfModal(){ openSimpleExport('pdfModal', 'pdfMsg', 'pdfGo2'); }
 function openXlsModal(){ openSimpleExport('xlsModal', 'xlsMsg', 'xlsGo'); }
 
-
-/* ============================================================
-   DONNÉES GÉNÉRALES — 5 onglets
-   ============================================================ */
-function openInfo(){ openInfoTab('relation'); }
-
-function openInfoTab(tab) {
-  if (!reportInfo.versions) reportInfo.versions = [];
-  if (tab === 'livrable') {
-    if (!reportInfo.date) {
-      const now = new Date();
-      reportInfo.date = String(now.getDate()).padStart(2,'0') + '/' +
-                        String(now.getMonth()+1).padStart(2,'0') + '/' + now.getFullYear();
-    }
-    if (!reportInfo.charge) {
-      reportInfo.charge = ((window.RAPSO_USER && window.RAPSO_USER.prenom && window.RAPSO_USER.nom)
-        ? window.RAPSO_USER.prenom + ' ' + window.RAPSO_USER.nom
-        : '');
-    }
-  }
-  document.querySelectorAll('.info-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  renderInfoPage(tab);
-  el('infoModalTitle').textContent = 'Données générales — ' + capitalize(tab);
-  el('infoModal').classList.add('open');
-  updateDots();
-}
-
-function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
-
-function renderInfoPage(tab) {
-  const body = el('infoPagesBody');
-  let html = '';
-
-  if (tab === 'relation') {
-    html = `<div class="info-page active">
-      <div class="field"><label>Client</label>
-        <input type="text" value="${escAttr(reportInfo.client || '')}" oninput="infoChange('client', this.value)"></div>
-      <div class="field"><label>Adresse</label>
-        <input type="text" value="${escAttr(reportInfo.adr1 || '')}" oninput="infoChange('adr1', this.value)"></div>
-      <div class="field"><label>Complément d'adresse</label>
-        <input type="text" value="${escAttr(reportInfo.adr2 || '')}" oninput="infoChange('adr2', this.value)"></div>
-      <div class="field"><label>À l'attention de</label>
-        <input type="text" value="${escAttr(reportInfo.attn || '')}" oninput="infoChange('attn', this.value)"></div>
-    </div>`;
-  }
-
-  else if (tab === 'affaire') {
-    html = `<div class="info-page active">
-      <div class="field"><label>Réf dossier</label>
-        <input type="text" value="${escAttr(reportInfo.dossier || '')}" oninput="infoChange('dossier', this.value)"></div>
-      <div class="field"><label>Contrat n°</label>
-        <input type="text" value="${escAttr(reportInfo.contrat || '')}" oninput="infoChange('contrat', this.value)"></div>
-      <div class="field"><label>Date du contrat</label>
-        <input type="date" value="${dateToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)"></div>
-      <div class="field"><label>Société (maître d'ouvrage)</label>
-        <input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le Client si vide"></div>
-    </div>`;
-  }
-
-  else if (tab === 'documents') {
-    html = `<div class="info-page active">
-      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-        <div class="dz-icon">📎</div>
-        <div class="dz-title">Glissez vos fichiers ici</div>
-        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris sans leur extension</span></div>
-        <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
-      </div>
-      <div class="doc-list" id="docList"></div>
-      <button class="doc-add-btn" onclick="addDocManually()">
-        <span style="font-size:14px;line-height:1">+</span> Ajouter un document
-      </button>
-    </div>`;
-  }
-
-  else if (tab === 'commentaires') {
-    html = `<div class="info-page active">
-      <div class="field"><label>Locaux non visités (complément)</label>
-        <textarea rows="3" oninput="infoChange('locaux', this.value)" placeholder="Locaux non visités…">${esc(reportInfo.locaux || '')}</textarea></div>
-      <div class="field"><label>Dérogations obtenues</label>
-        <textarea rows="3" oninput="infoChange('derog', this.value)" placeholder="Dérogations…">${esc(reportInfo.derog || '')}</textarea></div>
-      <div class="field"><label>Solutions d'effet équivalent</label>
-        <textarea rows="3" oninput="infoChange('equiv', this.value)" placeholder="Solutions…">${esc(reportInfo.equiv || '')}</textarea></div>
-    </div>`;
-  }
-
-  else if (tab === 'livrable') {
-    const v = parseInt(reportInfo.version || '1', 10);
-    html = `<div class="info-page active">
-      <div class="field"><label>Date</label>
-        <input type="date" value="${dateToIso(reportInfo.date)}" onchange="infoDateChange('date', this.value)"></div>
-      <div class="field"><label>Référence du rapport</label>
-        <input type="text" value="${escAttr(reportInfo.ref || '')}" oninput="infoRefChange(this.value)">
-        <div class="ref-meta">Version actuelle : <b>V${v}</b></div>
-      </div>
-      <div class="field"><label>Chargé d'affaire</label>
-        <input type="text" value="${escAttr(reportInfo.charge || '')}" oninput="infoChange('charge', this.value)"></div>
-      <div class="field"><label>Tutoré</label>
-        <input type="text" value="${escAttr(reportInfo.tutore || '')}" oninput="infoChange('tutore', this.value)"></div>
-
-      <!-- Gestion des versions -->
-      <div class="versions-block">
-        <h4>Gestion des versions <span class="version-badge">V${v}</span></h4>
-        ${reportInfo.versions.length === 0
-          ? '<div class="versions-empty">Aucune version précédente. Le numéro de version s\'incrémentera à chaque changement de la référence du rapport.</div>'
-          : reportInfo.versions.map((ver, idx) => `
-              <div class="version-item">
-                <span class="v-num">V${idx+1}</span>
-                <div class="v-fields">
-                  <input type="text" value="${escAttr(ver.ref || '')}" oninput="updateVersionField(${idx}, 'ref', this.value)" placeholder="Référence">
-                  <input type="text" value="${escAttr(ver.date || '')}" oninput="updateVersionField(${idx}, 'date', this.value)" placeholder="jj/mm/aaaa">
-                </div>
-                <span></span>
-                <button class="v-remove" onclick="removeVersion(${idx})" title="Supprimer cette version">✕</button>
-              </div>
-            `).join('')}
-      </div>
-
-      <!-- Export -->
-      <div class="export-block">
-        <h4>Export du rapport</h4>
-        <div class="export-opts">
-          <label><input type="radio" name="expLignes" value="ren" onchange="onExportOptsChange()"> Lignes renseignées seulement</label>
-          <label><input type="radio" name="expLignes" value="all" checked onchange="onExportOptsChange()"> Toutes les lignes, même vides</label>
-          <label class="sub"><input type="checkbox" id="expTousArticles" checked> Garder aussi les articles sans avis</label>
-          <label><input type="checkbox" id="expMasquer" checked> Masquer les feuilles non imprimées</label>
-          <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
-          <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
-        </div>
-        <div class="export-buttons">
-          <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-              <rect x="6" y="14" width="12" height="7" rx="1"/>
-            </svg>
-            Imprimer le PDF
-          </button>
-          <button id="btnExportExcel" onclick="exportXlsx('exportMsg','btnExportExcel')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <path d="M3 9h18M3 15h18M9 3v18"/>
-            </svg>
-            Télécharger l'Excel
-          </button>
-        </div>
-        <div class="export-msg" id="exportMsg"></div>
-      </div>
-    </div>`;
-  }
-
-  body.innerHTML = html;
-  if (tab === 'documents') renderDocList();
-  if (tab === 'livrable') onExportOptsChange();
-  updateDots();
-}
-
-function infoChange(key, value) {
-  reportInfo[key] = value;
-  if (key === 'client' && !reportInfo.moa) {
-    reportInfo.moa = value;
-    const inputs = document.querySelectorAll('#infoPagesBody input');
-    inputs.forEach(i => { if (i.previousElementSibling && i.previousElementSibling.textContent.includes('Société')) i.value = value; });
-  }
-  updateDots();
-}
-function infoDateChange(key, isoValue) {
-  if (!isoValue) { reportInfo[key] = ''; updateDots(); return; }
-  const [y, m, d] = isoValue.split('-');
-  reportInfo[key] = `${d}/${m}/${y}`;
-  updateDots();
-}
-function dateToIso(fr) {
-  if (!fr || !/^\d{2}\/\d{2}\/\d{4}$/.test(fr)) return '';
-  return fr.split('/').reverse().join('-');
-}
-
-function infoRefChange(value) {
-  const oldVal = reportInfo.ref || '';
-  if (oldVal && value && value !== oldVal && reportInfo.ref) {
-    const curVersion = parseInt(reportInfo.version || '1', 10);
-    const newVersion = curVersion + 1;
-    const ok = confirm(
-      `⚠️ Changement de référence du rapport\n\n` +
-      `Ancienne : ${oldVal}\n` +
-      `Nouvelle : ${value}\n\n` +
-      `L'ancienne sera conservée dans l'historique.\n` +
-      `Version : V${curVersion} → V${newVersion}\n\n` +
-      `Confirmer ?`
-    );
-    if (!ok) { renderInfoPage('livrable'); return; }
-
-    reportInfo.versions.push({ ref: oldVal, date: reportInfo.date || '' });
-    reportInfo.version = String(newVersion);
-    let baseRef = value.replace(/-V\d+$/i, '');
-    reportInfo.ref = baseRef + '-V' + reportInfo.version;
-
-    // synchro compatibilité buildExport (utilise refPrev/datePrev)
-    const last = reportInfo.versions[reportInfo.versions.length - 1];
-    reportInfo.refPrev = last.ref;
-    reportInfo.datePrev = last.date;
-
-    renderInfoPage('livrable');
-    updateDots();
-    return;
-  }
-  reportInfo.ref = value;
-  updateDots();
-}
-
-function updateVersionField(idx, field, value) {
-  if (!reportInfo.versions[idx]) return;
-  reportInfo.versions[idx][field] = value;
-  // synchro compatibilité
-  const last = reportInfo.versions[reportInfo.versions.length - 1];
-  reportInfo.refPrev = last.ref;
-  reportInfo.datePrev = last.date;
-}
-function removeVersion(idx) {
-  if (!confirm('Supprimer cette version de l\'historique ?')) return;
-  reportInfo.versions.splice(idx, 1);
-  const last = reportInfo.versions[reportInfo.versions.length - 1];
-  reportInfo.refPrev = last ? last.ref : '';
-  reportInfo.datePrev = last ? last.date : '';
-  renderInfoPage('livrable');
-}
-
-function updateDots() {
-  const dotR = document.getElementById('dot-relation');
-  const dotA = document.getElementById('dot-affaire');
-  const dotD = document.getElementById('dot-documents');
-  const dotC = document.getElementById('dot-commentaires');
-  const dotL = document.getElementById('dot-livrable');
-  if (dotR) dotR.classList.toggle('on', !!(reportInfo.client || reportInfo.adr1 || reportInfo.adr2 || reportInfo.attn));
-  if (dotA) dotA.classList.toggle('on', !!(reportInfo.dossier || reportInfo.contrat || reportInfo.cdate || reportInfo.moa));
-  if (dotD) dotD.classList.toggle('on', !!(reportInfo.docs && reportInfo.docs.trim()));
-  if (dotC) dotC.classList.toggle('on', !!(reportInfo.locaux || reportInfo.derog || reportInfo.equiv));
-  if (dotL) dotL.classList.toggle('on', !!(reportInfo.date || reportInfo.ref || reportInfo.charge || reportInfo.tutore));
-}
-
-function onExportOptsChange() {
-  const mode = document.querySelector('input[name=expLignes]:checked');
-  const cb = document.getElementById('expTousArticles');
-  if (cb && mode) {
-    cb.disabled = (mode.value !== 'all');
-    if (mode.value !== 'all') cb.checked = false;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   DRAG & DROP DOCUMENTS
-   ═══════════════════════════════════════════════════════ */
-function bindDropZone() {
-  const dz = document.getElementById('dropZone');
-  if (!dz) return;
-  ['dragenter', 'dragover'].forEach(evt => {
-    dz.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('drag-over'); });
-  });
-  ['dragleave', 'drop'].forEach(evt => {
-    dz.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('drag-over'); });
-  });
-  dz.addEventListener('drop', e => {
-    const files = e.dataTransfer && e.dataTransfer.files;
-    if (files && files.length) handleFiles(files);
-  });
-}
-// Appel après injection de la page documents
-const origRenderInfoPage = renderInfoPage;
-renderInfoPage = function(tab) {
-  origRenderInfoPage.apply(this, arguments);
-  if (tab === 'documents') bindDropZone();
-};
-
-function handleFiles(files) {
-  const arr = parseDocs();
-  Array.from(files).forEach(file => {
-    const name = file.name.replace(/\.[^.]+$/, '');
-    if (name.trim() && !arr.includes(name)) arr.push(name);
-  });
-  reportInfo.docs = arr.join('\n');
-  renderDocList();
-  updateDots();
-}
-function parseDocs() { return (reportInfo.docs || '').split('\n').map(s => s.trim()).filter(Boolean); }
-function addDocManually() {
-  const name = prompt('Nom du document (sans extension) :');
-  if (!name || !name.trim()) return;
-  const arr = parseDocs();
-  if (arr.includes(name.trim())) return;
-  arr.push(name.trim());
-  reportInfo.docs = arr.join('\n');
-  renderDocList();
-  updateDots();
-}
-function renderDocList() {
-  const list = document.getElementById('docList');
-  if (!list) return;
-  const arr = parseDocs();
-  if (!arr.length) { list.innerHTML = '<div class="doc-empty">Aucun document.</div>'; return; }
-  list.innerHTML = arr.map((name, idx) => `
-    <div class="doc-item">
-      <span class="doc-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-        </svg>
-      </span>
-      <input type="text" value="${escAttr(name)}" oninput="updateDocName(${idx}, this.value)" onblur="onDocBlur()">
-      <button class="doc-remove" onclick="removeDoc(${idx})" title="Supprimer">✕</button>
-    </div>
-  `).join('');
-}
-function updateDocName(idx, val) {
-  const arr = parseDocs();
-  if (idx >= 0 && idx < arr.length) { arr[idx] = val; reportInfo.docs = arr.join('\n'); }
-}
-function onDocBlur() {
-  reportInfo.docs = parseDocs().filter(Boolean).join('\n');
-  renderDocList();
-  updateDots();
-}
-function removeDoc(idx) {
-  const arr = parseDocs();
-  if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); reportInfo.docs = arr.join('\n'); renderDocList(); updateDots(); }
-}
-
-/* ═══════════════════════════════════════════════════════
-   PORTS JSON LOCAL (Enregistrer / Ouvrir)
-   ═══════════════════════════════════════════════════════ */
-function saveJsonLocal() {
-  try { saveTabContent(); } catch (e) {}
-  const data = { app: 'RAPSOACC', v: 2, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
-  const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'dossier') + '_' + new Date().toISOString().slice(0, 10) + '.json';
-  const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-function openJsonLocal() {
-  const i = document.createElement('input');
-  i.type = 'file'; i.accept = '.json,application/json';
-  i.onchange = async () => {
-    const f = i.files[0]; if (!f) return;
-    try {
-      const d = JSON.parse(await f.text());
-      if (!d || typeof d.nodes !== 'object') throw new Error('format');
-      if (!confirm('Remplacer toutes les données par celles du fichier « ' + f.name + ' » ?')) return;
-      nodesState = d.nodes || {};
-      points = d.points || [];
-      reportInfo = d.info || reportInfo;
-      if (!reportInfo.versions) reportInfo.versions = [];
-      renderRubriquesTable();
-      renderPointsInfo();
-      updateDots();
-    } catch (e) { alert('Fichier JSON invalide.'); }
-  };
-  i.click();
-}
-
-/* ═══════════════════════════════════════════════════════
-   INITIALISATION
-   ═══════════════════════════════════════════════════════ */
+ensureInfoDefaults();
 renderRubriquesTable();
 initSommaire();
 </script>
