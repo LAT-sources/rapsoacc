@@ -791,11 +791,12 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
     <div class="actions-dropdown">
       <button class="syn-refresh" onclick="toggleActionsMenu(event)">☰ <span class="syn-menu-label">MENU ▾</span></button>
       <div class="actions-menu" id="actionsMenu">
-        <button onclick="postAction('export'); closeActionsMenu();">⬇ Export Excel / PDF</button>
-        <button onclick="postAction('report'); closeActionsMenu();">🖨 Rapport imprimable</button>
-        <button onclick="postAction('points'); closeActionsMenu();">📌 Points (annexes)</button>
-        <button onclick="postAction('info'); closeActionsMenu();">ℹ️ Infos du rapport</button>
-        <button onclick="postAction('csv'); closeActionsMenu();">📄 Export CSV</button>
+        <button onclick="postAction('savejson'); closeActionsMenu();">💾 Enregistrer en local (JSON)</button>
+        <button onclick="postAction('openjson'); closeActionsMenu();">📂 Ouvrir un dossier local (JSON)</button>
+        <button onclick="postAction('pdf'); closeActionsMenu();">🖨 Imprimer le PDF</button>
+        <button onclick="postAction('excel'); closeActionsMenu();">📊 Télécharger l'Excel</button>
+        <button onclick="postAction('points'); closeActionsMenu();">🏷 Ajouter des points</button>
+        <button onclick="postAction('info'); closeActionsMenu();">📝 Données générales</button>
         <button onclick="postAction('reset'); closeActionsMenu();">↺ Réinitialiser le dossier</button>
       </div>
     </div>
@@ -1537,6 +1538,7 @@ async function openSynthese(id) {
   const synthData = (c.synthData && c.synthData.json) ? c.synthData : { v: 3, json: '' };
   const affaireValue = c.nomimp || c.nom || '';
   const metaScript = `<script>
+    window.RAPSO_BASE       = ${JSON.stringify(location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, ''))};
     window.RAPSO_AFFAIRE    = ${JSON.stringify(affaireValue)};
     window.RAPSO_DOSSIER    = ${JSON.stringify(c.chrono)};
     window.CANEVAS_ID       = ${JSON.stringify(c.id)};
