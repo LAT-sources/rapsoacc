@@ -7,60 +7,85 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f4f2ec;
-  --surface:#ffffff;
-  --surface-alt:#faf9f6;
-  --border:#c8c4b8;
-  --border-strong:#9a958a;
-  --text:#1e1e1e;
-  --text-muted:#5c5a54;
-  --accent:#3a6ea5;
-  --accent-light:#e8f0fa;
-  --f-color:#2e7d32;
-  --f-bg:#e8f5e9;
-  --d-color:#b71c1c;
-  --d-bg:#ffebee;
-  --so-color:#0d47a1;
-  --so-bg:#e3f2fd;
-  --sel:#cfe4ff;
-  --flash:#ffe08a;
-  --shadow:0 1px 3px rgba(0,0,0,.08);
-  --radius:4px;
+  --bg:#f4f2ec;--surface:#ffffff;--surface-alt:#faf9f6;--border:#c8c4b8;--border-strong:#9a958a;
+  --text:#1e1e1e;--text-muted:#5c5a54;--accent:#3a6ea5;--accent-light:#e8f0fa;
+  --f-color:#2e7d32;--f-bg:#e8f5e9;--d-color:#b71c1c;--d-bg:#ffebee;
+  --so-color:#0d47a1;--so-bg:#e3f2fd;--sel:#cfe4ff;--flash:#ffe08a;
+  --shadow:0 1px 3px rgba(0,0,0,.08);--radius:4px;
 }
 body{font-family:'Segoe UI',Tahoma,sans-serif;font-size:12px;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;display:flex;flex-direction:column}
 
-/* ---- Toolbar ---- */
-.toolbar{background:var(--surface);padding:4px 8px;border-bottom:1px solid var(--border);display:flex;gap:3px;align-items:center;flex-shrink:0;box-shadow:var(--shadow);position:relative;z-index:5}
-.toolbar button{font-size:11px;padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-family:inherit;color:var(--text);transition:all .15s}
-.toolbar button:hover{background:var(--accent-light);border-color:var(--accent)}
-.toolbar button:active{background:#d0d8e2}
-.sep{width:1px;height:18px;background:var(--border);margin:0 4px}
+/* ---- RUBAN D'ONGLETS ---- */
+.info-tabs-bar{display:flex;gap:2px;padding:0 4px;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);flex-shrink:0;position:relative;z-index:5;align-items:center;}
+.info-tabs-bar .spacer{flex:1}
+.info-tab{padding:10px 20px;font-size:12.5px;font-weight:600;color:var(--text-muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .15s;font-family:inherit;outline:none;position:relative;}
+.info-tab:hover{color:var(--accent);background:rgba(58,110,165,.05);}
+.info-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:transparent;}
+.info-tab .badge-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:6px;vertical-align:middle;opacity:0;transition:opacity .15s;}
+.info-tab .badge-dot.on{opacity:1}
 
-/* ---- Stats / Filtres (badges cliquables) ---- */
-.stats{margin-left:auto;font-size:11px;margin-right:6px;display:flex;gap:6px;align-items:center}
-.stats b{font-weight:bold}
-.stat-badge{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;
-  background:var(--surface-alt);color:var(--text-muted);
-  border:1px solid var(--border);
-  cursor:pointer;user-select:none;
-  transition:all .15s;
-  position:relative;
-}
-.stat-badge:hover{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
-.stat-badge.f{color:var(--f-color);background:var(--f-bg);border-color:#c8e0ca}
-.stat-badge.d{color:var(--d-color);background:var(--d-bg);border-color:#f0c8cc}
-.stat-badge.so{color:var(--so-color);background:var(--so-bg);border-color:#c8d8ee}
-.stat-badge.f:hover{background:#d5ebd7;border-color:var(--f-color);color:var(--f-color)}
-.stat-badge.d:hover{background:#fdd8dc;border-color:var(--d-color);color:var(--d-color)}
-.stat-badge.so:hover{background:#d5e4f5;border-color:var(--so-color);color:var(--so-color)}
-.stat-badge.active{box-shadow:0 0 0 2px currentColor inset;font-weight:700}
-.stat-badge.active::after{content:' ✕';font-size:9px;opacity:.75;margin-left:3px}
-.stat-badge#filterTotal.active::after{content:''}
-.stat-badge#filterTotal.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent);cursor:pointer}
+/* ---- PAGE DG (Modal) ---- */
+.info-page{display:none;}
+.info-page.active{display:block;}
+.info-page .field{display:grid;grid-template-columns:200px 1fr;gap:10px 14px;align-items:start;margin-bottom:12px;}
+.info-page .field label{align-self:center;color:#344054;font-weight:600;font-size:12px;padding-top:2px;}
+.info-page .field input[type=text],.info-page .field input[type=date],.info-page .field textarea{width:100%;font-family:inherit;font-size:13px;border:1px solid #d5dbe6;border-radius:8px;padding:8px 11px;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;color:var(--text);}
+.info-page .field input:focus,.info-page .field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(58,110,165,.15);}
+.info-page .field textarea{resize:vertical;min-height:80px;line-height:1.4;}
+.ref-meta{grid-column:2;font-size:11px;color:var(--text-muted);margin-top:-4px;line-height:1.5;}
+.ref-meta b{color:var(--accent)}
 
-/* ---- Workspace ---- */
+/* Bloc Versions */
+.versions-block{margin-top:18px;padding:14px 16px;background:var(--surface-alt);border:1px solid #e3e8f0;border-radius:10px;}
+.versions-block h4{font-size:12px;font-weight:700;color:var(--accent);margin:0 0 10px;letter-spacing:.3px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.versions-block h4 .version-badge{background:var(--accent-light);color:var(--accent);border:1px solid #b9cdf7;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;}
+.versions-empty{font-size:11.5px;color:var(--text-muted);font-style:italic;padding:4px 0;}
+.version-item{display:grid;grid-template-columns:60px 1fr 30px;gap:8px;align-items:center;padding:8px 10px;background:#fff;border:1px solid #e3e8f0;border-radius:8px;margin-bottom:6px;}
+.version-item:last-child{margin-bottom:0}
+.version-item .v-num{font-size:11px;font-weight:700;color:var(--accent);padding:2px 8px;background:var(--accent-light);border-radius:4px;text-align:center;}
+.version-item .v-content{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--text);}
+.version-item .v-content .v-ref{font-family:'Courier New',monospace;font-weight:600;word-break:break-all;}
+.version-item .v-content .v-date{font-size:11px;color:var(--text-muted);}
+.version-item .v-remove{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#b0aea6;cursor:pointer;border-radius:5px;font-size:14px;}
+.version-item .v-remove:hover{background:#ffebee;color:#b71c1c;}
+
+/* Bloc Export */
+.export-block{margin-top:18px;padding:14px 16px;background:var(--surface-alt);border:1px solid #e3e8f0;border-radius:10px;}
+.export-block h4{font-size:12px;font-weight:700;color:var(--accent);margin:0 0 10px;letter-spacing:.3px;text-transform:uppercase;}
+.export-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
+.export-buttons button{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;font-size:12.5px;font-weight:600;font-family:inherit;border:none;border-radius:8px;color:#fff;background:var(--accent);cursor:pointer;box-shadow:0 2px 6px rgba(58,110,165,.25);transition:all .15s;}
+.export-buttons button:hover{background:#2f5a87;transform:translateY(-1px);}
+.export-buttons button:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+.export-msg{margin-top:10px;min-height:18px;font-size:12px;color:var(--text-muted);}
+
+/* Documents */
+.drop-zone{border:2px dashed #c8c4b8;border-radius:10px;padding:20px;text-align:center;background:#fafbfd;cursor:pointer;transition:all .15s;margin-bottom:12px;}
+.drop-zone:hover{border-color:var(--accent);background:var(--accent-light);}
+.drop-zone.drag-over{border-color:var(--accent);background:var(--accent-light);border-style:solid;}
+.drop-zone .dz-icon{font-size:26px;margin-bottom:4px;opacity:.55;}
+.drop-zone .dz-title{font-size:12.5px;font-weight:700;color:var(--accent);margin-bottom:3px;}
+.drop-zone .dz-hint{font-size:11px;color:var(--text-muted);line-height:1.4;}
+.doc-list{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;min-height:16px;}
+.doc-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid #e3e8f0;border-radius:8px;background:#fafbfd;transition:all .12s;}
+.doc-item:hover{border-color:#9db9f2;background:#f4f8ff;}
+.doc-item .doc-icon{color:var(--accent);flex-shrink:0;display:flex;align-items:center;}
+.doc-item input[type=text]{flex:1;padding:4px 8px;font-size:12.5px;border:1px solid transparent;background:transparent;border-radius:5px;font-family:inherit;color:var(--text);}
+.doc-item input[type=text]:focus{outline:none;border-color:var(--accent);background:#fff;}
+.doc-item .doc-remove{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#b0aea6;cursor:pointer;border-radius:5px;font-size:14px;line-height:1;}
+.doc-item .doc-remove:hover{background:#ffebee;color:#b71c1c;}
+.doc-add-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12px;font-weight:600;font-family:inherit;border:1.5px dashed #9db9f2;background:#fff;color:var(--accent);border-radius:8px;cursor:pointer;}
+.doc-add-btn:hover{background:var(--accent-light);border-style:solid;}
+.doc-empty{text-align:center;color:#a0a098;font-size:11.5px;padding:10px;font-style:italic;}
+
+/* Modal DG */
+#infoModal .modal{max-width:780px;border-radius:16px}
+#infoModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
+#infoModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
+#infoModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
+#infoModal .modal-body{padding:16px 20px;background:#f7f9fc}
+
+/* Reste du style */
+.toolbar{display:none}
 .workspace{flex:1;display:flex;overflow:hidden;padding:4px;gap:4px;min-height:0}
 .panel-left{flex:1;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);min-width:0;box-shadow:var(--shadow);overflow:hidden}
 .panel-left-header{background:linear-gradient(to bottom,#f8f8f6,#ecebe6);border-bottom:1px solid var(--border);padding:4px 8px;font-weight:600;font-size:12px;text-align:center;color:var(--text)}
@@ -85,11 +110,9 @@ body.point-selecting .c-label{cursor:pointer}
 .c-avis.F{color:var(--f-color);background:var(--f-bg)}
 .c-avis.D{color:var(--d-color);background:var(--d-bg)}
 .c-avis.SO{color:var(--so-color);background:var(--so-bg)}
-.i1{padding-left:4px!important}.i2{padding-left:18px!important}.i3{padding-left:34px!important}
-.i4{padding-left:50px!important}.i8{padding-left:114px!important}.i9{padding-left:130px!important}.i10{padding-left:146px!important}
-.i5{padding-left:66px!important}.i6{padding-left:82px!important}.i7{padding-left:98px!important}
+.i1{padding-left:4px!important}.i2{padding-left:18px!important}.i3{padding-left:34px!important}.i4{padding-left:50px!important}
+.i5{padding-left:66px!important}.i6{padding-left:82px!important}.i7{padding-left:98px!important}.i8{padding-left:114px!important}.i9{padding-left:130px!important}.i10{padding-left:146px!important}
 
-/* ---- Right panel ---- */
 .panel-right{width:540px;display:flex;flex-direction:column;gap:3px;padding:3px;background:transparent;flex-shrink:0}
 .sommaire-title{background:linear-gradient(to bottom,#f8f8f6,#ecebe6);border:1px solid var(--border);border-radius:var(--radius);padding:4px;text-align:center;font-weight:600;font-size:12px;margin-bottom:3px;color:var(--text)}
 .select-row{margin-bottom:2px}
@@ -98,8 +121,6 @@ body.point-selecting .c-label{cursor:pointer}
 .select-row select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
 .select-row select:disabled{background:#f0efe9;color:#bbb;cursor:not-allowed}
 .select-row select.filled{background:#fffbe6}
-
-/* ---- Bottom panel ---- */
 .panel-bottom{background:var(--surface-alt);border-top:1px solid var(--border);padding:6px;display:flex;flex-direction:column;gap:5px;flex-shrink:0}
 .detail-row{display:flex;gap:6px;align-items:center}
 .detail-row label{font-weight:bold;font-size:12px;min-width:105px;text-align:right;color:var(--text-muted)}
@@ -113,19 +134,13 @@ body.point-selecting .c-label{cursor:pointer}
 .tab-content{background:var(--surface);border:1px solid var(--border);border-radius:0 var(--radius) var(--radius) var(--radius);min-height:80px;padding:6px}
 .tab-content textarea{width:100%;min-height:90px;font-family:inherit;font-size:12px;border:1px solid #ddd;border-radius:var(--radius);padding:5px;resize:vertical;transition:border-color .15s}
 .tab-content textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
-
-/* ---- Status bar ---- */
 .status-bar{background:var(--surface);border-top:1px solid var(--border);padding:3px 10px;font-size:11px;display:flex;justify-content:space-between;flex-shrink:0;gap:10px;color:var(--text-muted);box-shadow:0 -1px 2px rgba(0,0,0,.03)}
 .kbd-hint{font-size:10px;color:#7a5b00;background:#fffbe6;padding:1px 8px;border:1px solid #e0c860;border-radius:10px;font-family:'Courier New',monospace}
-
-/* ---- Avis buttons ---- */
 .avis-btn{display:inline-block;padding:2px 10px;margin-right:3px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:11px;font-weight:bold;min-width:30px;text-align:center;font-family:inherit;border-radius:var(--radius);transition:all .15s}
 .avis-btn:hover{background:#f0efe9;border-color:var(--border-strong)}
 .avis-btn.active-F{background:var(--f-color);color:#fff;border-color:var(--f-color)}
 .avis-btn.active-D{background:var(--d-color);color:#fff;border-color:var(--d-color)}
 .avis-btn.active-SO{background:var(--so-color);color:#fff;border-color:var(--so-color)}
-
-/* ---- Modals ---- */
 .modal-overlay{position:fixed;inset:0;background:rgba(30,30,30,.55);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--surface-alt);border:1px solid var(--border-strong);border-radius:6px;max-width:1100px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.25)}
@@ -136,8 +151,6 @@ body.point-selecting .c-label{cursor:pointer}
 .modal-footer{padding:8px;border-top:1px solid var(--border);display:flex;gap:6px;justify-content:flex-end;background:var(--surface-alt);border-radius:0 0 6px 6px}
 .modal-footer button{font-size:11px;padding:4px 14px;cursor:pointer;font-family:inherit;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .15s}
 .modal-footer button:hover{background:var(--accent-light);border-color:var(--accent)}
-
-/* ---- Report ---- */
 .report-table{width:100%;border-collapse:collapse;font-size:11.5px}
 .report-table th,.report-table td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top}
 .report-table th{background:#eceae4;text-align:center;font-weight:600;color:var(--text-muted)}
@@ -149,15 +162,11 @@ body.point-selecting .c-label{cursor:pointer}
 .summary-card .n{font-size:1.4rem;font-weight:bold}
 .summary-card .l{font-size:10px;text-transform:uppercase;color:var(--text-muted)}
 .summary-card.f{background:var(--f-bg)}.summary-card.d{background:var(--d-bg)}.summary-card.so{background:var(--so-bg)}
-
-/* ---- Scrollbar ---- */
 ::-webkit-scrollbar{width:14px;height:14px}
 ::-webkit-scrollbar-track{background:#f0efe9}
 ::-webkit-scrollbar-thumb{background:linear-gradient(to bottom,#d4d2ca,#b0aea6);border:1px solid var(--border-strong);border-radius:7px}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(to bottom,#c4c2ba,#a0a098)}
 ::-webkit-scrollbar-button{background:#e8e7e2;border:1px solid var(--border);height:14px;width:14px;border-radius:var(--radius)}
-
-/* ---- Points / misc ---- */
 .pt{display:inline-block;background:#fff3cd;border:1px solid #d4b440;color:#7a5b00;font-size:9px;font-weight:bold;padding:0 3px;margin-left:4px;border-radius:3px}
 .selchk{margin:0 5px 0 0;vertical-align:middle;cursor:pointer;accent-color:var(--accent)}
 #selBanner{display:none;gap:10px;align-items:center;background:#fffbe6;border-bottom:1px solid #e0c860;padding:4px 10px;font-size:12px;flex-shrink:0}
@@ -189,11 +198,6 @@ body.point-selecting .c-label{cursor:pointer}
 .info-grid input,.info-grid textarea{width:100%;font-family:inherit;font-size:12px;border:1px solid var(--border);border-radius:var(--radius);padding:3px 5px;transition:border-color .15s}
 .info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
 .info-grid h4{grid-column:1/3;margin:10px 0 2px;font-size:12px;border-bottom:1px solid var(--border);padding-bottom:2px;color:var(--text-muted)}
-.exp-box{font-size:12px;line-height:1.6}
-.exp-box button{font-size:12px;padding:5px 14px;margin:6px 8px 6px 0;cursor:pointer;font-family:inherit;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);transition:all .15s}
-.exp-box button:hover{background:var(--accent-light);border-color:var(--accent)}
-.exp-box ol{margin:6px 0 6px 20px;padding:0}
-.exp-box li{margin-bottom:4px}
 .rep-info{border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;font-size:12px;background:var(--surface-alt)}
 .rep-annex{margin-top:18px;font-size:12px}
 .rep-annex h3{font-size:13px;border-bottom:1px solid var(--border);margin:0 0 8px;padding-bottom:3px;color:var(--text-muted)}
@@ -207,11 +211,9 @@ body.point-selecting .c-label{cursor:pointer}
   .report-table{font-size:10px}
   .report-table tr{page-break-inside:avoid}
 }
-
 .rv-btn{float:right;margin:2px 0 0 8px;min-width:34px;text-align:center;font-size:11px;font-weight:700;line-height:16px;padding:0 7px;border:1px solid #b9cdf7;border-radius:999px;background:var(--accent-light,#e7efff);color:var(--accent,#2b6be6);cursor:pointer;user-select:none;transition:background .15s,color .15s}
 .rv-btn small{font-weight:500;opacity:.75;margin-left:3px}
 .rv-btn:hover,.rv-btn.open{background:var(--accent,#2b6be6);border-color:var(--accent,#2b6be6);color:#fff}
-
 .pt.hm{background:#eceff3;border-color:#9aa5b8;color:#4a5568}
 .hm-chk{display:inline-flex;align-items:center;gap:5px;margin-left:12px;font-size:12px;font-weight:600;cursor:pointer;user-select:none}
 .detail-row .hm-chk input{flex:none;width:auto}
@@ -225,52 +227,8 @@ body.point-selecting .c-label{cursor:pointer}
 #rvSommaire{margin-top:5px;padding:6px;border:1px dashed #b9cdf7;border-radius:var(--radius);background:var(--accent-light,#f2f6fe)}
 #rvSommaire .rv-help{font-size:11px;color:var(--text-muted,#667085);margin-bottom:4px}
 .c-label .num{display:inline-block;min-width:6ch;margin-right:10px;font-variant-numeric:tabular-nums;color:var(--text-muted,#667085);font-weight:600}
-.xl-box{border:1px solid var(--border,#dde2ea);border-radius:10px;padding:12px;margin:8px 0;background:var(--surface-alt,#f7f9fc)}
-.xl-opts{display:flex;flex-direction:column;gap:4px;margin:8px 0}
-.xl-opts label{display:flex;align-items:center;gap:6px;font-size:12px}
-.xl-opts label.sub{margin-left:22px}
-.xl-mod{margin:6px 0;font-size:12px}
-.xl-mod button,.xl-adv button{font-size:12px;padding:4px 10px;cursor:pointer}
-.xl-go{display:block;margin-top:8px;font-size:13px;font-weight:700;padding:8px 16px;border:0;border-radius:8px;background:var(--accent,#2b6be6);color:#fff;cursor:pointer}
-.xl-go.pdf{background:#c0392b;margin-top:6px}
-.xl-go:disabled{opacity:.45;cursor:not-allowed}
-.xl-msg{margin-top:8px;font-size:12px}
-.xl-adv{margin-top:10px;font-size:12px}
-.xl-adv summary{cursor:pointer;font-weight:600;margin-bottom:6px}
-
-/* ===== Ajustements finaux : menu, barre de filtres, points, fenêtres ===== */
-.toolbar{gap:8px;align-items:center}
-.toolbar .tb-btn,.toolbar .menu-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px}
-.menu-wrap{position:relative}
-.app-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;min-width:240px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:6px}
-.app-menu.open{display:block}
-.app-menu button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;padding:9px 11px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12.5px;color:inherit}
-.app-menu button:hover{background:var(--accent-light,#e7efff)}
-.app-menu button svg{flex:none;color:var(--accent,#2b6be6)}
-.app-menu button span{display:flex;flex-direction:column;line-height:1.25}
-.app-menu button small{color:#667085;font-size:11px;font-weight:400}
-.am-sep{height:1px;background:#eceff4;margin:4px 6px}
-.filterbar{display:flex!important;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 9px!important;text-align:left!important}
-.filterbar .stat-badge b{font-weight:800}
-.stat-badge.active{background:var(--accent,#2b6be6)!important;border-color:var(--accent,#2b6be6)!important;color:#fff!important}
-.stat-badge.f.active{background:var(--f-color,#2e7d32)!important;border-color:var(--f-color,#2e7d32)!important}
-.stat-badge.d.active{background:var(--d-color,#c62828)!important;border-color:var(--d-color,#c62828)!important}
-.stat-badge.so.active{background:var(--so-color,#1565c0)!important;border-color:var(--so-color,#1565c0)!important}
-#btnToggleAll{min-width:30px;justify-content:center;font-size:12px}
-.lvl-wrap{position:relative}
-.lvl-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;width:176px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:8px;gap:5px;flex-wrap:wrap}
-.lvl-menu.open{display:flex}
-.lvl-menu button{min-width:34px;padding:5px 9px;border:1px solid var(--border,#dde2ea);border-radius:999px;background:#fff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
-.lvl-menu button:hover{background:var(--accent-light,#e7efff);border-color:var(--accent,#2b6be6)}
-.lvl-menu button.on{background:var(--accent,#2b6be6);border-color:var(--accent,#2b6be6);color:#fff}
 .btn-points{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:9px 12px;border:0;border-radius:10px;background:var(--accent,#2b6be6);color:#fff;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:0 2px 6px rgba(43,107,230,.35);transition:background .15s,transform .05s}
 .btn-points:hover{background:#1f57c8}.btn-points:active{transform:translateY(1px)}
-#selBanner{position:sticky;top:0;z-index:60;flex-wrap:wrap;gap:8px 14px!important;padding:8px 14px!important}
-#selBanner .sb-txt{flex:1 1 300px;min-width:0}
-#selBanner .sb-ins{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
-#selBanner .sb-done{margin-left:auto;flex:none;border:0;border-radius:8px;background:#1b9a4b;color:#fff;font-family:inherit;font-weight:700;font-size:13px;padding:7px 18px;cursor:pointer;box-shadow:0 2px 6px rgba(27,154,75,.4)}
-#selBanner .sb-done:hover{background:#15803d}
-/* fenêtre « Ajouter des points » */
 #pointsModal .modal{max-width:940px;border-radius:16px}
 #pointsModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
 #pointsModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
@@ -291,63 +249,18 @@ body.point-selecting .c-label{cursor:pointer}
 .pt-actions button:first-child:hover{background:#1f57c8}
 .pt-lbl{color:#344054;font-size:12px}
 .pt-rlist{border-radius:10px;border-color:#e3e8f0;background:#fafbfd}
-/* fenêtre « Données générales » */
-#infoModal .modal{max-width:780px;border-radius:16px}
-#infoModal .modal-header{background:linear-gradient(135deg,#2b6be6,#1f57c8);color:#fff;border:0;padding:14px 20px;font-size:15px;font-weight:700}
-#infoModal .modal-header button{color:#fff;background:rgba(255,255,255,.15)}
-#infoModal .modal-header button:hover{background:rgba(255,255,255,.3);color:#fff}
-#infoModal .modal-body{padding:16px 20px;background:#f7f9fc}
-.info-grid{gap:9px 14px!important;grid-template-columns:200px 1fr!important}
-.info-grid>label{align-self:center;color:#344054;font-weight:600}
-.info-grid h4{margin:12px 0 2px!important;padding:6px 10px;background:#e7efff;color:#1f57c8!important;border:0!important;border-radius:8px;font-size:12.5px!important;letter-spacing:.2px}
-.info-grid input,.info-grid textarea{border:1px solid #d5dbe6!important;border-radius:8px!important;padding:7px 10px!important;font-size:13px!important;background:#fff}
-.info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:#2b6be6!important;box-shadow:0 0 0 3px rgba(43,107,230,.15)}
-/* fenêtres simples PDF / Excel */
-.simple-exp{text-align:center;padding:26px 28px!important}
-.se-ic{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff}
-.se-ic.pdf{background:linear-gradient(135deg,#e5484d,#c0392b)}
-.se-ic.xls{background:linear-gradient(135deg,#2f9e63,#1b7f4c)}
-.simple-exp p{margin:0 0 16px;font-size:13.5px;color:#344054}
-.simple-exp .xl-go{width:100%;margin:0;padding:12px 16px;font-size:14px;border-radius:12px;background:#1b7f4c}
-.simple-exp .xl-go.pdf{background:#c0392b}
-.simple-exp .xl-msg{margin-top:12px;min-height:18px}
-.exp-opts{display:flex;flex-direction:column;gap:7px;text-align:left;margin:0 0 18px;font-size:13px;color:#344054}
-.exp-opts label{display:flex;align-items:center;gap:8px;cursor:pointer}
-.exp-opts .exp-sub{margin-left:24px}
-.simple-exp{text-align:left!important;padding:22px 26px!important}
-.plain-btn{display:block;width:100%;padding:10px 14px;border:1px solid #c7ced9;border-radius:10px;background:#f6f7f9;color:#1d2433;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
-.plain-btn:hover:not(:disabled){background:#eceff4;border-color:#9aa5b8}
-.plain-btn:disabled{opacity:.5;cursor:not-allowed}
-.ref-row{display:flex;gap:8px}.ref-row input{flex:1}
-.ref-row button{flex:none;border:1px solid #2b6be6;background:#fff;color:#2b6be6;border-radius:8px;padding:0 12px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit}
-.ref-row button:hover{background:#e7efff}
-.info-grid .ro-field{background:#f1f3f7!important;color:#475467}
 </style>
 </head>
 <body>
 
-<div class="toolbar">
-  <div class="menu-wrap">
-    <button class="menu-btn" onclick="toggleAppMenu(event)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg> Menu</button>
-    <div id="appMenu" class="app-menu">
-      <button onclick="appMenuDo('savejson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span><b>Enregistrer en local</b><small>Fichier JSON</small></span></button>
-      <button onclick="appMenuDo('openjson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span><b>Ouvrir un dossier local</b><small>Fichier JSON</small></span></button>
-      <div class="am-sep"></div>
-      <button onclick="appMenuDo('pdf')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span><b>Imprimer le PDF</b><small>Rapport complet</small></span></button>
-      <button onclick="appMenuDo('excel')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span><b>Télécharger l'Excel</b><small>Classeur rempli</small></span></button>
-    </div>
-  </div>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="openInfo()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Données générales</button>
-  <div id="legacyBtns" style="display:none">
-    <button onclick="saveNode()">💾 Enregistrer l'avis</button>
-    <button onclick="clearNode()">↺ Réinitialiser</button>
-    <button onclick="saveToLocalStorage()">Sauvegarder</button>
-    <button onclick="loadFromLocalStorage()">Restaurer</button>
-    <button onclick="openReport()">📊 Rapport</button>
-    <button onclick="exportCSV()">📄 Export CSV</button>
-    <button onclick="openExport()">📤 Export Excel</button>
-  </div>
+<!-- RUBAN D'ONGLETS -->
+<div class="info-tabs-bar">
+  <button class="info-tab active" data-tab="relation" onclick="openInfoTab('relation')">Relation<span class="badge-dot" id="dot-relation"></span></button>
+  <button class="info-tab" data-tab="affaire" onclick="openInfoTab('affaire')">Affaire<span class="badge-dot" id="dot-affaire"></span></button>
+  <button class="info-tab" data-tab="documents" onclick="openInfoTab('documents')">Documents<span class="badge-dot" id="dot-documents"></span></button>
+  <button class="info-tab" data-tab="commentaires" onclick="openInfoTab('commentaires')">Commentaires<span class="badge-dot" id="dot-commentaires"></span></button>
+  <button class="info-tab" data-tab="livrable" onclick="openInfoTab('livrable')">Livrable<span class="badge-dot" id="dot-livrable"></span></button>
+  <div class="spacer"></div>
 </div>
 
 <div id="selBanner"></div>
@@ -360,10 +273,10 @@ body.point-selecting .c-label{cursor:pointer}
         <span class="stat-badge" id="btnLevel" onclick="toggleLevelMenu(event)" title="Afficher les rubriques jusqu'au niveau choisi">Niveau ▾</span>
         <div id="levelMenu" class="lvl-menu"><button onclick="setLevel(0)">Tous</button><button onclick="setLevel(1)">1</button><button onclick="setLevel(2)">2</button><button onclick="setLevel(3)">3</button><button onclick="setLevel(4)">4</button><button onclick="setLevel(5)">5</button><button onclick="setLevel(6)">6</button><button onclick="setLevel(7)">7</button></div>
       </div>
-      <span class="stat-badge" id="filterTotal" onclick="toggleFilter('T')" title="Rubriques renseignées (avis, HM, description, référence, commentaire)"><span id="statTotalLabel">Total</span> <b id="statTotal">0</b></span>
-      <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Filtrer les rubriques Favorables">F <b id="statF">0</b></span>
-      <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Filtrer les rubriques Défavorables">D <b id="statD">0</b></span>
-      <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Filtrer les rubriques Sans objet">SO <b id="statSO">0</b></span>
+      <span class="stat-badge" id="filterTotal" onclick="toggleFilter('T')" title="Rubriques renseignées"><span id="statTotalLabel">Total</span> <b id="statTotal">0</b></span>
+      <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Favorables">F <b id="statF">0</b></span>
+      <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Défavorables">D <b id="statD">0</b></span>
+      <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Sans objet">SO <b id="statSO">0</b></span>
     </div>
     <div class="rubriques-scroll" id="rubriquesScroll">
       <table class="rubriques">
@@ -379,7 +292,7 @@ body.point-selecting .c-label{cursor:pointer}
       <button id="rvSomBtn" class="rv-som-btn" onclick="toggleRvSommaire()">▸ Renvois de l'article</button>
       <div id="rvSommaire" style="display:none"></div>
     </div>
-    <button class="btn-points" onclick="openPoints()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M8 8h.01M14 11v6M11 14h6"/></svg> Ajouter points</button>
+    <button class="btn-points" onclick="openPoints()">Ajouter points</button>
   </div>
 </div>
 
@@ -397,7 +310,7 @@ body.point-selecting .c-label{cursor:pointer}
       <button class="avis-btn" id="btnD" onclick="setAvis('D')">D</button>
       <button class="avis-btn" id="btnSO" onclick="setAvis('SO')">SO</button>
       <button class="avis-btn" id="btnClear" onclick="setAvis(null)" style="font-weight:normal">— Effacer</button>
-      <label class="hm-chk" title="Hors mission : « HM » est écrit dans Annexe / Remarque"><input type="checkbox" id="chkHM" onchange="setHM(this.checked)"> HM – Hors mission</label>
+      <label class="hm-chk" title="Hors mission"><input type="checkbox" id="chkHM" onchange="setHM(this.checked)"> HM – Hors mission</label>
     </div>
   </div>
   <div class="tabs">
@@ -414,6 +327,7 @@ body.point-selecting .c-label{cursor:pointer}
   <span id="statusAvis"></span>
 </div>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="reportModal">
   <div class="modal">
     <div class="modal-header"><span>📊 Rapport de conformité accessibilité</span><button onclick="closeReport()">×</button></div>
@@ -433,53 +347,12 @@ body.point-selecting .c-label{cursor:pointer}
     <div class="modal-footer"><button onclick="closeModal('pointsModal')">Fermer</button></div>
   </div>
 </div>
-<div class="modal-overlay" id="infoModal">
-  <div class="modal" style="max-width:760px">
-    <div class="modal-header"><span>Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
-    <div class="modal-body"><div class="info-grid" id="infoBody"></div></div>
-    <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
-  </div>
-</div>
-<div class="modal-overlay" id="exportModal">
-  <div class="modal" style="max-width:760px">
-    <div class="modal-header"><span>📤 Export vers le classeur Excel</span><button onclick="closeModal('exportModal')">×</button></div>
-    <div class="modal-body exp-box" id="exportBody"></div>
-    <div class="modal-footer"><button onclick="closeModal('exportModal')">Fermer</button></div>
-  </div>
-</div>
 
-<div class="modal-overlay" id="pdfModal">
-  <div class="modal" style="max-width:460px">
-    <div class="modal-header"><span>Imprimer le PDF</span><button onclick="closeModal('pdfModal')">×</button></div>
-    <div class="modal-body simple-exp">
-      <div class="exp-opts">
-        <label class="exp-radio"><input type="radio" name="pdfL" value="ren" onchange="updateOptsUI('pdf')"> Lignes renseignées seulement</label>
-        <label class="exp-radio"><input type="radio" name="pdfL" value="all" checked onchange="updateOptsUI('pdf')"> Toutes les lignes, même vides</label>
-        <label class="exp-sub"><input type="checkbox" id="pdfTous" checked> Garder aussi les articles sans avis</label>
-        <label><input type="checkbox" id="pdfHide" checked> Masquer les feuilles d'articles non imprimées</label>
-        <label><input type="checkbox" id="pdfAnn" checked> Inclure les annexes Art. 14 et Art. 19 (schémas)</label>
-        <label><input type="checkbox" id="pdfPages" checked> Écrire le nombre de pages estimé en Page 2</label>
-      </div>
-      <button id="pdfGo2" class="plain-btn" onclick="exportPdf('pdfMsg','pdfGo2')" disabled>Télécharger le PDF</button>
-      <div id="pdfMsg" class="xl-msg"></div>
-    </div>
-  </div>
-</div>
-<div class="modal-overlay" id="xlsModal">
-  <div class="modal" style="max-width:460px">
-    <div class="modal-header"><span>Télécharger l'Excel</span><button onclick="closeModal('xlsModal')">×</button></div>
-    <div class="modal-body simple-exp">
-      <div class="exp-opts">
-        <label class="exp-radio"><input type="radio" name="xlsL" value="ren" onchange="updateOptsUI('xls')"> Lignes renseignées seulement</label>
-        <label class="exp-radio"><input type="radio" name="xlsL" value="all" checked onchange="updateOptsUI('xls')"> Toutes les lignes, même vides</label>
-        <label class="exp-sub"><input type="checkbox" id="xlsTous" checked> Garder aussi les articles sans avis</label>
-        <label><input type="checkbox" id="xlsHide" checked> Masquer les feuilles d'articles non imprimées</label>
-        <label><input type="checkbox" id="xlsAnn" checked> Inclure les annexes Art. 14 et Art. 19 (schémas)</label>
-        <label><input type="checkbox" id="xlsPages" checked> Écrire le nombre de pages estimé en Page 2</label>
-      </div>
-      <button id="xlsGo" class="plain-btn" onclick="exportXlsx('xlsMsg','xlsGo')" disabled>Télécharger l'Excel</button>
-      <div id="xlsMsg" class="xl-msg"></div>
-    </div>
+<div class="modal-overlay" id="infoModal">
+  <div class="modal" style="max-width:780px">
+    <div class="modal-header"><span id="infoModalTitle">Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
+    <div class="modal-body"><div class="info-pages" id="infoPagesBody"></div></div>
+    <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
   </div>
 </div>
 
@@ -2340,8 +2213,44 @@ const TREE_DATA = [
 ]}
 ];
 
-/* Imbrication hiérarchique des rubriques d'article selon `level`
-   (le sommaire déroulant s'appuie sur children, pas sur level) */
+/* ============================================================
+   ÉTAT GLOBAL
+   ============================================================ */
+let selectedNode = null;
+let selectedAvis = null;
+let nodesState = {};
+let collapsedState = {};
+let renvoiOpen = {};
+let currentNodePath = [];
+let currentTab = 'desc';
+let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, levelFilter = 0;
+let points = [];
+let reportInfo = {
+  client: '', adr1: '', adr2: '', attn: '', mail: '', ville: '',
+  dossier: '', contrat: '', cdate: '', moa: '',
+  date: '', ref: '', charge: '', tutore: '',
+  version: 1,
+  prevRef: '',
+  prevDate: '',
+  docs: '', locaux: '', derog: '', equiv: ''
+};
+let selPoint = null;
+let selIncludeIns = false;
+let curPointId = null;
+const MARK = { F: 'R', D: 'NR', SO: 'SO' };
+const CITED = {};
+
+/* ============================================================
+   FONCTIONS DE BASE
+   ============================================================ */
+function el(id){ return document.getElementById(id); }
+function esc(x){ return String(x == null ? '' : x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(x){ return String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function closeModal(id){ el(id).classList.remove('open'); }
+
+/* ============================================================
+   ARBORESCENCE & RENDU (fonctions conservées)
+   ============================================================ */
 (function nestArticles(){
   function nest(flat){
     const root=[], stack=[];
@@ -2366,7 +2275,6 @@ const TREE_DATA = [
   walk(TREE_DATA);
 })();
 
-/* Numérotation hiérarchique : 2, 2.1, 2.2, 2.2.1 … (les articles portent leur numéro) */
 (function numberNodes(){
   function num(nodes,prefix){ nodes.forEach((n,i)=>{ n.num=prefix+(i+1); if(n.children) num(n.children,n.num+'.'); }); }
   TREE_DATA.forEach(ch=>{ (ch.children||[]).forEach(a=>{
@@ -2374,47 +2282,13 @@ const TREE_DATA = [
     a.num=m[1]; if(a.children) num(a.children,a.num+'.');
   }); });
 })();
+
 function nodeLabel(n){ return (n.num && n.level>2 ? n.num+'\u2003' : '')+n.label; }
 function numHtml(n){ return (n.num && n.level>2) ? '<span class="num">'+esc(n.num)+'</span>' : ''; }
-function escAttr(x){ return String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 
-/* ============================================================
-   ÉTAT GLOBAL
-   ============================================================ */
-let selectedNode = null;
-let selectedAvis = null;
-let nodesState = {};
-let collapsedState = {};
-let renvoiOpen = {};   // lignes insérées par un renvoi : masquées tant que le bouton + de la rubrique citante n'est pas activé
-let currentNodePath = [];
-let currentTab = 'desc';
+function findNodeByCode(nodes, code) { for (let n of nodes) { if (n.code === code) return n; if (n.children) { const f = findNodeByCode(n.children, code); if (f) return f; } } return null; }
+function findPathToNode(nodes, target, cur = []) { for (let n of nodes) { const np = [...cur, n]; if (n.code === target) return np; if (n.children) { const f = findPathToNode(n.children, target, np); if (f) return f; } } return null; }
 
-/* ✅ Filtres F / D / SO (0 = inactif, 1 = actif) */
-let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, levelFilter = 0;
-
-const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(8,d(TREE_DATA)); })();
-
-function findNodeByCode(nodes, code) {
-  for (let n of nodes) {
-    if (n.code === code) return n;
-    if (n.children) {
-      const f = findNodeByCode(n.children, code);
-      if (f) return f;
-    }
-  }
-  return null;
-}
-function findPathToNode(nodes, target, cur = []) {
-  for (let n of nodes) {
-    const np = [...cur, n];
-    if (n.code === target) return np;
-    if (n.children) {
-      const f = findPathToNode(n.children, target, np);
-      if (f) return f;
-    }
-  }
-  return null;
-}
 function flattenTree(nodes, parentVisible = true, result = []) {
   nodes.forEach(node => {
     const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT);
@@ -2422,61 +2296,98 @@ function flattenTree(nodes, parentVisible = true, result = []) {
     if (levelFilter && (node.level || 1) > levelFilter) return;
     const hasChildren = node.children && node.children.length > 0;
     const isCollapsed = !levelFilter && collapsedState[node.code] === true;
-    if (parentVisible) {
-      result.push({ ...node, hasChildren, level: node.level || 1 });
-    }
-    if (hasChildren) {
-      flattenTree(node.children, parentVisible && !isCollapsed, result);
-    }
+    if (parentVisible) result.push({ ...node, hasChildren, level: node.level || 1 });
+    if (hasChildren) flattenTree(node.children, parentVisible && !isCollapsed, result);
   });
   return result;
 }
 function findParentArticle(code) {
   const path = findPathToNode(TREE_DATA, code);
   if (!path) return null;
-  for (let i = 0; i < path.length; i++) {
-    if (path[i].code && path[i].code.match(/^A\d+/)) return path[i];
-  }
+  for (let i = 0; i < path.length; i++) { if (path[i].code && path[i].code.match(/^A\d+/)) return path[i]; }
   return null;
 }
-
-/* Vérifie si un nœud passe le filtre (lui-même OU un de ses enfants) */
-function isFilled(code) {
-  const s = nodesState[code] || {};
-  return !!(s.avis || isHM(code) || (s.desc && s.desc.trim()) || (s.reference && s.reference.trim()) || (s.obs && s.obs.trim()));
-}
+function isFilled(code) { const s = nodesState[code] || {}; return !!(s.avis || isHM(code) || (s.desc && s.desc.trim()) || (s.reference && s.reference.trim()) || (s.obs && s.obs.trim())); }
 function nodeMatchesFilter(node) {
   if (!filterF && !filterD && !filterSO && !filterT) return true;
-  const state = nodesState[node.code] || {};
-  const av = state.avis;
+  const state = nodesState[node.code] || {}; const av = state.avis;
   if (av === 'F' && filterF) return true;
   if (av === 'D' && filterD) return true;
   if (av === 'SO' && filterSO) return true;
   if (filterT && isFilled(node.code)) return true;
-  if (node.children) {
-    for (let c of node.children) {
-      if (nodeMatchesFilter(c)) return true;
-    }
-  }
+  if (node.children) { for (let c of node.children) { if (nodeMatchesFilter(c)) return true; } }
   return false;
 }
 
+/* ============================================================
+   GESTION DES VERSIONS
+   ============================================================ */
+function verNum() { return Math.max(1, parseInt(reportInfo.version, 10) || 1); }
+function versionText() { const v = verNum(); return v > 1 ? 'Version ' + v + ' (annule et remplace la version ' + (v - 1) + ')' : 'Version 1'; }
+function fmtFr(d){ return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
+function todayFr(){ return fmtFr(new Date()); }
+function frToIso(v){ const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; }
+function isoToFr(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
+function ensureInfoDefaults(){ if (!reportInfo.date) reportInfo.date = todayFr(); }
+
+function computeFullRef(v) {
+  const ri = k => (reportInfo[k] || '').trim();
+  const base = ri('ref') || '';
+  if (!base) return '';
+  const init = (window.RAPSO_USER && window.RAPSO_USER.initiales) || 'XX';
+  const dossier = ri('dossier') || 'XXXX';
+  return `${base}-${init.toUpperCase()}-DIAG-${dossier}-V${v}`;
+}
+
+function onRefBaseChange(newValue) {
+  const oldBase = reportInfo.ref || '';
+  const newBase = (newValue || '').trim();
+  
+  if (!oldBase && newBase) {
+    reportInfo.ref = newBase;
+    reportInfo.version = 1;
+    reportInfo.prevRef = '';
+    reportInfo.prevDate = '';
+    return;
+  }
+  
+  if (oldBase && newBase && oldBase !== newBase) {
+    const vNum = verNum() + 1;
+    const ok = confirm(
+      `⚠️ Changement de référence\n\n` +
+      `Ancienne : ${oldBase}\n` +
+      `Nouvelle : ${newBase}\n\n` +
+      `Cela crée la Version ${vNum}.\nL'ancienne sera archivée.\n\nConfirmer ?`
+    );
+    if (!ok) { openInfo(); return; }
+    
+    reportInfo.prevRef = computeFullRef(verNum());
+    reportInfo.prevDate = reportInfo.date || todayFr();
+    reportInfo.ref = newBase;
+    reportInfo.version = vNum;
+    reportInfo.date = todayFr();
+    return;
+  }
+  
+  reportInfo.ref = newBase;
+}
+
+/* ============================================================
+   RENDU TABLE
+   ============================================================ */
 function renderRubriquesTable() {
   const tbody = document.getElementById('rubriquesBody');
   const flat = flattenTree(TREE_DATA);
   let html = '';
   flat.forEach(node => {
     if ((filterF || filterD || filterSO || filterT) && !nodeMatchesFilter(node)) return;
-
     const state = nodesState[node.code] || {};
     const avis = state.avis || '';
     const isSel = selectedNode && selectedNode.code === node.code;
     const indentClass = 'i' + Math.min(node.level, 10);
     const bullet = node.hasChildren ? (collapsedState[node.code] ? '►' : '▼') : '•';
-    const labelOnclick = selPoint != null
-      ? `togglePointNode('${node.code}', event)`
-      : `handleRowClick('${node.code}', event)`;
-
+    const labelOnclick = selPoint != null ? `togglePointNode('${node.code}', event)` : `handleRowClick('${node.code}', event)`;
+    
     html += `<tr data-code="${node.code}" class="${isSel ? 'sel' : ''}" onclick="handleRowClick('${node.code}', event)">
       <td class="c-code" onclick="toggleCollapse(event, '${node.code}')">${bullet}</td>
       <td class="c-label ${indentClass}${node.ins?' ins':''}" title="${escAttr((node.ref?node.ref+' – ':'')+(node.long||node.label))}" onclick="${labelOnclick}">${rvBtn(node)}${selPoint!=null?`<input type="checkbox" class="selchk" ${(points.find(p=>p.id===selPoint)||{codes:[]}).codes.includes(node.code)?'checked':''} onclick="togglePointNode('${node.code}', event)">`:''}${numHtml(node)}${esc(node.label)}${pointsOf(node.code).map(id=>`<span class="pt">P${id}</span>`).join('')}${isHM(node.code)?'<span class="pt hm" title="Hors mission">HM</span>':''}</td>
@@ -2489,28 +2400,21 @@ function renderRubriquesTable() {
 
 function handleRowClick(code, event) {
   if (event && event.target.classList.contains('c-code')) return;
-  const node = findNodeByCode(TREE_DATA, code);
-  if (!node) return;
+  const node = findNodeByCode(TREE_DATA, code); if (!node) return;
   if (node.ins && node.cf) renvoiOpen[node.cf] = true;
-
   selectedNode = node;
   const state = nodesState[code] || {};
   selectedAvis = state.avis || null;
-
   const parentArticle = findParentArticle(code);
   document.getElementById('inputArticle').value = node.ref || (parentArticle ? parentArticle.label : '');
   document.getElementById('inputLibelle').value = state.libelle || node.long || node.label || '';
   loadTabContent();
   renderPointsInfo();
-
   updateAvisButtons();
-
   expandParents(code);
   const path = findPathToNode(TREE_DATA, code);
   if (path) updateSommaireFromPath(path);
-
   renderRubriquesTable();
-
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + node.code + ' – ' + node.label;
   document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis';
   document.getElementById('kbdHint').style.display = 'inline-block';
@@ -2520,86 +2424,45 @@ function rvBtn(node){
   const n = (typeof CITED !== 'undefined' && CITED[node.code]) ? CITED[node.code].length : 0;
   if (!n || node.ins) return '';
   const open = !!renvoiOpen[node.code];
-  return `<span class="rv-btn${open ? ' open' : ''}" onclick="toggleRenvoi('${node.code}', event)" title="${open ? 'Masquer' : 'Afficher'} les renvois (${n} lignes)">${open ? '−' : '+'}<small>${n}</small></span>`;
+  return `<span class="rv-btn${open ? ' open' : ''}" onclick="toggleRenvoi('${node.code}', event)">${open ? '−' : '+'}<small>${n}</small></span>`;
 }
 function toggleRenvoi(code, event){
   if (event) event.stopPropagation();
   renvoiOpen[code] = !renvoiOpen[code];
   renderRubriquesTable();
-  if (selectedNode) {
-    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
-    if (row) row.classList.add('sel');
-  }
+  if (selectedNode) { const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`); if (row) row.classList.add('sel'); }
 }
-function expandParents(code) {
-  const path = findPathToNode(TREE_DATA, code);
-  if (!path) return;
-  for (let i = 0; i < path.length - 1; i++) {
-    collapsedState[path[i].code] = false;
-  }
-}
-
+function expandParents(code) { const path = findPathToNode(TREE_DATA, code); if (!path) return; for (let i = 0; i < path.length - 1; i++) collapsedState[path[i].code] = false; }
 function scrollToRowFlash(code) {
-  const row = document.querySelector(`tr[data-code="${code}"]`);
-  if (!row) return;
+  const row = document.querySelector(`tr[data-code="${code}"]`); if (!row) return;
   const container = document.getElementById('rubriquesScroll');
-  const containerTop = container.getBoundingClientRect().top;
-  const rowTop = row.getBoundingClientRect().top;
-  const offset = rowTop - containerTop + container.scrollTop;
+  const offset = row.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
   container.scrollTo({ top: Math.max(0, offset - 30), behavior: 'smooth' });
-  row.classList.remove('flash');
-  void row.offsetWidth;
-  row.classList.add('flash');
+  row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash');
   setTimeout(() => row.classList.remove('flash'), 950);
 }
-
 function toggleCollapse(event, code) {
   event.stopPropagation();
   const node = findNodeByCode(TREE_DATA, code);
   if (!node || !node.children || node.children.length === 0) return;
   collapsedState[code] = !collapsedState[code];
   renderRubriquesTable();
-  if (selectedNode) {
-    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
-    if (row) row.classList.add('sel');
-  }
+  if (selectedNode) { const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`); if (row) row.classList.add('sel'); }
 }
-function expandAll() {
-  collapsedState = {};
-  levelFilter = 0; if (typeof updateLevelBtn === 'function') updateLevelBtn();
-  renderRubriquesTable();
-  if (selectedNode) {
-    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
-    if (row) row.classList.add('sel');
-  }
-}
+function expandAll() { collapsedState = {}; levelFilter = 0; updateLevelBtn(); renderRubriquesTable(); }
 function collapseAll() {
-  const codes = [];
-  function collect(nodes) {
-    nodes.forEach(n => {
-      if (n.children && n.children.length) {
-        codes.push(n.code);
-        collect(n.children);
-      }
-    });
-  }
-  collect(TREE_DATA);
-  codes.forEach(c => collapsedState[c] = true);
-  renvoiOpen = {};
-  renderRubriquesTable();
+  const codes = []; function collect(nodes) { nodes.forEach(n => { if (n.children && n.children.length) { codes.push(n.code); collect(n.children); } }); }
+  collect(TREE_DATA); codes.forEach(c => collapsedState[c] = true); renvoiOpen = {}; renderRubriquesTable();
 }
 
-/* ---- Gestion des filtres (badges Total / F / D / SO) ---- */
+/* ============================================================
+   FILTRES
+   ============================================================ */
 function toggleFilter(type) {
   if (type === 'F') filterF = filterF ? 0 : 1;
   else if (type === 'D') filterD = filterD ? 0 : 1;
   else if (type === 'SO') filterSO = filterSO ? 0 : 1;
   else if (type === 'T') filterT = filterT ? 0 : 1;
-  updateFilterUI();
-  renderRubriquesTable();
-}
-function resetFilters() {
-  filterF = filterD = filterSO = filterT = 0;
   updateFilterUI();
   renderRubriquesTable();
 }
@@ -2610,115 +2473,77 @@ function updateFilterUI() {
   document.getElementById('filterTotal').classList.toggle('active', !!filterT);
 }
 
+/* ============================================================
+   SOMMAIRE
+   ============================================================ */
+const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(8,d(TREE_DATA)); })();
 function initSommaire() {
   updateSommaireFromPath([TREE_DATA[0]]);
   selectedNode = TREE_DATA[0];
   renderRubriquesTable();
-  const row = document.querySelector(`tr[data-code="${TREE_DATA[0].code}"]`);
-  if (row) row.classList.add('sel');
+  const row = document.querySelector(`tr[data-code="${TREE_DATA[0].code}"]`); if (row) row.classList.add('sel');
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + TREE_DATA[0].code + ' – ' + TREE_DATA[0].label;
   updateFilterUI();
 }
-
 function updateSommaireFromPath(path) {
   currentNodePath = path || [];
   const container = document.getElementById('sommaireSelects');
   let html = '';
-
   for (let i = 0; i < SOMMAIRE_LEVELS; i++) {
-    let options = [];
-    let selectedCode = '';
-    let disabled = false;
-
-    if (i === 0) {
-      options = TREE_DATA;
-    } else if (currentNodePath[i - 1]) {
-      options = currentNodePath[i - 1].children || [];
-    } else {
-      disabled = true;
-    }
-
+    let options = [], selectedCode = '', disabled = false;
+    if (i === 0) options = TREE_DATA;
+    else if (currentNodePath[i - 1]) options = currentNodePath[i - 1].children || [];
+    else disabled = true;
     if (currentNodePath[i]) selectedCode = currentNodePath[i].code;
     options = options.filter(o => !o.ins || o.code === selectedCode);
-
     const filledClass = selectedCode ? 'filled' : '';
     const disabledAttr = (disabled || options.length === 0) ? 'disabled' : '';
-
     html += `<div class="select-row"><select class="${filledClass}" ${disabledAttr} onchange="onSommaireChange(${i}, this.value)">`;
-
     options.forEach(opt => {
       const sel = opt.code === selectedCode ? 'selected' : '';
-      const fullLabel = nodeLabel(opt);
-      const shortLabel = fullLabel.length > 80 ? fullLabel.substring(0, 80) + '…' : fullLabel;
-      html += `<option value="${opt.code}" ${sel} title="${escAttr((opt.ref?opt.ref+' – ':'')+(opt.long||fullLabel))}">${shortLabel}</option>`;
+      const fullLabel = nodeLabel(opt); const shortLabel = fullLabel.length > 80 ? fullLabel.substring(0, 80) + '…' : fullLabel;
+      html += `<option value="${opt.code}" ${sel}>${shortLabel}</option>`;
     });
-
     html += `</select></div>`;
   }
-
   container.innerHTML = html;
 }
-
 function onSommaireChange(level, code) {
   if (!code) return;
-  const node = findNodeByCode(TREE_DATA, code);
-  if (!node) return;
-
-  const newPath = currentNodePath.slice(0, level);
-  newPath.push(node);
-
-  selectedNode = node;
-  const state = nodesState[node.code] || {};
-  selectedAvis = state.avis || null;
-
+  const node = findNodeByCode(TREE_DATA, code); if (!node) return;
+  const newPath = currentNodePath.slice(0, level); newPath.push(node);
+  selectedNode = node; const state = nodesState[node.code] || {}; selectedAvis = state.avis || null;
   const parentArticle = findParentArticle(code);
   document.getElementById('inputArticle').value = node.ref || (parentArticle ? parentArticle.label : '');
   document.getElementById('inputLibelle').value = state.libelle || node.long || node.label || '';
-  loadTabContent();
-
-  updateAvisButtons();
-
-  expandParents(node.code);
-  updateSommaireFromPath(newPath);
-  renderRubriquesTable();
-
-  setTimeout(() => {
-    scrollToRowFlash(node.code);
-    const row = document.querySelector(`tr[data-code="${node.code}"]`);
-    if (row) row.classList.add('sel');
-  }, 30);
-
+  loadTabContent(); updateAvisButtons(); expandParents(node.code); updateSommaireFromPath(newPath); renderRubriquesTable();
+  setTimeout(() => { scrollToRowFlash(node.code); const row = document.querySelector(`tr[data-code="${node.code}"]`); if (row) row.classList.add('sel'); }, 30);
   document.getElementById('statusSelected').textContent = 'Rubrique : ' + node.code + ' – ' + node.label;
   document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis';
   document.getElementById('kbdHint').style.display = 'inline-block';
 }
 
+/* ============================================================
+   AVIS
+   ============================================================ */
 function setAvis(value) {
-  selectedAvis = value;
-  updateAvisButtons();
+  selectedAvis = value; updateAvisButtons();
   if (selectedNode) {
     const code = selectedNode.code;
     if (!nodesState[code]) nodesState[code] = {};
     nodesState[code].avis = value;
     delete nodesState[code].autoNR; delete nodesState[code].prevAvis;
     if (!nodesState[code].libelle) nodesState[code].libelle = selectedNode.long || selectedNode.label;
-    if (!nodesState[code].article) {
-      const pa = findParentArticle(code);
-      nodesState[code].article = selectedNode.ref || (pa ? pa.label : '');
-    }
+    if (!nodesState[code].article) { const pa = findParentArticle(code); nodesState[code].article = selectedNode.ref || (pa ? pa.label : ''); }
     renderRubriquesTable();
-    const row = document.querySelector(`tr[data-code="${code}"]`);
-    if (row) row.classList.add('sel');
+    const row = document.querySelector(`tr[data-code="${code}"]`); if (row) row.classList.add('sel');
     document.getElementById('statusAvis').textContent = value ? 'Avis : ' + value : 'Aucun avis';
   }
 }
 function updateAvisButtons() {
-  ['F', 'D', 'SO'].forEach(v => {
-    const b = document.getElementById('btn' + v);
-    b.classList.toggle('active-' + v, selectedAvis === v);
-  });
+  ['F', 'D', 'SO'].forEach(v => { const b = document.getElementById('btn' + v); b.classList.toggle('active-' + v, selectedAvis === v); });
+  if (typeof syncHM === 'function') syncHM();
 }
-
 function loadTabContent() {
   const ta = document.getElementById('inputTabContent');
   const state = selectedNode ? (nodesState[selectedNode.code] || {}) : {};
@@ -2731,236 +2556,60 @@ function saveTabContent() {
   if (!selectedNode) return;
   const ta = document.getElementById('inputTabContent');
   const code = selectedNode.code;
-  if (((nodesState[code] || {})[currentTab] || '') === ta.value) return;   // rien de changé : on ne crée pas d'entrée vide
+  if (((nodesState[code] || {})[currentTab] || '') === ta.value) return;
   if (!nodesState[code]) nodesState[code] = {};
   nodesState[code][currentTab] = ta.value;
 }
 function switchTab(name) {
-  saveTabContent();
-  currentTab = name;
+  saveTabContent(); currentTab = name;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
   loadTabContent();
 }
-
 document.addEventListener('keydown', function(e) {
   const tag = (e.target.tagName || '').toLowerCase();
   if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
   if (e.ctrlKey || e.altKey || e.metaKey) return;
   if (!selectedNode) return;
-
-  const key = e.key.toUpperCase();
-  const code = selectedNode.code;
-
+  const key = e.key.toUpperCase(); const code = selectedNode.code;
   if (key === 'F') { setInlineAvis(code, 'F'); e.preventDefault(); }
   else if (key === 'D') { setInlineAvis(code, 'D'); e.preventDefault(); }
   else if (key === 'S') { setInlineAvis(code, 'SO'); e.preventDefault(); }
   else if (e.key === 'Delete' || e.key === 'Backspace' || e.key === 'Escape') { setInlineAvis(code, null); e.preventDefault(); }
   else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-    const flat = flattenTree(TREE_DATA);
-    const idx = flat.findIndex(n => n.code === code);
-    if (idx === -1) return;
+    const flat = flattenTree(TREE_DATA); const idx = flat.findIndex(n => n.code === code); if (idx === -1) return;
     let nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
-    if (nextIdx >= 0 && nextIdx < flat.length) {
-      handleRowClick(flat[nextIdx].code, null);
-      e.preventDefault();
-    }
+    if (nextIdx >= 0 && nextIdx < flat.length) { handleRowClick(flat[nextIdx].code, null); e.preventDefault(); }
   }
 });
-
 function setInlineAvis(code, value) {
-  const node = findNodeByCode(TREE_DATA, code);
-  if (!node) return;
+  const node = findNodeByCode(TREE_DATA, code); if (!node) return;
   if (!nodesState[code]) nodesState[code] = {};
-  if (nodesState[code].avis === value) nodesState[code].avis = null;
-  else nodesState[code].avis = value;
+  if (nodesState[code].avis === value) nodesState[code].avis = null; else nodesState[code].avis = value;
   delete nodesState[code].autoNR; delete nodesState[code].prevAvis;
   if (!nodesState[code].libelle) nodesState[code].libelle = node.long || node.label;
-  if (!nodesState[code].article) {
-    const pa = findParentArticle(code);
-    nodesState[code].article = node.ref || (pa ? pa.label : '');
-  }
-  if (selectedNode && selectedNode.code === code) {
-    selectedAvis = nodesState[code].avis;
-    updateAvisButtons();
-    document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis';
-  }
+  if (!nodesState[code].article) { const pa = findParentArticle(code); nodesState[code].article = node.ref || (pa ? pa.label : ''); }
+  if (selectedNode && selectedNode.code === code) { selectedAvis = nodesState[code].avis; updateAvisButtons(); document.getElementById('statusAvis').textContent = selectedAvis ? 'Avis : ' + selectedAvis : 'Aucun avis'; }
   renderRubriquesTable();
-  const row = document.querySelector(`tr[data-code="${code}"]`);
-  if (row && selectedNode && selectedNode.code === code) row.classList.add('sel');
+  const row = document.querySelector(`tr[data-code="${code}"]`); if (row && selectedNode && selectedNode.code === code) row.classList.add('sel');
 }
-
-function saveNode() {
-  if (!selectedNode) { alert('Sélectionnez une rubrique.'); return; }
-  const code = selectedNode.code;
-  if (!nodesState[code]) nodesState[code] = {};
-  nodesState[code].avis = selectedAvis;
-  nodesState[code].article = document.getElementById('inputArticle').value.trim();
-  nodesState[code].libelle = document.getElementById('inputLibelle').value.trim();
-  saveTabContent();
-  renderRubriquesTable();
-  const row = document.querySelector(`tr[data-code="${code}"]`);
-  if (row) row.classList.add('sel');
-  alert('Avis enregistré pour ' + code + '.');
-}
-function clearNode() {
-  if (!selectedNode) return;
-  selectedAvis = null;
-  document.getElementById('inputLibelle').value = selectedNode.long || selectedNode.label || '';
-  document.getElementById('inputTabContent').value = '';
-  updateAvisButtons();
-  if (nodesState[selectedNode.code]) {
-    delete nodesState[selectedNode.code].avis;
-    delete nodesState[selectedNode.code][currentTab];
-    renderRubriquesTable();
-    const row = document.querySelector(`tr[data-code="${selectedNode.code}"]`);
-    if (row) row.classList.add('sel');
-  }
-  document.getElementById('statusAvis').textContent = 'Aucun avis';
-}
-function saveToLocalStorage() {
-  saveTabContent();
-  localStorage.setItem('adapth_attestation_v18', JSON.stringify({ v: 2, nodes: nodesState, points: points, info: reportInfo }));
-  const c = Object.keys(nodesState).filter(k => nodesState[k].avis).length;
-  alert('Session sauvegardée (' + c + ' avis saisis).');
-}
-function loadFromLocalStorage() {
-  const d = localStorage.getItem('adapth_attestation_v18');
-  if (d) {
-    const o = JSON.parse(d);
-    if (o && o.v === 2) { nodesState = o.nodes || {}; points = o.points || []; reportInfo = o.info || {}; }
-    else { nodesState = o; points = []; }
-    renderRubriquesTable();
-    renderPointsInfo();
-    alert('Session restaurée.');
-  } else alert('Aucune sauvegarde trouvée.');
-}
-
 function updateStats() {
   let t = 0, f = 0, d = 0, so = 0;
-  function collect(nodes) {
-    nodes.forEach(n => {
-      const s = nodesState[n.code] || {};
-      if (isFilled(n.code)) t++;
-      if (s.avis === 'F') f++;
-      else if (s.avis === 'D') d++;
-      else if (s.avis === 'SO') so++;
-      if (n.children) collect(n.children);
-    });
-  }
+  function collect(nodes) { nodes.forEach(n => { const s = nodesState[n.code] || {}; if (isFilled(n.code)) t++; if (s.avis === 'F') f++; else if (s.avis === 'D') d++; else if (s.avis === 'SO') so++; if (n.children) collect(n.children); }); }
   collect(TREE_DATA);
-  document.getElementById('statTotal').textContent = t;
-  document.getElementById('statF').textContent = f;
-  document.getElementById('statD').textContent = d;
-  document.getElementById('statSO').textContent = so;
+  document.getElementById('statTotal').textContent = t; document.getElementById('statF').textContent = f; document.getElementById('statD').textContent = d; document.getElementById('statSO').textContent = so;
 }
 
-function openReport() {
-  saveTabContent();
-  const modal = document.getElementById('reportModal');
-  const body = document.getElementById('reportBody');
-  let t = 0, f = 0, d = 0, so = 0;
-  function collectStats(nodes) {
-    nodes.forEach(n => {
-      const s = nodesState[n.code] || {};
-      if (s.avis) {
-        t++;
-        if (s.avis === 'F') f++;
-        else if (s.avis === 'D') d++;
-        else if (s.avis === 'SO') so++;
-      }
-      if (n.children) collectStats(n.children);
-    });
-  }
-  collectStats(TREE_DATA);
-  let rows = '';
-  function buildRows(nodes, depth) {
-    nodes.forEach(n => {
-      const s = nodesState[n.code] || {};
-      const av = s.avis || '';
-      const lc = n.level <= 2 ? 'l' + n.level : '';
-      const ind = depth * 12;
-      const pa = findParentArticle(n.code);
-      const articleTxt = n.ref || (pa ? pa.label : '');
-      rows += `<tr class="${lc}">
-        <td style="padding-left:${6 + ind}px"><b>${n.code}</b></td>
-        <td>${nodeLabel(n)}</td>
-        <td class="ac">${av || '—'}</td>
-        <td>${articleTxt}</td>
-        <td>${s.desc || ''}</td>
-        <td>${s.reference || ''}</td>
-        <td>${esc(remarkFor(n)).replace(/\n/g,'<br>')}</td>
-      </tr>`;
-      if (n.children) buildRows(n.children, depth + 1);
-    });
-  }
-  buildRows(TREE_DATA, 0);
-  body.innerHTML = `${infoHtml()}
-    <div class="report-summary">
-      <div class="summary-card"><div class="n">${t}</div><div class="l">Avis saisis</div></div>
-      <div class="summary-card f"><div class="n">${f}</div><div class="l">Favorables</div></div>
-      <div class="summary-card d"><div class="n">${d}</div><div class="l">Défavorables</div></div>
-      <div class="summary-card so"><div class="n">${so}</div><div class="l">Sans objet</div></div>
-    </div>
-    <table class="report-table">
-      <thead><tr>
-        <th style="width:90px">Code</th>
-        <th style="width:220px">Rubrique</th>
-        <th style="width:36px">Avis</th>
-        <th style="width:160px">Article réglementaire</th>
-        <th>Conception - Description</th>
-        <th>Référence</th>
-        <th>Observations</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>${annexHtml()}`;
-  modal.classList.add('open');
-}
-function closeReport() { document.getElementById('reportModal').classList.remove('open'); }
-
-function exportCSV() {
-  saveTabContent();
-  const rows = [['N°', 'Code', 'Rubrique', 'Libellé long', 'Avis', 'Article réglementaire', 'Conception-Description', 'Référence', 'Observations', 'Points', 'Remarque Excel']];
-  function collect(nodes) {
-    nodes.forEach(n => {
-      const s = nodesState[n.code] || {};
-      const pa = findParentArticle(n.code);
-      const articleTxt = n.ref || (pa ? pa.label : '');
-      rows.push([n.num || '', n.code, n.label, s.libelle || n.long || n.label, s.avis || '', articleTxt, s.desc || '', s.reference || '', s.obs || '', pointsOf(n.code).join(', '), remarkFor(n)]);
-      if (n.children) collect(n.children);
-    });
-  }
-  collect(TREE_DATA);
-  const csv = rows.map(r => r.map(c => `"${(c || '').replace(/"/g, '""')}"`).join(';')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'attestation_accessibilite_' + new Date().toISOString().slice(0, 10) + '.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-
-/* =====================  POINTS  /  EXPORT EXCEL  ===================== */
-let points = [];
-let reportInfo = {};
-let selPoint = null;
-let selIncludeIns = false;
-let curPointId = null;
-const MARK = { F: 'R', D: 'NR', SO: 'SO' };
-const CITED = {};
-(function buildCited(){ (function w(ns){ ns.forEach(n=>{ if (n.cf) (CITED[n.cf] = CITED[n.cf] || []).push(n); if (n.children) w(n.children); }); })(TREE_DATA); })();
-function el(id){ return document.getElementById(id); }
-function esc(x){ return String(x == null ? '' : x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function closeModal(id){ el(id).classList.remove('open'); }
+/* ============================================================
+   POINTS
+   ============================================================ */
+const CITED = {}; (function buildCited(){ (function w(ns){ ns.forEach(n=>{ if (n.cf) (CITED[n.cf] = CITED[n.cf] || []).push(n); if (n.children) w(n.children); }); })(TREE_DATA); })();
 function pointsOf(code){ return points.filter(p => p.codes.includes(code)).map(p => p.id).sort((a,b)=>a-b); }
 function curPoint(){ return points.find(p => p.id === curPointId); }
 function remarkFor(n){
   const s = nodesState[n.code] || {}; const parts = [];
   if (isHM(n.code)) parts.push('Hors Mission');
-  const ids = pointsOf(n.code);
-  if (ids.length) parts.push((ids.length > 1 ? 'Voir points ' : 'Voir point ') + ids.join(', '));
+  const ids = pointsOf(n.code); if (ids.length) parts.push((ids.length > 1 ? 'Voir points ' : 'Voir point ') + ids.join(', '));
   if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
   return parts.join('\n');
 }
@@ -2978,73 +2627,35 @@ function exportRemark(n){
   });
   return parts.join('\n');
 }
-function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
 function attach(p, code){
   if (p.codes.includes(code)) return;
   p.codes.push(code);
-  const n = findNodeByCode(TREE_DATA, code);
-  if (!n) return;
-
-  const toAdd = [code];
-  const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
+  const n = findNodeByCode(TREE_DATA, code); if (!n) return;
+  const toAdd = [code]; const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
   if (n.ins && n.cf) addC(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) addC(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
-  }
+  if (n.ins && n.ref) { (function walk(nodes){ nodes.forEach(x => { if (x !== n && x.ref === n.ref && x.xr) addC(x.code); if (x.children) walk(x.children); }); })(TREE_DATA); }
   toAdd.forEach(c => {
     if (!p.codes.includes(c)) p.codes.push(c);
-    const node = findNodeByCode(TREE_DATA, c);
-    if (!node) return;
+    const node = findNodeByCode(TREE_DATA, c); if (!node) return;
     const s = nodesState[c] || (nodesState[c] = {});
-    if (s.avis !== 'D') {
-      s.prevAvis = s.avis || null;
-      s.autoNR = true;
-      s.avis = 'D';
-      if (!s.libelle) s.libelle = node.long || node.label;
-      if (!s.article) s.article = node.ref || '';
-    }
+    if (s.avis !== 'D') { s.prevAvis = s.avis || null; s.autoNR = true; s.avis = 'D'; if (!s.libelle) s.libelle = node.long || node.label; if (!s.article) s.article = node.ref || ''; }
   });
 }
-
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
   p.codes.splice(i, 1);
-  const n = findNodeByCode(TREE_DATA, code);
-  if (!n) return;
-
+  const n = findNodeByCode(TREE_DATA, code); if (!n) return;
   const restoreIfFree = c => {
     const s = nodesState[c];
-    if (s && s.autoNR && pointsOf(c).length === 0) {
-      if (s.avis === 'D') s.avis = s.prevAvis || null;
-      delete s.autoNR; delete s.prevAvis;
-    }
+    if (s && s.autoNR && pointsOf(c).length === 0) { if (s.avis === 'D') s.avis = s.prevAvis || null; delete s.autoNR; delete s.prevAvis; }
   };
   restoreIfFree(code);
   if (n.ins && n.cf) restoreIfFree(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
-  }
+  if (n.ins && n.ref) { (function walk(nodes){ nodes.forEach(x => { if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code); if (x.children) walk(x.children); }); })(TREE_DATA); }
 }
 function collectBranch(node, includeIns){
   const out = [];
-  (function w(n, insideIns){
-    out.push(n.code);
-    (n.children || []).forEach(c => {
-      const childIsIns = !!c.ins;
-      if (childIsIns && !includeIns && !insideIns && !node.ins) return;
-      w(c, insideIns || childIsIns);
-    });
-  })(node, !!node.ins);
+  (function w(n, insideIns){ out.push(n.code); (n.children || []).forEach(c => { const childIsIns = !!c.ins; if (childIsIns && !includeIns && !insideIns && !node.ins) return; w(c, insideIns || childIsIns); }); })(node, !!node.ins);
   return out;
 }
 function togglePointNode(code, ev){
@@ -3066,27 +2677,13 @@ function updateSelBanner(){
 function startSelect(id){ selPoint = id; document.body.classList.add('point-selecting'); closeModal('pointsModal'); updateSelBanner(); renderRubriquesTable(); }
 function endSelect(){ selPoint = null; document.body.classList.remove('point-selecting'); updateSelBanner(); renderRubriquesTable(); renderPointsInfo(); openPoints(); }
 function openPoints(){ renderPointsModal(); el('pointsModal').classList.add('open'); }
-function addPoint(){
-  const id = points.reduce((m, p) => Math.max(m, p.id), 0) + 1;
-  points.push({ id: id, title: '', text: '', codes: [] }); curPointId = id; renderPointsModal();
-}
-function changePointId(v){
-  const n = parseInt(v, 10); const p = curPoint();
-  if (!p || !(n > 0) || points.some(x => x !== p && x.id === n)) { alert('Numéro invalide ou déjà utilisé.'); renderPointsModal(); return; }
-  p.id = n; curPointId = n; renderPointsModal(); renderRubriquesTable();
-}
-function deletePoint(id){
-  const p = points.find(x => x.id === id); if (!p) return;
-  if (!confirm('Supprimer le point ' + id + ' ? Les rubriques passées en NR automatiquement retrouveront leur avis précédent.')) return;
-  p.codes.slice().forEach(c => detach(p, c));
-  points = points.filter(x => x !== p); curPointId = null;
-  renderPointsModal(); renderRubriquesTable(); renderPointsInfo();
-}
+function addPoint(){ const id = points.reduce((m, p) => Math.max(m, p.id), 0) + 1; points.push({ id: id, title: '', text: '', codes: [] }); curPointId = id; renderPointsModal(); }
+function changePointId(v){ const n = parseInt(v, 10); const p = curPoint(); if (!p || !(n > 0) || points.some(x => x !== p && x.id === n)) { alert('Numéro invalide ou déjà utilisé.'); renderPointsModal(); return; } p.id = n; curPointId = n; renderPointsModal(); renderRubriquesTable(); }
+function deletePoint(id){ const p = points.find(x => x.id === id); if (!p) return; if (!confirm('Supprimer le point ' + id + ' ?')) return; p.codes.slice().forEach(c => detach(p, c)); points = points.filter(x => x !== p); curPointId = null; renderPointsModal(); renderRubriquesTable(); renderPointsInfo(); }
 function detachFromModal(code){ const p = curPoint(); if (!p) return; detach(p, code); renderPointsModal(); renderRubriquesTable(); renderPointsInfo(); }
 function detachSelected(id){ const p = points.find(x => x.id === id); if (!p || !selectedNode) return; detach(p, selectedNode.code); renderRubriquesTable(); renderPointsInfo(); }
 function renderPointsModal(){
-  const list = points.slice().sort((a,b)=>a.id-b.id).map(p =>
-    `<div class="pt-item ${p.id === curPointId ? 'sel' : ''}" onclick="curPointId=${p.id};renderPointsModal()"><b>Point ${p.id}</b> – ${esc(p.title || '(sans titre)')}<span class="pt-n">${p.codes.length}</span></div>`).join('') || '<i>Aucun point.</i>';
+  const list = points.slice().sort((a,b)=>a.id-b.id).map(p => `<div class="pt-item ${p.id === curPointId ? 'sel' : ''}" onclick="curPointId=${p.id};renderPointsModal()"><b>Point ${p.id}</b> – ${esc(p.title || '(sans titre)')}<span class="pt-n">${p.codes.length}</span></div>`).join('') || '<i>Aucun point.</i>';
   const p = curPoint(); let form = '<i>Ajoutez un point ou sélectionnez-en un.</i>';
   if (p) {
     const conc = p.codes.map(c => { const n = findNodeByCode(TREE_DATA, c); return n ? `<div class="pt-r"><span>${esc(n.num || '')} ${esc(n.ref || '')} – ${esc(n.label)}</span><a onclick="detachFromModal('${c}')" title="Retirer">✕</a></div>` : ''; }).join('');
@@ -3098,1035 +2695,151 @@ function renderPointsModal(){
   }
   el('pointsBody').innerHTML = `<div class="pt-left">${list}<button onclick="addPoint()">+ Ajouter un point</button></div><div class="pt-right">${form}</div>`;
 }
-function renderPointsInfo(){
-  const d = el('pointsInfo'); if (!d) return;
-  if (!selectedNode) { d.innerHTML = ''; return; }
-  const ids = pointsOf(selectedNode.code);
-  d.innerHTML = ids.length ? 'Points rattachés : ' + ids.map(id => { const p = points.find(x => x.id === id); return `<span class="pt">P${id}</span> ${esc(p.title)} <a onclick="detachSelected(${id})" title="Retirer">✕</a>`; }).join(' · ') : '';
+function renderPointsInfo(){ const d = el('pointsInfo'); if (!d) return; if (!selectedNode) { d.innerHTML = ''; return; } const ids = pointsOf(selectedNode.code); d.innerHTML = ids.length ? 'Points rattachés : ' + ids.map(id => { const p = points.find(x => x.id === id); return `<span class="pt">P${id}</span> ${esc(p.title)} <a onclick="detachSelected(${id})" title="Retirer">✕</a>`; }).join(' · ') : ''; }
+
+/* ============================================================
+   HM & LIBELLÉ LONG
+   ============================================================ */
+const PRESET_HM = {}; const PRESET_HM_CODES = new Set();
+(function(){ TREE_DATA.forEach(ch => (ch.children || []).forEach(a => { const m = /^A(\d+)$/.exec(a.code || ''); const rows = m && PRESET_HM[m[1]]; if (!rows) return; const set = new Set(rows); (function w(ns){ ns.forEach(n => { if (!n.ins && n.xr && set.has(n.xr)) PRESET_HM_CODES.add(n.code); if (n.children) w(n.children); }); })(a.children || []); })); })();
+function isHM(code){ const st = nodesState[code]; if (st && st.hm !== undefined) return !!st.hm; return PRESET_HM_CODES.has(code); }
+function setHM(on){ if (!selectedNode) return; const code = selectedNode.code; const st = nodesState[code] || (nodesState[code] = {}); if (!!on === PRESET_HM_CODES.has(code)) delete st.hm; else st.hm = !!on; if (on) { if (!st.libelle) st.libelle = selectedNode.long || selectedNode.label; if (!st.article) st.article = selectedNode.ref || ''; } renderRubriquesTable(); }
+function syncHM(){ const c = document.getElementById('chkHM'); if (!c) return; c.checked = !!(selectedNode && isHM(selectedNode.code)); }
+function fitLibelle(){ const t = document.getElementById('inputLibelle'); if (!t) return; t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, 170) + 'px'; }
+
+/* ============================================================
+   RENVOIS
+   ============================================================ */
+let rvSomOpen = false, rvSomCiting = '';
+function toggleRvSommaire(){ rvSomOpen = !rvSomOpen; document.getElementById('rvSommaire').style.display = rvSomOpen ? 'block' : 'none'; document.getElementById('rvSomBtn').textContent = (rvSomOpen ? '▾' : '▸') + " Renvois de l'article"; renderRvSommaire(); }
+function renderRvSommaire(){
+  const box = document.getElementById('rvSommaire'); if (!box || !rvSomOpen) return;
+  const art = selectedNode ? findParentArticle(selectedNode.code) : null; if (!art) { box.innerHTML = '<div class="rv-help">Sélectionnez une rubrique d\'un article.</div>'; return; }
+  const citing = []; (function w(ns){ ns.forEach(n => { if (!n.ins && CITED[n.code]) citing.push(n); if (n.children) w(n.children); }); })(art.children || []);
+  if (!citing.length) { box.innerHTML = '<div class="rv-help">Aucun renvoi dans ' + esc(art.label) + '.</div>'; return; }
+  let cur = selectedNode && (selectedNode.ins ? selectedNode.cf : selectedNode.code);
+  if (!citing.some(c => c.code === cur)) cur = citing.some(c => c.code === rvSomCiting) ? rvSomCiting : citing[0].code;
+  rvSomCiting = cur;
+  const o1 = citing.map(c => `<option value="${escAttr(c.code)}" ${c.code === cur ? 'selected' : ''}>${esc(nodeLabel(c))} (+${CITED[c.code].length})</option>`).join('');
+  const list = CITED[cur] || []; const m = Math.min(...list.map(x => x.level));
+  const o2 = '<option value="">— Choisir une ligne insérée —</option>' + list.map(x => `<option value="${escAttr(x.code)}">${'\u00a0\u00a0'.repeat(x.level - m)}${esc(nodeLabel(x))}</option>`).join('');
+  box.innerHTML = `<div class="rv-help">Rubriques de l'article qui renvoient à d'autres articles</div><div class="select-row"><select onchange="rvSomCiting=this.value;handleRowClick(this.value)">${o1}</select></div><div class="select-row"><select onchange="if(this.value)handleRowClick(this.value)">${o2}</select></div>`;
 }
-const BASE7 = "Mention des éventuels locaux ou parties du bâtiment qui n'ont pu être visités : Non accessible ou non disponible lors de notre visite. En l'absence de constat, la conformité ne peut être attestée. Il appartient au maître d'ouvrage d'en justifier.";
-const INFO_FIELDS = [
-  { g: 'Page de garde' },
-  { k: 'client', l: 'Client', sheet: 'Page de garde', cell: 'F7' },
-  { k: 'adr1', l: 'Adresse 1', sheet: 'Page de garde', cell: 'F8' },
-  { k: 'adr2', l: 'Adresse 2', sheet: 'Page de garde', cell: 'F9' },
-  { k: 'ville', l: 'Ville', sheet: 'Page de garde', cell: 'F10' },
-  { k: 'attn', l: "À l'attention de", sheet: 'Page de garde', cell: 'F12', pre: "A l'attention de " },
-  { k: 'mail', l: 'Adresse mail', sheet: 'Page de garde', cell: 'F13' },
-  { k: 'affaire', l: 'Affaire (nom, aussi repris en page 2)', sheet: 'Page de garde', cell: 'A22', also: [{ sheet: 'Page 2', cell: 'A5' }] },
-  { k: 'dossier', l: 'Dossier SOCOTEC (n° du dossier)', sheet: 'Page de garde', cell: 'C30' },
-  { k: 'date', l: 'Date', type: 'date', sheet: 'Page de garde', cell: 'C32' },
-  { k: 'ref', l: 'Référence du rapport', type: 'ref', sheet: 'Page de garde', cell: 'C34' },
-  { k: 'versionTxt', l: 'Version du rapport', type: 'ro' },
-  { k: 'prevDate', l: 'Date de la version précédente', type: 'ro' },
-  { k: 'prevRef', l: 'Référence de la version précédente', type: 'ro' },
-  { k: 'charge', l: "Chargé d'affaire", sheet: 'Page de garde', cell: 'C47' },
-  { k: 'tutore', l: 'Tutoré', sheet: 'Page de garde', cell: 'G47' },
-  { g: 'Contrat de vérification technique' },
-  { k: 'contrat', l: 'Contrat n° (Dossier SOCOTEC du portail)', p2: 1 },
-  { k: 'cdate', l: 'Date du contrat', type: 'date', p2: 1 },
-  { k: 'moa', l: "Société (maître d'ouvrage)", p2: 1 },
-  { g: 'Commentaires généraux' },
-  { k: 'locaux', l: 'Locaux non visités (complément)', sheet: 'Commentaires', cell: 'A7', pre: BASE7 + '\n', area: 1 },
-  { k: 'derog', l: 'Dérogations obtenues', sheet: 'Commentaires', cell: 'A9', pre: 'Dérogations obtenues:\n', area: 1 },
-  { k: 'equiv', l: "Solutions d'effet équivalent", sheet: 'Commentaires', cell: 'A11', pre: "Solutions d'effet équivalent:\n", area: 1 }
-];
-function fmtFr(d){ return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
-function todayFr(){ return fmtFr(new Date()); }
-function frToIso(v){ const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[2] + '-' + m[1] : ''; }
-function isoToFr(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
-function verNum(){ return Math.max(1, parseInt(reportInfo.version, 10) || 1); }
-function versionText(){ const v = verNum(); return v > 1 ? 'Version ' + v + ' (annule et remplace la version ' + (v - 1) + ')' : 'Version 1'; }
-function ensureInfoDefaults(){ if (!reportInfo.date) reportInfo.date = todayFr(); }
-function computeRef(v){
-  const ri = k => (reportInfo[k] || '').trim(); const u = (window.RAPSO_USER && window.RAPSO_USER.initiales) || '';
-  return [ri('contrat'), String(u).toUpperCase(), 'DIAG', ri('dossier')].filter(Boolean).join('-') + '-V' + v;
-}
-/* La référence est injectée une seule fois ; une nouvelle référence = nouvelle version du rapport (avec avertissement). */
-function injectRef(manual){
-  const ri = k => (reportInfo[k] || '').trim();
-  if (!ri('contrat') || !ri('dossier')) { if (manual) alert('Renseignez d\'abord le Contrat n° et le Dossier SOCOTEC.'); return false; }
-  const v = verNum();
-  if (!ri('ref')) { reportInfo.version = 1; reportInfo.ref = computeRef(1); return true; }
-  if (ri('ref') === computeRef(v)) { if (manual) alert('La référence du rapport est déjà à jour.'); return false; }
-  if (!manual) return false;
-  if (!confirm('⚠ Une nouvelle référence va remplacer « ' + ri('ref') + ' ».\n\nCela correspond à une NOUVELLE VERSION du rapport : version ' + (v + 1) + ' (annule et remplace la version ' + v + ').\nLa référence et la date actuelles deviennent « version précédente ».\n\nContinuer ?')) return false;
-  reportInfo.prevRef = ri('ref'); reportInfo.prevDate = ri('date') || todayFr();
-  reportInfo.version = v + 1; reportInfo.ref = computeRef(v + 1); reportInfo.date = todayFr();
-  return true;
-}
-function infoRoValue(k){ return k === 'versionTxt' ? versionText() : (reportInfo[k] || (k === 'prevDate' || k === 'prevRef' ? '—' : '')); }
-function openInfo(){
-  ensureInfoDefaults(); injectRef(false);
-  el('infoBody').innerHTML = INFO_FIELDS.map(f => {
-    if (f.g) return `<h4>${f.g}</h4>`;
-    const lab = `<label>${f.l}</label>`, v = reportInfo[f.k] || '';
-    if (f.type === 'ro') return lab + `<input type="text" class="ro-field" readonly value="${escAttr(infoRoValue(f.k))}">`;
-    if (f.type === 'date') return lab + `<input type="date" value="${frToIso(v)}" onchange="reportInfo['${f.k}']=isoToFr(this.value)">`;
-    if (f.type === 'ref') return lab + `<div class="ref-row"><input type="text" id="infoRef" class="ro-field" readonly value="${escAttr(v)}" placeholder="Générée à partir du contrat, de vos initiales et du dossier"><button type="button" onclick="injectRefClick()">Injecter la référence</button></div>`;
-    if (f.area) return lab + `<textarea rows="3" oninput="reportInfo['${f.k}']=this.value">${esc(v)}</textarea>`;
-    return lab + `<input type="text" value="${escAttr(v)}" oninput="reportInfo['${f.k}']=this.value">`;
-  }).join('');
+
+/* ============================================================
+   RAPPORT / CSV
+   ============================================================ */
+function openReport(){ saveTabContent(); const modal = document.getElementById('reportModal'); const body = document.getElementById('reportBody'); let t = 0, f = 0, d = 0, so = 0; function collectStats(nodes) { nodes.forEach(n => { const s = nodesState[n.code] || {}; if (s.avis) { t++; if (s.avis === 'F') f++; else if (s.avis === 'D') d++; else if (s.avis === 'SO') so++; } if (n.children) collectStats(n.children); }); } collectStats(TREE_DATA); let rows = ''; function buildRows(nodes, depth) { nodes.forEach(n => { const s = nodesState[n.code] || {}; const av = s.avis || ''; const lc = n.level <= 2 ? 'l' + n.level : ''; const ind = depth * 12; const pa = findParentArticle(n.code); const articleTxt = n.ref || (pa ? pa.label : ''); rows += `<tr class="${lc}"><td style="padding-left:${6 + ind}px"><b>${n.code}</b></td><td>${nodeLabel(n)}</td><td class="ac">${av || '—'}</td><td>${articleTxt}</td><td>${s.desc || ''}</td><td>${s.reference || ''}</td><td>${esc(remarkFor(n)).replace(/\n/g,'<br>')}</td></tr>`; if (n.children) buildRows(n.children, depth + 1); }); } buildRows(TREE_DATA, 0); body.innerHTML = `${infoHtml()}<div class="report-summary"><div class="summary-card"><div class="n">${t}</div><div class="l">Avis saisis</div></div><div class="summary-card f"><div class="n">${f}</div><div class="l">Favorables</div></div><div class="summary-card d"><div class="n">${d}</div><div class="l">Défavorables</div></div><div class="summary-card so"><div class="n">${so}</div><div class="l">Sans objet</div></div></div><table class="report-table"><thead><tr><th style="width:90px">Code</th><th style="width:220px">Rubrique</th><th style="width:36px">Avis</th><th style="width:160px">Article réglementaire</th><th>Conception - Description</th><th>Référence</th><th>Observations</th></tr></thead><tbody>${rows}</tbody></table>${annexHtml()}`; modal.classList.add('open'); }
+function closeReport(){ document.getElementById('reportModal').classList.remove('open'); }
+function exportCSV(){ saveTabContent(); const rows = [['N°', 'Code', 'Rubrique', 'Libellé long', 'Avis', 'Article réglementaire', 'Conception-Description', 'Référence', 'Observations', 'Points', 'Remarque Excel']]; function collect(nodes) { nodes.forEach(n => { const s = nodesState[n.code] || {}; const pa = findParentArticle(n.code); const articleTxt = n.ref || (pa ? pa.label : ''); rows.push([n.num || '', n.code, n.label, s.libelle || n.long || n.label, s.avis || '', articleTxt, s.desc || '', s.reference || '', s.obs || '', pointsOf(n.code).join(', '), remarkFor(n)]); if (n.children) collect(n.children); }); } collect(TREE_DATA); const csv = rows.map(r => r.map(c => `"${(c || '').replace(/"/g, '""')}"`).join(';')).join('\n'); const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'attestation_accessibilite_' + new Date().toISOString().slice(0, 10) + '.csv'; a.click(); URL.revokeObjectURL(url); }
+
+/* ============================================================
+   MODAL DONNÉES GÉNÉRALES (5 onglets)
+   ============================================================ */
+function openInfoTab(tab) {
+  if (!reportInfo.ref) reportInfo.version = 1;
+  if (!reportInfo.date) reportInfo.date = todayFr();
+  document.querySelectorAll('.info-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderInfoPage(tab);
+  el('infoModalTitle').textContent = 'Données générales — ' + tab.charAt(0).toUpperCase() + tab.slice(1);
   el('infoModal').classList.add('open');
+  updateDots();
 }
-function injectRefClick(){ if (injectRef(true)) openInfo(); }
-function infoHtml(){
-  const g = k => (reportInfo[k] || '').trim();
-  const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('ref')], ['Date', g('date')]].filter(r => r[1]);
-  return rows.length ? `<div class="rep-info">${rows.map(r => `<b>${r[0]} :</b> ${esc(r[1])}`).join(' &nbsp;|&nbsp; ')}</div>` : '';
+function renderInfoPage(tab) {
+  const body = el('infoPagesBody'); let html = '';
+  if (tab === 'relation') {
+    html = `<div class="info-page active">
+      <div class="field"><label>Client</label><input type="text" value="${escAttr(reportInfo.client || '')}" oninput="reportInfo.client=this.value"></div>
+      <div class="field"><label>Adresse</label><input type="text" value="${escAttr(reportInfo.adr1 || '')}" oninput="reportInfo.adr1=this.value"></div>
+      <div class="field"><label>Complément d'adresse</label><input type="text" value="${escAttr(reportInfo.adr2 || '')}" oninput="reportInfo.adr2=this.value"></div>
+      <div class="field"><label>À l'attention de</label><input type="text" value="${escAttr(reportInfo.attn || '')}" oninput="reportInfo.attn=this.value"></div>
+    </div>`;
+  }
+  else if (tab === 'affaire') {
+    html = `<div class="info-page active">
+      <div class="field"><label>Dossier SOCOTEC</label><input type="text" value="${escAttr(reportInfo.dossier || '')}" oninput="reportInfo.dossier=this.value"></div>
+      <div class="field"><label>Date du contrat</label><input type="date" value="${frToIso(reportInfo.cdate)}" onchange="reportInfo.cdate=isoToFr(this.value)"></div>
+      <div class="field"><label>Société</label><input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="reportInfo.moa=this.value"></div>
+    </div>`;
+  }
+  else if (tab === 'documents') {
+    html = `<div class="info-page active">
+      <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+        <div class="dz-title">📎 Glissez vos fichiers ici</div>
+        <div class="dz-hint">ou cliquez pour choisir</div>
+        <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
+      </div>
+      <div class="doc-list" id="docList"></div>
+      <button class="doc-add-btn" onclick="addDocManually()">+ Ajouter</button>
+    </div>`;
+  }
+  else if (tab === 'commentaires') {
+    html = `<div class="info-page active">
+      <div class="field"><label>Locaux non visités</label><textarea rows="3" oninput="reportInfo.locaux=this.value">${esc(reportInfo.locaux || '')}</textarea></div>
+      <div class="field"><label>Dérogations obtenues</label><textarea rows="3" oninput="reportInfo.derog=this.value">${esc(reportInfo.derog || '')}</textarea></div>
+      <div class="field"><label>Solutions d'effet équivalent</label><textarea rows="3" oninput="reportInfo.equiv=this.value">${esc(reportInfo.equiv || '')}</textarea></div>
+    </div>`;
+  }
+  else if (tab === 'livrable') {
+    const v = verNum();
+    const versionsHtml = v > 1 ? `<div class="version-item"><span class="v-num">V${v-1}</span><div class="v-content"><div class="v-ref">${esc(reportInfo.prevRef || '—')}</div><div class="v-date">${esc(reportInfo.prevDate || '—')}</div></div><button class="v-remove" onclick="removeVersion()">✕</button></div>` : '<div class="versions-empty">Aucune version précédente.</div>';
+    html = `<div class="info-page active">
+      <div class="field"><label>Date</label><input type="date" value="${frToIso(reportInfo.date)}" onchange="reportInfo.date=isoToFr(this.value)"></div>
+      <div class="field">
+        <label>Référence du rapport</label>
+        <input type="text" value="${escAttr(reportInfo.ref || '')}" oninput="onRefBaseChange(this.value)" placeholder="Ex: JB000-26-266">
+        <div class="ref-meta">La référence complète sera générée automatiquement.</div>
+      </div>
+      <div class="field"><label>Chargé d'affaire</label><input type="text" value="${escAttr(reportInfo.charge || (window.RAPSO_USER ? window.RAPSO_USER.prenom + ' ' + window.RAPSO_USER.nom : ''))}" oninput="reportInfo.charge=this.value"></div>
+      <div class="field"><label>Tutoré</label><input type="text" value="${escAttr(reportInfo.tutore || '')}" oninput="reportInfo.tutore=this.value"></div>
+      <div class="versions-block"><h4>Gestion des versions <span class="version-badge">V${v}</span></h4>${versionsHtml}</div>
+      <div class="export-block"><h4>Export du rapport</h4><div class="export-buttons"><button onclick="exportPdf('exportMsg','btnPdf')" id="btnPdf">Imprimer le PDF</button><button onclick="exportXlsx('exportMsg','btnXls')" id="btnXls">Télécharger l'Excel</button></div><div class="export-msg" id="exportMsg"></div></div>
+    </div>`;
+  }
+  body.innerHTML = html;
+  if (tab === 'documents') renderDocList();
+  updateDots();
 }
-function pointRubriques(p){
-  const refs = []; p.codes.forEach(c => { const n = findNodeByCode(TREE_DATA, c); if (n && n.ref && !refs.includes(n.ref)) refs.push(n.ref); });
-  return refs;
+function removeVersion() { if (!confirm('Supprimer cette version de l\'historique ?')) return; reportInfo.prevRef = ''; reportInfo.prevDate = ''; reportInfo.version = 1; renderInfoPage('livrable'); }
+function updateDots() {
+  const map = { relation: !!(reportInfo.client || reportInfo.adr1 || reportInfo.attn), affaire: !!(reportInfo.dossier || reportInfo.contrat), documents: !!(reportInfo.docs && reportInfo.docs.trim()), commentaires: !!(reportInfo.locaux || reportInfo.derog || reportInfo.equiv), livrable: !!(reportInfo.date || reportInfo.ref || reportInfo.charge) };
+  Object.keys(map).forEach(k => { const dot = document.getElementById('dot-' + k); if (dot) dot.classList.toggle('on', map[k]); });
 }
-function annexHtml(){
-  if (!points.length) return '';
-  return '<div class="rep-annex"><h3>Annexes / Remarques</h3>' + points.slice().sort((a,b)=>a.id-b.id).map(p =>
-    `<div class="p"><b>Point ${p.id}${p.title ? ' – ' + esc(p.title) : ''}</b><div>${esc(p.text).replace(/\n/g,'<br>')}</div><div style="color:#555;margin-top:2px">Rubriques concernées (NR) : ${esc(pointRubriques(p).join(' ; ')) || '—'}</div></div>`).join('') + '</div>';
-}
-function download(name, text, mime){
-  const blob = new Blob([text], { type: mime || 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
-}
-function pointText(p){
-  return 'Point ' + p.id + (p.title ? ' - ' + p.title : '') + '\n' + (p.text || '') + '\nRubriques concernées : ' + (pointRubriques(p).join(' ; ') || '-');
-}
-/* Avis saisis sur les lignes insérées (renvois) : reportés sur la rubrique d'origine de l'article cité.
-   Plusieurs instances ou avis propre de la rubrique : NR l'emporte sur R, puis SO. */
-const MARK_RANK = { NR: 3, R: 2, SO: 1 };
-function exportMarksFromRenvois(){
-  const SRC = {}, ins = [], extra = {}, occ = {};
-  TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
-    const am = /^A(\d+)$/.exec(a.code || ''); if (!am) return;
-    (function w(ns){ ns.forEach(n => {
-      if (n.ins) ins.push(n);
-      else if (n.xr) { const k = am[1] + '|' + (n.ref || '') + '|' + (n.long || n.label); (SRC[k] = SRC[k] || []).push(n); }
-      if (n.children) w(n.children);
-    }); })(a.children || []);
-  }));
-  ins.forEach(n => {
-    const m = /\.x\d+\.(\d+)\.\d+$/.exec(n.code || ''); if (!m) return;
-    const key = m[1] + '|' + (n.ref || '') + '|' + (n.long || n.label);
-    const bk = (n.cf || '') + '|' + key;
-    const k = occ[bk] = (occ[bk] == null ? 0 : occ[bk] + 1);
-    const mk = MARK[(nodesState[n.code] || {}).avis]; if (!mk) return;
-    const list = SRC[key]; const srcN = list && (list[k] || list[list.length - 1]); if (!srcN) return;
-    if (!extra[srcN.code] || MARK_RANK[mk] > MARK_RANK[extra[srcN.code]]) extra[srcN.code] = mk;
-  });
-  return extra;
-}
+
+/* ============================================================
+   DOCUMENTS (Drag & Drop)
+   ============================================================ */
+function parseDocs() { return (reportInfo.docs || '').split('\n').map(s => s.trim()).filter(Boolean); }
+function handleFiles(files) { const arr = parseDocs(); Array.from(files).forEach(file => { const name = file.name.replace(/\.[^.]+$/, ''); if (name.trim() && !arr.includes(name)) arr.push(name); }); reportInfo.docs = arr.join('\n'); renderDocList(); updateDots(); }
+function addDocManually() { const name = prompt('Nom du document (sans extension) :'); if (!name || !name.trim()) return; const arr = parseDocs(); if (arr.includes(name.trim())) return; arr.push(name.trim()); reportInfo.docs = arr.join('\n'); renderDocList(); updateDots(); }
+function renderDocList() { const list = document.getElementById('docList'); if (!list) return; const arr = parseDocs(); if (!arr.length) { list.innerHTML = '<div class="doc-empty">Aucun document.</div>'; return; } list.innerHTML = arr.map((name, idx) => `<div class="doc-item"><span class="doc-icon">📄</span><input type="text" value="${escAttr(name)}" oninput="updateDocName(${idx}, this.value)" onblur="onDocBlur()"><button class="doc-remove" onclick="removeDoc(${idx})">✕</button></div>`).join(''); }
+function updateDocName(idx, val) { const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr[idx] = val; reportInfo.docs = arr.join('\n'); } }
+function onDocBlur() { reportInfo.docs = parseDocs().filter(Boolean).join('\n'); renderDocList(); updateDots(); }
+function removeDoc(idx) { const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); reportInfo.docs = arr.join('\n'); renderDocList(); updateDots(); } }
+
+/* ============================================================
+   EXPORT EXCEL & PDF (VERSION CORRIGÉE)
+   ============================================================ */
 function buildExport(){
   saveTabContent();
   const t = x => String(x == null ? '' : x).replace(/\t/g, ' ').replace(/\r?\n/g, '<LF>');
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
   let nW = 0, nM = 0, nNR = 0, nR = 0, nSO = 0;
-  INFO_FIELDS.forEach(f => {
-    if (f.g || f.p2 || f.docs || !f.sheet) return;
-    const v = (reportInfo[f.k] || '').trim(); if (!v) return;
-    L.push(['W', f.sheet, f.cell, t((f.pre || '') + v)].join('\t')); nW++;
-    (f.also || []).forEach(o => { L.push(['W', o.sheet, o.cell, t(v)].join('\t')); nW++; });
-  });
-  // Page de garde, lignes 36 et 37 : version du rapport (la version 1 garde le texte du modèle)
-  if (verNum() > 1) {
-    L.push(['W', 'Page de garde', 'A36', t(versionText())].join('\t'));
-    L.push(['W', 'Page de garde', 'F36', t('Date de la version précédente : ' + (reportInfo.prevDate || ''))].join('\t'));
-    L.push(['W', 'Page de garde', 'A37', t('Référence de la version précédente :')].join('\t'));
-    L.push(['W', 'Page de garde', 'F37', t(reportInfo.prevRef || '')].join('\t')); nW += 4;
-  }
-  const ri = k => (reportInfo[k] || '').trim();
-  if (ri('contrat') || ri('cdate') || ri('moa')) {
-    L.push(['W', 'Page 2', 'A4', t('Par contrat de vérification technique n° ' + (ri('contrat') || 'XXXX') + ' en date du ' + (ri('cdate') || 'xx/xx/xxxx') + ', la société ' + (ri('moa') || 'XXXX') + ', maître d’ouvrage de l’opération de construction suivante :')].join('\t')); nW++;
-  }
+  const fields = [
+    { k: 'client', sheet: 'Page de garde', cell: 'F7' }, { k: 'adr1', sheet: 'Page de garde', cell: 'F8' }, { k: 'adr2', sheet: 'Page de garde', cell: 'F9' }, { k: 'ville', sheet: 'Page de garde', cell: 'F10' }, { k: 'attn', sheet: 'Page de garde', cell: 'F12', pre: "A l'attention de " }, { k: 'mail', sheet: 'Page de garde', cell: 'F13' }, { k: 'affaire', sheet: 'Page de garde', cell: 'A22', also: [{ sheet: 'Page 2', cell: 'A5' }] }, { k: 'dossier', sheet: 'Page de garde', cell: 'C30' }, { k: 'date', sheet: 'Page de garde', cell: 'C32' }, { k: 'ref', sheet: 'Page de garde', cell: 'C34' }, { k: 'charge', sheet: 'Page de garde', cell: 'C47' }, { k: 'tutore', sheet: 'Page de garde', cell: 'G47' }, { k: 'contrat', sheet: 'Page 2', cell: 'A4', pre: 'Par contrat de vérification technique n° ', post: '...' }
+  ];
+  fields.forEach(f => { const v = (reportInfo[f.k] || '').trim(); if (!v) return; L.push(['W', f.sheet, f.cell, t((f.pre || '') + v + (f.post || ''))].join('\t')); nW++; (f.also || []).forEach(o => { L.push(['W', o.sheet, o.cell, t(v)].join('\t')); nW++; }); });
+  const vNum = verNum();
+  L.push(['W', 'Page de garde', 'A36', t(versionText())].join('\t')); nW++;
+  if (vNum > 1) { L.push(['W', 'Page de garde', 'F36', t('Date de la version précédente : ' + (reportInfo.prevDate || ''))].join('\t')); L.push(['W', 'Page de garde', 'A37', t('Référence de la version précédente :')].join('\t')); L.push(['W', 'Page de garde', 'F37', t(reportInfo.prevRef || '')].join('\t')); nW += 3; } else { L.push(['C', 'Page de garde', 'F36:F37'].join('\t')); }
   const docs = (reportInfo.docs || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
-  if (docs.length) {
-    const lines = docs.slice(0, 8); if (docs.length > 8) lines[7] = docs.slice(7).join(' ; ');
-    L.push(['C', 'Page 2', 'A16:A23'].join('\t'));
-    lines.forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; });
-  }
-  const extraMarks = exportMarksFromRenvois();
-  TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
-    if (!a.sh) return;
-    (function w(ns){ ns.forEach(n => {
-      if (n.xr) {
-        const s = nodesState[n.code] || {}; let mk = MARK[s.avis] || ''; const ex = extraMarks[n.code];
-        if (ex && (!mk || MARK_RANK[ex] > MARK_RANK[mk])) mk = ex;
-        const rem = exportRemark(n);
-        const clr = PRESET_HM_CODES.has(n.code) && !isHM(n.code);
-        if (mk || rem || clr) { L.push(['M', a.sh, n.xr, mk, t(rem), clr ? 'CLR' : ''].join('\t')); nM++; if (mk === 'NR') nNR++; else if (mk === 'R') nR++; else if (mk === 'SO') nSO++; }
-      }
-      if (n.children) w(n.children);
-    }); })(a.children || []);
-  }));
-  const pts = points.slice().sort((a, b) => a.id - b.id);
-  if (pts.length) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
-  return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length };
-}
-const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
-Option Explicit
-
-Private Const AVEC_TITRES As Boolean = True
-Private Const CELLULE_PAGES As String = "A38"
-Private mFeuilles As Collection
-
-Sub ImporterAdapth()
-    Dim f As Variant
-    f = Application.GetOpenFilename("Fichiers ADAPTH (*.txt),*.txt", , "Fichier d'avis exporte par ADAPTH")
-    If VarType(f) = vbBoolean Then Exit Sub
-
-    Dim st As Object, txt As String
-    Set st = CreateObject("ADODB.Stream")
-    st.Type = 2
-    st.Charset = "utf-8"
-    st.Open
-    st.LoadFromFile CStr(f)
-    txt = st.ReadText
-    st.Close
-
-    txt = Replace(txt, vbCrLf, vbLf)
-    Dim lignes() As String, p() As String
-    Dim i As Long, nM As Long, nW As Long, nP As Long, nErr As Long
-    Dim ws As Worksheet, r As Long, c As Long, pRow As Long, h As Long
-    Dim msgErr As String
-    pRow = 13
-    lignes = Split(txt, vbLf)
-    Application.ScreenUpdating = False
-
-    For i = 0 To UBound(lignes)
-        If Len(lignes(i)) > 0 Then
-            p = Split(lignes(i), vbTab)
-            Select Case p(0)
-            Case "M"
-                Set ws = Nothing
-                On Error Resume Next
-                Set ws = ThisWorkbook.Worksheets(p(1))
-                On Error GoTo 0
-                If ws Is Nothing Then
-                    nErr = nErr + 1: msgErr = msgErr & vbLf & p(1)
-                Else
-                    r = CLng(p(2))
-                    ws.Range(ws.Cells(r, 3), ws.Cells(r, 5)).ClearContents
-                    Select Case p(3)
-                    Case "R": c = 3
-                    Case "NR": c = 4
-                    Case "SO": c = 5
-                    Case Else: c = 0
-                    End Select
-                    If c > 0 Then ws.Cells(r, c).Value = p(3)
-                    If UBound(p) >= 5 Then
-                        If p(5) = "CLR" Then ws.Cells(r, 6).ClearContents
-                    End If
-                    If UBound(p) >= 4 Then
-                        If Len(p(4)) > 0 Then
-                            ws.Cells(r, 6).Value = Replace(p(4), "<LF>", vbLf)
-                            ws.Cells(r, 6).WrapText = True
-                        End If
-                    End If
-                    nM = nM + 1
-                End If
-            Case "C"
-                Set ws = Nothing
-                On Error Resume Next
-                Set ws = ThisWorkbook.Worksheets(p(1))
-                On Error GoTo 0
-                If Not ws Is Nothing Then ws.Range(p(2)).ClearContents
-            Case "W"
-                Set ws = Nothing
-                On Error Resume Next
-                Set ws = ThisWorkbook.Worksheets(p(1))
-                On Error GoTo 0
-                If ws Is Nothing Then
-                    nErr = nErr + 1: msgErr = msgErr & vbLf & p(1)
-                Else
-                    ws.Range(p(2)).Value = Replace(p(3), "<LF>", vbLf)
-                    nW = nW + 1
-                End If
-            Case "P"
-                Set ws = Nothing
-                On Error Resume Next
-                Set ws = ThisWorkbook.Worksheets(p(1))
-                On Error GoTo 0
-                If Not ws Is Nothing Then
-                    If nP = 0 Then
-                        ws.Range("A13:I80").UnMerge
-                        ws.Range("A13:I80").ClearContents
-                    End If
-                    With ws.Range(ws.Cells(pRow, 1), ws.Cells(pRow, 9))
-                        .Merge
-                        .WrapText = True
-                        .VerticalAlignment = xlTop
-                        .Value = Replace(p(3), "<LF>", vbLf)
-                        .Font.Bold = (p(2) = "H")
-                    End With
-                    h = 1 + Int(Len(p(3)) / 100) + (Len(p(3)) - Len(Replace(p(3), "<LF>", ""))) / 4
-                    ws.Rows(pRow).RowHeight = Application.WorksheetFunction.Min(409, 15 * h)
-                    pRow = pRow + 1
-                    nP = nP + 1
-                End If
-            End Select
-        End If
-    Next i
-    Application.ScreenUpdating = True
-
-    MsgBox nM & " ligne(s) d'avis, " & nW & " champ(s) d'info et " & nP & " ligne(s) d'annexe reportes." & _
-        IIf(nErr > 0, vbLf & vbLf & "Feuilles introuvables :" & msgErr, ""), vbInformation, "ADAPTH"
-End Sub
-
-Private Function EstArt(ws As Worksheet) As Boolean
-    EstArt = (Left$(ws.Name, 4) = "Art.")
-End Function
-
-Private Sub ZoneDonnees(ws As Worksheet, ByRef r1 As Long, ByRef r2 As Long)
-    Dim pa As String, i As Long
-    r1 = 3
-    For i = 1 To 6
-        If ws.Cells(i, 1).Text = "#" Then
-            r1 = i + 1
-            Exit For
-        End If
-    Next i
-    pa = ws.PageSetup.PrintArea
-    If Len(pa) > 0 Then
-        r2 = ws.Range(pa).Row + ws.Range(pa).Rows.Count - 1
-    Else
-        r2 = ws.UsedRange.Row + ws.UsedRange.Rows.Count - 1
-    End If
-    If r2 < r1 Then r2 = r1
-End Sub
-
-Private Function LigneRenseignee(ws As Worksheet, r As Long) As Boolean
-    Dim c As Long
-    For c = 3 To 6
-        If Len(Trim$(ws.Cells(r, c).Text)) > 0 Then
-            LigneRenseignee = True
-            Exit Function
-        End If
-    Next c
-End Function
-
-Private Function NbPages(ws As Worksheet) As Long
-    Dim n As Long
-    On Error Resume Next
-    n = ws.PageSetup.Pages.Count
-    If Err.Number <> 0 Or n < 1 Then
-        Err.Clear
-        n = ws.HPageBreaks.Count + 1
-    End If
-    On Error GoTo 0
-    If n < 1 Then n = 1
-    NbPages = n
-End Function
-
-Public Sub RestaurerLignes()
-    Dim ws As Worksheet, r1 As Long, r2 As Long
-    For Each ws In ThisWorkbook.Worksheets
-        If EstArt(ws) Then
-            ZoneDonnees ws, r1, r2
-            ws.Rows(r1 & ":" & r2).Hidden = False
-        End If
-    Next ws
-End Sub
-
-Public Sub PreparerImpression()
-    Preparer False, False
-End Sub
-
-' toutesLignes = False : seules les lignes renseignees (et leur rubrique) sont imprimees
-' toutesLignes = True  : toutes les lignes, meme vides
-' tousArticles = True  : (avec toutesLignes) tous les articles, meme sans avis
-Private Sub Preparer(ByVal toutesLignes As Boolean, ByVal tousArticles As Boolean)
-    Dim ws As Worksheet, r As Long, t As Long, r1 As Long, r2 As Long
-    Dim garder() As Boolean
-    Dim nb As Long, total As Long, nbArt As Long, v As Variant
-
-    If Not toutesLignes Then tousArticles = False
-    Application.ScreenUpdating = False
-    Set mFeuilles = New Collection
-    mFeuilles.Add "Page de garde"
-    mFeuilles.Add "Page 2"
-    mFeuilles.Add "Commentaires"
-
-    For Each ws In ThisWorkbook.Worksheets
-        If EstArt(ws) Then
-            ZoneDonnees ws, r1, r2
-            ws.Rows(r1 & ":" & r2).Hidden = False
-            ReDim garder(r1 To r2)
-            nb = 0
-            For r = r1 To r2
-                If LigneRenseignee(ws, r) Then
-                    garder(r) = True
-                    nb = nb + 1
-                    If AVEC_TITRES And ws.Cells(r, 2).Interior.ColorIndex = xlColorIndexNone Then
-                        For t = r - 1 To r1 Step -1
-                            If ws.Cells(t, 2).Interior.ColorIndex <> xlColorIndexNone Then
-                                garder(t) = True
-                                Exit For
-                            End If
-                        Next t
-                    End If
-                End If
-            Next r
-            If nb > 0 Or tousArticles Then
-                If Not toutesLignes Then
-                    For r = r1 To r2
-                        ws.Rows(r).Hidden = Not garder(r)
-                    Next r
-                End If
-                mFeuilles.Add ws.Name
-                nbArt = nbArt + 1
-            End If
-        End If
-    Next ws
-
-    For Each v In mFeuilles
-        total = total + NbPages(ThisWorkbook.Worksheets(CStr(v)))
-    Next v
-    ThisWorkbook.Worksheets("Page 2").Range(CELLULE_PAGES).Value = "Ce document comporte " & total & " pages y compris la page de garde"
-    Application.ScreenUpdating = True
-
-    MsgBox nbArt & " feuille(s) d'articles a imprimer (" & IIf(toutesLignes, "toutes les lignes", "lignes renseignees seulement") & ")." & vbLf & _
-        "Total : " & total & " pages (page de garde comprise)." & vbLf & "Le total est ecrit en Page 2.", vbInformation, "ADAPTH"
-End Sub
-
-Public Sub ImprimerRapport()
-    Dim noms() As Variant, i As Long, rep As VbMsgBoxResult
-    Dim toutes As Boolean, tous As Boolean
-
-    rep = MsgBox("Quelles lignes imprimer ?" & vbLf & vbLf & _
-        "Oui = uniquement les lignes renseignees" & vbLf & _
-        "Non = toutes les lignes, meme vides" & vbLf & _
-        "Annuler = quitter", vbYesNoCancel + vbQuestion, "ADAPTH")
-    If rep = vbCancel Then Exit Sub
-    toutes = (rep = vbNo)
-    If toutes Then
-        rep = MsgBox("Quels articles ?" & vbLf & vbLf & _
-            "Oui = seulement ceux qui ont des avis ou remarques" & vbLf & _
-            "Non = tous les articles" & vbLf & _
-            "Annuler = quitter", vbYesNoCancel + vbQuestion, "ADAPTH")
-        If rep = vbCancel Then Exit Sub
-        tous = (rep = vbNo)
-    End If
-
-    Preparer toutes, tous
-    If mFeuilles Is Nothing Then Exit Sub
-    ReDim noms(0 To mFeuilles.Count - 1)
-    For i = 1 To mFeuilles.Count
-        noms(i - 1) = mFeuilles(i)
-    Next i
-    rep = MsgBox("Imprimer maintenant ?" & vbLf & "Oui = imprimante, Non = apercu avant impression, Annuler = rien.", vbYesNoCancel + vbQuestion, "ADAPTH")
-    If rep <> vbCancel Then
-        ThisWorkbook.Activate
-        ThisWorkbook.Worksheets(noms).Select
-        If rep = vbYes Then
-            ActiveWindow.SelectedSheets.PrintOut Copies:=1, Collate:=True
-        Else
-            ActiveWindow.SelectedSheets.PrintPreview
-        End If
-        ThisWorkbook.Worksheets("Page de garde").Select
-    End If
-    RestaurerLignes
-End Sub
-`;
-function openExport(){
-  const x = buildExport();
-  el('exportBody').innerHTML = `
-    <p><b>${x.nM}</b> ligne(s) de feuille à remplir (R : ${x.nR} · NR : ${x.nNR} · SO : ${x.nSO}), <b>${x.nW}</b> champ(s) d'infos, <b>${x.nP}</b> point(s) en annexe.<br>
-    <small>F devient R et D devient NR. Les avis saisis sur les lignes insérées (renvois) sont reportés sur la rubrique d'origine de l'article cité (NR l'emporte sur R, puis SO) ; les renvois en NR figurent aussi dans la remarque de la ligne qui les cite.</small></p>
-    <div class="xl-box">
-      <b>Classeur Excel prêt à imprimer (.xlsx) – sans macro</b>
-      <div class="xl-opts">
-        <label><input type="radio" name="xlL" value="ren" checked onchange="updateXlOpts()"> Lignes renseignées seulement (avec leur rubrique)</label>
-        <label><input type="radio" name="xlL" value="all" onchange="updateXlOpts()"> Toutes les lignes, même vides</label>
-        <label class="sub"><input type="checkbox" id="xlTous" disabled> Garder aussi les articles sans avis</label>
-        <label><input type="checkbox" id="xlHide" checked> Masquer les feuilles d'articles non imprimées</label>
-        <label><input type="checkbox" id="xlAnnexes"> Inclure les annexes Art. 14 et Art. 19 (schémas)</label>
-        <label><input type="checkbox" id="xlPages" checked> Écrire le nombre de pages estimé en Page 2</label>
-      </div>
-      <div class="xl-mod"><span id="xlModele">Recherche du modèle…</span> <button onclick="chooseModele()">Choisir / changer le modèle…</button></div>
-      <button id="xlGo" class="xl-go" onclick="exportXlsx()" disabled>⬇ Télécharger le classeur Excel</button>
-      <button id="pdfGo" class="xl-go pdf" onclick="exportPdf()" disabled>⬇ Télécharger le PDF</button>
-      <div id="xlMsg" class="xl-msg"></div>
-    </div>
-    <details class="xl-adv"><summary>Autres exports (fichier d'avis + macro, rapport)</summary>
-      <button onclick="doExport()">⬇ Fichier d'avis (.txt)</button>
-      <button onclick="doMacro()">⬇ Macro Excel (.bas)</button>
-      <button onclick="closeModal('exportModal');openReport()">🖨 Rapport imprimable</button>
-      <ol>
-        <li>Alt+F11 → Fichier → Importer un fichier → <i>ImporterAdapth.bas</i>.</li>
-        <li>Alt+F8 → <i>ImporterAdapth</i> → choisissez le fichier d'avis.</li>
-        <li>Alt+F8 → <i>ImprimerRapport</i> : lignes renseignées ou toutes, nombre de pages exact, impression ou aperçu.</li>
-      </ol>
-    </details>`;
-  el('exportModal').classList.add('open');
-  refreshModeleStatus();
-}
-function doExport(){ download('adapth_avis_' + new Date().toISOString().slice(0, 10) + '.txt', '\uFEFF' + buildExport().text); }
-function doMacro(){ download('ImporterAdapth.bas', VBA_MACRO.replace(/\r?\n/g, '\r\n')); }
-
-/* ===== HM (hors mission), libellé long, second volet « Renvois » ===== */
-/* Lignes « Hors Mission » préremplies dans le modèle Excel (colonne Annexe / Remarque), par article */
-const PRESET_HM = {};   // plus de « Hors Mission » par défaut (les lignes préremplies du modèle sont supprimées à l'export)
-const PRESET_HM_CODES = new Set();
-(function(){
-  TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
-    const m = /^A(\d+)$/.exec(a.code || ''); const rows = m && PRESET_HM[m[1]]; if (!rows) return;
-    const set = new Set(rows);
-    (function w(ns){ ns.forEach(n => { if (!n.ins && n.xr && set.has(n.xr)) PRESET_HM_CODES.add(n.code); if (n.children) w(n.children); }); })(a.children || []);
-  }));
-})();
-function isHM(code){ const st = nodesState[code]; if (st && st.hm !== undefined) return !!st.hm; return PRESET_HM_CODES.has(code); }
-function setHM(on){
-  if (!selectedNode) { const c = document.getElementById('chkHM'); if (c) c.checked = false; return; }
-  const code = selectedNode.code; const st = nodesState[code] || (nodesState[code] = {});
-  if (!!on === PRESET_HM_CODES.has(code)) delete st.hm; else st.hm = !!on;
-  if (on) { if (!st.libelle) st.libelle = selectedNode.long || selectedNode.label; if (!st.article) st.article = selectedNode.ref || ''; }
-  renderRubriquesTable();
-}
-function syncHM(){
-  const c = document.getElementById('chkHM'); if (!c) return;
-  c.checked = !!(selectedNode && isHM(selectedNode.code));
-}
-function fitLibelle(){
-  const t = document.getElementById('inputLibelle'); if (!t) return;
-  t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, 170) + 'px';
-}
-(function(){
-  const _uab = updateAvisButtons; updateAvisButtons = function(){ _uab.apply(this, arguments); syncHM(); fitLibelle(); };
-  const _usp = updateSommaireFromPath; updateSommaireFromPath = function(){ _usp.apply(this, arguments); renderRvSommaire(); };
-})();
-let rvSomOpen = false, rvSomCiting = '';
-function toggleRvSommaire(){
-  rvSomOpen = !rvSomOpen;
-  document.getElementById('rvSommaire').style.display = rvSomOpen ? 'block' : 'none';
-  document.getElementById('rvSomBtn').textContent = (rvSomOpen ? '▾' : '▸') + " Renvois de l'article";
-  renderRvSommaire();
-}
-function renderRvSommaire(){
-  const box = document.getElementById('rvSommaire'); if (!box || !rvSomOpen) return;
-  const art = selectedNode ? findParentArticle(selectedNode.code) : null;
-  if (!art) { box.innerHTML = '<div class="rv-help">Sélectionnez une rubrique d\'un article.</div>'; return; }
-  const citing = [];
-  (function w(ns){ ns.forEach(n => { if (!n.ins && CITED[n.code]) citing.push(n); if (n.children) w(n.children); }); })(art.children || []);
-  if (!citing.length) { box.innerHTML = '<div class="rv-help">Aucun renvoi dans ' + esc(art.label) + '.</div>'; return; }
-  let cur = selectedNode && (selectedNode.ins ? selectedNode.cf : selectedNode.code);
-  if (!citing.some(c => c.code === cur)) cur = citing.some(c => c.code === rvSomCiting) ? rvSomCiting : citing[0].code;
-  rvSomCiting = cur;
-  const o1 = citing.map(c => `<option value="${escAttr(c.code)}" ${c.code === cur ? 'selected' : ''} title="${escAttr(c.long || c.label)}">${esc(nodeLabel(c))} (+${CITED[c.code].length})</option>`).join('');
-  const list = CITED[cur] || []; const m = Math.min(...list.map(x => x.level));
-  const o2 = '<option value="">— Choisir une ligne insérée —</option>' + list.map(x => `<option value="${escAttr(x.code)}" title="${escAttr((x.ref ? x.ref + ' – ' : '') + (x.long || x.label))}">${'\u00a0\u00a0'.repeat(x.level - m)}${esc(nodeLabel(x))}</option>`).join('');
-  box.innerHTML = `<div class="rv-help">Rubriques de l'article qui renvoient à d'autres articles</div>
-    <div class="select-row"><select onchange="rvSomCiting=this.value;handleRowClick(this.value)">${o1}</select></div>
-    <div class="select-row"><select onchange="if(this.value)handleRowClick(this.value)">${o2}</select></div>`;
+  if (docs.length) { L.push(['C', 'Page 2', 'A16:A23'].join('\t')); docs.slice(0, 8).forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; }); }
+  return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: 0 };
 }
 
-/* ===== Export Excel direct : classeur modèle rempli (.xlsx), sans macro ===== */
-const APP_BASE = (typeof window.RAPSO_BASE === 'string') ? window.RAPSO_BASE : '';   // dossier de la page (utile quand l'application est chargée dans le portail)
-const MODELE_URL = 'modele.xlsm';   // à placer à côté de index.html si le modèle peut être hébergé ; sinon il est choisi une fois puis mémorisé dans le navigateur
-const EXCELJS_URLS = ['lib/exceljs.min.js', 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js'];
-const XL_PAGE_PT = 757;             // hauteur utile d'une page A4 portrait (marges du modèle)
-let xlModele = null;                // {name, buf}
-function loadScript(url){ return new Promise((ok, ko) => { const sc = document.createElement('script'); sc.src = /^(https?:)?\/\//.test(url) ? url : APP_BASE + url; sc.onload = ok; sc.onerror = () => ko(new Error(url)); document.head.appendChild(sc); }); }
-async function ensureExcelJS(){
-  if (window.ExcelJS) return;
-  for (const u of EXCELJS_URLS) { try { await loadScript(u); if (window.ExcelJS) return; } catch (e) {} }
-  throw new Error("Bibliothèque ExcelJS introuvable (placez lib/exceljs.min.js à côté de la page ou vérifiez la connexion).");
-}
-function isZip(b){ try { const u = new Uint8Array(b, 0, 2); return u[0] === 0x50 && u[1] === 0x4B; } catch (e) { return false; } }
-function idbOpen(){ return new Promise((ok, ko) => { const r = indexedDB.open('adapth', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => ok(r.result); r.onerror = () => ko(r.error); }); }
-async function kvGet(k){ const db = await idbOpen(); return new Promise((ok, ko) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => ok(q.result); q.onerror = () => ko(q.error); }); }
-async function kvSet(k, v){ const db = await idbOpen(); return new Promise((ok, ko) => { const q = db.transaction('kv', 'readwrite').objectStore('kv').put(v, k); q.onsuccess = () => ok(); q.onerror = () => ko(q.error); }); }
-async function findModele(){
-  try { const r = await fetch(APP_BASE + MODELE_URL, { cache: 'no-cache' }); if (r.ok) { const b = await r.arrayBuffer(); if (isZip(b)) return { name: MODELE_URL, buf: b }; } } catch (e) {}
-  return null;
-}
-function chooseModele(){
-  const i = document.createElement('input'); i.type = 'file'; i.accept = '.xlsm,.xlsx';
-  i.onchange = async () => {
-    const f = i.files[0]; if (!f) return; const buf = await f.arrayBuffer();
-    if (!isZip(buf)) { alert('Fichier Excel invalide.'); return; }
-    xlModele = { name: f.name, buf: buf }; try { await kvSet('modele', xlModele); } catch (e) {}
-    refreshModeleStatus();
-  };
-  i.click();
-}
-async function refreshModeleStatus(){
-  const st = el('xlModele'); if (!st) return;
-  if (!xlModele) xlModele = await findModele();
-  st.innerHTML = xlModele ? 'Modèle : <b>' + esc(xlModele.name) + '</b>' : '<span style="color:#b71c1c">Aucun modèle : choisissez le classeur SQ-04 (.xlsm) une fois, il sera mémorisé.</span>';
-  const g = el('xlGo'); if (g) g.disabled = !xlModele; const g2 = el('pdfGo'); if (g2) g2.disabled = !xlModele;
-}
-function updateXlOpts(){
-  const all = document.querySelector('input[name=xlL]:checked').value === 'all';
-  const t = el('xlTous'); t.disabled = !all; if (!all) t.checked = false;
-}
-function xlText(c){
-  try {
-    const v = c ? c.value : null; if (v == null) return '';
-    if (typeof v === 'object') { if (v.richText) return v.richText.map(t => t.text).join(''); if (v.result != null) return String(v.result); if (v.text != null) return String(v.text); return ''; }
-    return String(v);
-  } catch (e) { return ''; }
-}
-function xlCellFilled(c){
-  if (c && c.isMerged && c.master && c.master.address !== c.address) return false;   // cellule fusionnée : seule la cellule maîtresse compte
-  return xlText(c).trim() !== '';
-}
-function xlHasFill(c){
-  const f = c && c.fill; if (!f || f.type !== 'pattern' || !f.pattern || f.pattern === 'none') return false;
-  const a = f.fgColor && f.fgColor.argb; return !(a && /^(FF)?FFFFFF$/i.test(a));
-}
-function xlColW(ws, c){ return ws.getColumn(c).width || 8.43; }
-function xlRowH(ws, r){
-  const row = ws.getRow(r); if (row.hidden) return 0; if (row.height) return row.height;
-  const b = xlText(ws.getCell(r, 2)), f = xlText(ws.getCell(r, 6));
-  const lb = Math.max(1, Math.ceil(b.length / (xlColW(ws, 2) * 1.05)));
-  const lf = Math.max(1, f.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / Math.max(6, xlColW(ws, 6) * 0.95))), 0));
-  return Math.max(13.5, 11.5 * Math.max(lb, lf) + 2);
-}
-function xlPages(ws, last){ let h = 0; for (let r = 1; r <= last; r++) h += xlRowH(ws, r); return Math.max(1, Math.ceil(h / XL_PAGE_PT)); }
-async function fillWorkbook(o){
-  await ensureExcelJS();
-  if (!xlModele) xlModele = await findModele();
-  if (!xlModele) throw new Error('Modèle Excel introuvable : le fichier modele.xlsm doit être présent dans le dépôt, à côté de la page.');
-  const x = buildExport();
-  const wb = new ExcelJS.Workbook(); await wb.xlsx.load(xlModele.buf);
-  const miss = new Set(); const un = t => String(t || '').replace(/<LF>/g, '\n');
-  let pRow = 13, nP = 0, lastCom = 11;
-  x.text.split('\r\n').forEach(ln => {
-    if (!ln) return; const p = ln.split('\t'); const ws = wb.getWorksheet(p[1]);
-    if (['M', 'C', 'W', 'P'].includes(p[0]) && !ws) { miss.add(p[1]); return; }
-    if (p[0] === 'M') {
-      const r = parseInt(p[2], 10);
-      [3, 4, 5].forEach(c => { ws.getCell(r, c).value = null; });
-      if (p[5] === 'CLR') ws.getCell(r, 6).value = null;
-      const col = { R: 3, NR: 4, SO: 5 }[p[3]]; if (col) ws.getCell(r, col).value = p[3];
-      if (p[4]) {
-        const txt = un(p[4]); const cell = ws.getCell(r, 6); cell.value = txt;
-        cell.alignment = Object.assign({}, cell.alignment, { wrapText: true });
-        const row = ws.getRow(r); const need = 12 * txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / 14)), 0) + 2;
-        if (row.height && row.height < need) row.height = need;
-      }
-    } else if (p[0] === 'C') {
-      const m = /^([A-Z]+)(\d+):[A-Z]+(\d+)$/.exec(p[2]);
-      if (m) for (let r = +m[2]; r <= +m[3]; r++) ws.getCell(m[1] + r).value = null;
-    } else if (p[0] === 'W') {
-      ws.getCell(p[2]).value = un(p[3]);
-    } else if (p[0] === 'P') {
-      if (nP === 0) { try { ws.unMergeCells('A13:I80'); } catch (e) {} for (let r = 13; r <= 80; r++) for (let c = 1; c <= 9; c++) ws.getCell(r, c).value = null; }
-      const r = pRow; ws.mergeCells(r, 1, r, 9);
-      const cell = ws.getCell(r, 1); cell.value = un(p[3]);
-      cell.alignment = { wrapText: true, vertical: 'top' };
-      cell.font = Object.assign({}, ws.getCell('A9').font, { bold: p[2] === 'H' });
-      const nl = (p[3].match(/<LF>/g) || []).length;
-      ws.getRow(r).height = Math.min(409, 15 * (1 + Math.floor(p[3].length / 100) + nl / 4));
-      pRow++; nP++; lastCom = r;
-    }
-  });
-  // « Hors Mission » préremplis dans le modèle (Art. 31 et 32) : supprimés, sauf lignes marquées HM dans l'application
-  const keepHM = new Set();
-  x.text.split('\r\n').forEach(ln => { const p = ln.split('\t'); if (p[0] === 'M' && /Hors Mission/.test(p[4] || '')) keepHM.add(p[1] + '|' + p[2]); });
-  wb.worksheets.forEach(ws => {
-    if (!/^Art\./.test(ws.name)) return;
-    for (let r = 3; r <= ws.rowCount; r++) {
-      const c = ws.getCell(r, 6); if (c.isMerged && c.master && c.master.address !== c.address) continue;
-      if (/^hors\s*mission$/i.test(xlText(c).trim()) && !keepHM.has(ws.name + '|' + r)) c.value = null;
-    }
-  });
-  // --- préparation de l'impression (équivalent de ImprimerRapport) ---
-  let pages = 0, nArt = 0;
-  ['Page de garde', 'Page 2'].forEach(n => { if (wb.getWorksheet(n)) pages += 1; });
-  const com = wb.getWorksheet('Commentaires'); if (com) pages += xlPages(com, lastCom);
-  wb.worksheets.forEach(ws => {
-    if (!/^Art\./.test(ws.name)) return;
-    const annexe = /^Art\.(14|19)\b/.test(ws.name);   // annexes explicatives (schémas), rien à renseigner
-    if (annexe) {
-      if (o.annexes) { const mm = /\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?(\d+)/.exec((ws.pageSetup && ws.pageSetup.printArea) || ''); nArt++; pages += xlPages(ws, mm ? +mm[1] : ws.rowCount); }
-      else if (o.masquerFeuilles) ws.state = 'hidden';
-      return;
-    }
-    let r1 = 3; for (let i = 1; i <= 6; i++) if (xlText(ws.getCell(i, 1)).trim() === '#') { r1 = i + 1; break; }
-    const m = /\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?(\d+)/.exec((ws.pageSetup && ws.pageSetup.printArea) || '');
-    const r2 = m ? +m[1] : ws.rowCount;
-    const keepRow = {}; let nb = 0;
-    for (let r = r1; r <= r2; r++) {
-      let f = false; for (let c = 3; c <= 6; c++) if (xlCellFilled(ws.getCell(r, c))) { f = true; break; }
-      if (f) { keepRow[r] = true; nb++; if (!xlHasFill(ws.getCell(r, 2))) for (let t = r - 1; t >= r1; t--) if (xlHasFill(ws.getCell(t, 2))) { keepRow[t] = true; break; } }
-    }
-    const incl = nb > 0 || (o.toutes && o.tousArticles);
-    if (!incl) { if (o.masquerFeuilles) ws.state = 'hidden'; return; }
-    if (!o.toutes) for (let r = r1; r <= r2; r++) if (!keepRow[r]) ws.getRow(r).hidden = true;
-    nArt++; pages += xlPages(ws, r2);
-  });
-  if (o.ecrirePages) { const p2 = wb.getWorksheet('Page 2'); if (p2) p2.getCell('A38').value = 'Ce document comporte ' + pages + ' pages y compris la page de garde'; }
-  return { wb: wb, total: pages, arts: nArt, miss: Array.from(miss), x: x };
-}
-async function buildXlsx(o){
-  const f = await fillWorkbook(o);
-  const buffer = await f.wb.xlsx.writeBuffer();
-  return { buffer: buffer, total: f.total, arts: f.arts, miss: f.miss, x: f.x };
-}
-function downloadBlob(name, blob){
-  const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
-}
-function readOpts(px){
-  const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
-  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked };
-}
-function updateOptsUI(px){
-  const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all'; const t = document.getElementById(px + 'Tous'); t.disabled = !all; if (!all) t.checked = false; else if (!t.dataset.touched) t.checked = true;
-}
-function xlOpts(){ return { toutes: true, tousArticles: true, masquerFeuilles: true, annexes: true, ecrirePages: true }; }
-async function exportXlsx(msgId, btnId){
-  const msg = el(msgId || 'xlMsg'), go = el(btnId || 'xlGo');
-  const o = readOpts('xls');
-  go.disabled = true; msg.textContent = 'Génération du classeur…';
-  try {
-    const r = await buildXlsx(o);
-    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
-    downloadBlob(name, new Blob([r.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé.';
-  } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
-  go.disabled = false;
-}
-
-/* ===== Export PDF direct : le classeur rempli est dessiné avec pdfmake (nombre de pages exact) ===== */
-const PDF_LIBS = [['lib/pdfmake.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js'], ['lib/vfs_fonts.js', 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js']];
-const PDF_PAGE = { w: 595.28, h: 841.89 }, PDF_M = { l: 40, t: 54, r: 40, b: 54 };
-const PDF_MDW = 5.3;                       // largeur d'un caractère du modèle (police étroite) en pixels Excel
-const PDF_W = { art: 490, other: 465 };    // largeur du contenu, centré sur la page (proportions du modèle imprimé)
-const PDF_IDX = { 8: '000000', 9: 'FFFFFF', 10: 'FF0000', 11: '00FF00', 12: '0000FF', 13: 'FFFF00', 14: 'FF00FF', 15: '00FFFF' };
-async function loadAny(urls){ for (const u of urls) { try { await loadScript(u); return; } catch (e) {} } throw new Error('Chargement impossible : ' + urls[0]); }
-async function ensurePdfMake(){
-  if (!(window.pdfMake && window.pdfMake.createPdf)) await loadAny(PDF_LIBS[0]);
-  if (!(window.pdfMake && window.pdfMake.vfs && Object.keys(window.pdfMake.vfs).length)) await loadAny(PDF_LIBS[1]);
-  if (!(window.pdfMake && window.pdfMake.createPdf)) throw new Error('Bibliothèque pdfmake introuvable (lib/pdfmake.min.js et lib/vfs_fonts.js).');
-}
-function pdfTheme(wb){
-  const th = (wb._themes && wb._themes.theme1) || '';
-  const g = (n, d) => { const m = new RegExp('<a:' + n + '>[\\s\\S]*?(?:srgbClr val|lastClr)="([0-9A-Fa-f]{6})"').exec(th); return m ? m[1] : d; };
-  return [g('lt1', 'FFFFFF'), g('dk1', '000000'), g('lt2', 'EEECE1'), g('dk2', '1F497D'), g('accent1', '4F81BD'), g('accent2', 'C0504D'), g('accent3', '9BBB59'), g('accent4', '8064A2'), g('accent5', '4BACC6'), g('accent6', 'F79646')];
-}
-function pdfTint(hex, t){
-  // teinte Excel : la luminosité est modifiée dans l'espace HSL
-  let r = parseInt(hex.substr(0, 2), 16) / 255, g = parseInt(hex.substr(2, 2), 16) / 255, b = parseInt(hex.substr(4, 2), 16) / 255;
-  const mx = Math.max(r, g, b), mn = Math.min(r, g, b); let h = 0, sat = 0, l = (mx + mn) / 2;
-  if (mx !== mn) { const d = mx - mn; sat = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn); h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : (mx === g ? (b - r) / d + 2 : (r - g) / d + 4); h /= 6; }
-  l = t > 0 ? l * (1 - t) + t : l * (1 + t);
-  const hue = (p, q, tt) => { if (tt < 0) tt += 1; if (tt > 1) tt -= 1; if (tt < 1 / 6) return p + (q - p) * 6 * tt; if (tt < 1 / 2) return q; if (tt < 2 / 3) return p + (q - p) * (2 / 3 - tt) * 6; return p; };
-  if (sat === 0) { r = g = b = l; } else { const q = l < 0.5 ? l * (1 + sat) : l + sat - l * sat, p = 2 * l - q; r = hue(p, q, h + 1 / 3); g = hue(p, q, h); b = hue(p, q, h - 1 / 3); }
-  return [r, g, b].map(v => Math.max(0, Math.min(255, Math.round(v * 255))).toString(16).padStart(2, '0')).join('');
-}
-function pdfColor(col, theme){
-  if (!col) return null;
-  if (col.argb) return '#' + String(col.argb).slice(-6);
-  if (col.theme != null) { let h = theme[col.theme] || '000000'; if (col.tint) h = pdfTint(h, col.tint); return '#' + h; }
-  if (col.indexed != null && PDF_IDX[col.indexed]) return '#' + PDF_IDX[col.indexed];
-  return null;
-}
-function pdfColNum(L){ let n = 0; for (const ch of L) n = n * 26 + ch.charCodeAt(0) - 64; return n; }
-function pdfRuns(cell, theme, sc){
-  const f = cell.font || {}; const base = pdfColor(f.color, theme) || '#000000'; const v = cell.value;
-  const mk = (t, ft) => ({ text: t, bold: ft ? !!ft.bold : !!f.bold, italics: ft ? !!ft.italic : !!f.italic, color: (ft && pdfColor(ft.color, theme)) || base, fontSize: (((ft && ft.size) || f.size || 10) * sc) });
-  if (v && typeof v === 'object' && v.richText) return v.richText.map(r => mk(r.text, r.font));
-  return [mk(xlText(cell), null)];
-}
-function pdfBorderFlags(cell){ const b = cell.border || {}; return [!!(b.left && b.left.style), !!(b.top && b.top.style), !!(b.right && b.right.style), !!(b.bottom && b.bottom.style)]; }
-function pdfAlign(cell){ const h = (cell.alignment || {}).horizontal; return (h === 'center' || h === 'centerContinuous') ? 'center' : (h === 'right' ? 'right' : (h === 'justify' ? 'justify' : 'left')); }
-function pdfFill(cell, theme){ const f = cell.fill; if (!f || f.type !== 'pattern' || f.pattern !== 'solid') return null; return pdfColor(f.fgColor, theme); }
-function pdfBullet(kind){
-  return kind === 'r' ? [{ type: 'rect', x: 0.5, y: 1.2, w: 6, h: 6, lineWidth: 0.7, lineColor: '#000' }]
-    : [{ type: 'polyline', closePath: true, color: '#222', lineWidth: 0.2, points: [{ x: 0, y: 1 }, { x: 6, y: 4.2 }, { x: 0, y: 7.4 }] }];
-}
-function pdfCellObj(cell, ws, theme, sc, colSpan, col, cont, bullets){
-  let runs = pdfRuns(cell, theme, sc); const ind = ((cell.alignment || {}).indent || 0) * 6 * sc;
-  const fill = pdfFill(cell, theme); const bd = pdfBorderFlags(cell); if (cont) { bd[1] = false; }
-  const txt = xlText(cell).trim();
-  let obj;
-  if (cont) obj = { text: '' };
-  else if (col >= 3 && col <= 5 && ['R', 'NR', 'SO'].includes(txt)) obj = { text: txt, bold: true, alignment: 'center', color: txt === 'R' ? '#1b9a4b' : (txt === 'NR' ? '#d40000' : '#000000'), fontSize: runs[0].fontSize };
-  else if (bullets && runs.length > 1 && ['r', 'Ø'].includes(String(runs[0].text).trim())) {
-    const rest = runs.slice(1).map(r => Object.assign({}, r)); rest[0].text = String(rest[0].text).replace(/^\s+/, '');
-    obj = { columns: [{ width: 11, canvas: pdfBullet(String(runs[0].text).trim()) }, { width: '*', text: rest, alignment: pdfAlign(cell) }], columnGap: 2 };
-  } else obj = { text: runs, alignment: pdfAlign(cell) };
-  if (ind && obj.text) obj.margin = [ind, 0, 0, 0];
-  if (fill) obj.fillColor = fill;
-  obj.border = bd; if (colSpan > 1) obj.colSpan = colSpan;
-  return obj;
-}
-function pdfArea(ws, defCols){
-  let r1 = 1, c1 = 1, r2 = ws.rowCount, c2 = defCols || 6;
-  const m = /\$?([A-Z]+)\$?(\d+):\$?([A-Z]+)\$?(\d+)/.exec((ws.pageSetup && ws.pageSetup.printArea) || '');
-  if (m) { c1 = pdfColNum(m[1]); r1 = +m[2]; c2 = pdfColNum(m[3]); r2 = +m[4]; }
-  // on retire les lignes vides (sans texte ni bordure) en fin de zone
-  while (r2 > r1) { let used = false; for (let c = c1; c <= c2; c++) { const cell = ws.getCell(r2, c); if (xlText(cell).trim() || pdfBorderFlags(cell).some(Boolean)) { used = true; break; } } if (used) break; r2--; }
-  return { r1, c1, r2, c2 };
-}
-function pdfMerges(ws){
-  const map = {}; ((ws.model && ws.model.merges) || []).forEach(sx => {
-    const m = /^([A-Z]+)(\d+):([A-Z]+)(\d+)$/.exec(sx); if (!m) return;
-    const c1 = pdfColNum(m[1]), r1 = +m[2], c2 = pdfColNum(m[3]), r2 = +m[4];
-    for (let r = r1; r <= r2; r++) for (let c = c1; c <= c2; c++) map[r + ',' + c] = { mr: r1, mc: c1, r2: r2, c2: c2 };
-  });
-  return map;
-}
-function pdfGrid(ws, theme, W, o){
-  o = o || {}; const A = pdfArea(ws, o.defCols); if (o.rowTo) A.r2 = Math.min(A.r2, o.rowTo); const mg = pdfMerges(ws);
-  const colPt = []; for (let c = A.c1; c <= A.c2; c++) colPt.push(((ws.getColumn(c).width || 8.43) * PDF_MDW + 5) * 0.75);
-  const n = colPt.length, total = colPt.reduce((a, b) => a + b, 0);
-  const usable = W - 4 * n - 0.5 * (n + 1);                  // la largeur totale du tableau (marges internes et traits compris) vaut exactement W
-  const widths = colPt.map(x => x / total * usable);
-  const fsc = o.fsc || 0.8, hsc = o.hsc || 0.8;
-  const body = [], hs = []; const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
-  for (let r = A.r1; r <= A.r2; r++) {
-    const row = ws.getRow(r); if (row.hidden) continue; const cells = [];
-    for (let c = A.c1; c <= A.c2; c++) {
-      const m = mg[r + ',' + c], cell = ws.getCell(r, c);
-      if (m && (m.mr !== r || m.mc !== c)) {
-        if (m.mr < r && c === m.mc) { const cs = Math.min(m.c2, A.c2) - c + 1; cells.push(pdfCellObj(ws.getCell(m.mr, m.mc), ws, theme, fsc, cs, c, true, false)); for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1; }
-        else cells.push({});
-        continue;
-      }
-      const cs = m ? Math.min(m.c2, A.c2) - c + 1 : 1;
-      cells.push(pdfCellObj(cell, ws, theme, fsc, cs, c, false, o.bullets));
-      for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1;
-    }
-    body.push(cells); hs.push((row.height || defH) * hsc);
-  }
-  const lines = o.lines !== false;
-  return { node: { table: { widths: widths, body: body, heights: i => hs[i] || 0, dontBreakRows: true },
-    layout: { hLineWidth: () => lines ? 0.5 : 0, vLineWidth: () => lines ? 0.5 : 0, hLineColor: () => '#000', vLineColor: () => '#000', paddingLeft: () => 2, paddingRight: () => 2, paddingTop: () => 0.6, paddingBottom: () => 0.6 } } };
-}
-function pdfB64(buf){
-  const u = buf instanceof Uint8Array ? buf : new Uint8Array(buf); let s = ''; const CH = 0x8000;
-  for (let i = 0; i < u.length; i += CH) s += String.fromCharCode.apply(null, u.subarray(i, i + CH));
-  return btoa(s);
-}
-function pdfImage(wb, id){ try { const im = wb.getImage(id); return 'data:image/' + (im.extension || 'png') + ';base64,' + pdfB64(im.buffer); } catch (e) { return null; } }
-function pdfImageBands(wb, ws, avail){   // avail = largeur du contenu
-  const ims = ws.getImages().map(i => ({ id: i.imageId, r: i.range.tl.row, c: i.range.tl.col })).sort((a, b) => a.r - b.r || a.c - b.c);
-  const bands = []; ims.forEach(im => { const b = bands[bands.length - 1]; if (b && Math.abs(b[0].r - im.r) < 3) b.push(im); else bands.push([im]); });
-  return bands.map(b => {
-    const data = b.map(im => ({ d: pdfImage(wb, im.id), nat: wb.getImage(im.id) })).filter(x => x.d);
-    const W = (id) => { const t = wb.model.media[id]; return t; };
-    const dims = b.map(im => { const buf = wb.getImage(im.id).buffer; const u = new Uint8Array(buf); const dv = new DataView(u.buffer, u.byteOffset, u.byteLength); return { w: dv.getUint32(16), h: dv.getUint32(20) }; });
-    const gap = 12, n = b.length;
-    let widths; if (n === 1) widths = [avail * 0.4]; else { const tw = dims.reduce((a, x) => a + x.w / x.h, 0); widths = dims.map(x => 0.9 * (avail - gap * (n - 1)) * (x.w / x.h) / tw); }
-    return { columns: b.map((im, k) => ({ width: widths[k], image: data[k].d, fit: [widths[k], widths[k] * dims[k].h / dims[k].w] })), columnGap: gap, alignment: n === 1 ? 'center' : 'left', margin: [n === 1 ? 0 : avail * 0.04, 10, 0, 0] };
-  });
-}
-function pdfCover(ws, wb, ctx, theme, W){
-  const v = a => xlText(ws.getCell(a)).trim(); const ri = k => (reportInfo[k] || '').trim();
-  const logo = ws.getImages().length ? pdfImage(wb, ws.getImages()[0].imageId) : null;
-  const banner = pdfColor(ws.getCell('A15').fill && ws.getCell('A15').fill.fgColor, theme) || '#8FB4E3';
-  const box = (txt, w) => ({ table: { widths: [w], body: [[{ text: txt || ' ', fontSize: 8.5, fillColor: '#F2F2F2', margin: [3, 3, 3, 3] }]] }, layout: 'noBorders' });
-  const row = (label, k, lw, bw) => ({ columns: [{ width: lw, text: label, fontSize: 9, margin: [2, 4, 0, 0] }, { width: bw, stack: [box(ri(k), bw)] }], margin: [0, 0, 0, 7] });
-  const LW = 92, BW = 143;
-  const client = [ri('client'), ri('adr1'), ri('adr2'), ri('ville'), ri('attn') ? "A l'attention de " + ri('attn') : '', ri('mail')].filter(Boolean);
-  const left = [];
-  if (logo) left.push({ image: logo, width: 76, margin: [0, 0, 0, 12] });
-  left.push({ text: v('A7') + '\n' + v('A8'), bold: true, fontSize: 9.5, margin: [2, 0, 0, 3] });
-  left.push({ text: [v('A9'), v('A10'), v('A11')].join('\n'), fontSize: 7, lineHeight: 1.55, margin: [2, 0, 0, 0] });
-  const nodes = [{ columns: [{ width: '*', stack: left }, { width: 170, text: client.join('\n'), fontSize: 9, lineHeight: 1.4, margin: [0, 60, 0, 0] }] }];
-  nodes.push({ table: { widths: ['*'], body: [[{ text: v('A15'), bold: true, alignment: 'center', fontSize: 9.5, lineHeight: 1.4, fillColor: banner, margin: [0, 12, 0, 12] }]] }, layout: 'noBorders', margin: [0, 38, 0, 0] });
-  nodes.push({ text: '', margin: [0, 118, 0, 0] });
-  nodes.push(row(v('A30'), 'dossier', LW, BW)); nodes.push(row(v('A32'), 'date', LW, BW)); nodes.push(row(v('A34'), 'ref', LW, BW));
-  nodes.push({ columns: [{ width: LW + BW + 11, text: v('A36'), fontSize: 7 }, { width: '*', text: v('F36'), fontSize: 7 }], margin: [2, 0, 0, 0] });
-  if (v('A37') && v('F37')) nodes.push({ columns: [{ width: LW + BW + 11, text: v('A37'), fontSize: 7 }, { width: '*', text: v('F37'), fontSize: 7 }], margin: [2, 1, 0, 0] });
-  nodes.push({ text: v('A41'), italics: true, alignment: 'center', fontSize: 8.5, lineHeight: 1.3, margin: [0, 80, 0, 0] });
-  nodes.push({ columns: [{ width: LW, text: v('A47'), fontSize: 9, margin: [2, 4, 0, 0] }, { width: BW, stack: [box(ri('charge'), BW)] }, { width: 65, text: v('F47'), fontSize: 9, margin: [11, 4, 0, 0] }, { width: 154, stack: [box(ri('tutore'), 154)] }], margin: [0, 62, 0, 0] });
-  nodes.push({ columns: [{ width: LW + BW + 11, text: v('A50'), fontSize: 9, margin: [2, 0, 0, 0] }, { width: '*', text: v('F50'), fontSize: 9 }], margin: [0, 24, 0, 0] });
-  return nodes;
-}
-function pdfSectionNodes(wb, ws, theme, ctx){
-  const n = ws.name;
-  if (n === 'Page de garde') return pdfCover(ws, wb, ctx, theme, PDF_W.other);
-  if (n === 'Page 2') {
-    let last = 38; for (let r = 1; r <= 60; r++) if (xlText(ws.getCell(r, 1)).trim() === 'A supprimer') { last = r - 1; break; }
-    const g = pdfGrid(ws, theme, PDF_W.other, { lines: false, bullets: true, rowTo: last, defCols: 6, fsc: 0.86, hsc: 0.9 });
-    // total de pages exact dans la phrase du modèle
-    if (ctx.writePages !== false) g.node.table.body.forEach(rw => { const c = rw[0]; if (c && Array.isArray(c.text) && c.text.map(t => t.text).join('').indexOf('Ce document comporte') === 0) { c.text = [{ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: c.text[0].fontSize }]; } });
-    const nodes = [g.node]; const lg = ws.getImages(); if (lg.length) { const im = pdfImage(wb, lg[0].imageId); if (im) nodes.unshift({ image: im, width: 26, absolutePosition: { x: PDF_PAGE.w - ((PDF_PAGE.w - PDF_W.other) / 2) - 28, y: 40 } }); }
-    return nodes;
-  }
-  if (n === 'Commentaires') return [pdfGrid(ws, theme, PDF_W.other, { lines: false, defCols: 9, fsc: 0.86, hsc: 0.9 }).node];
-  const nodes = [pdfGrid(ws, theme, PDF_W.art, { defCols: 6, fsc: 0.84, hsc: 0.8 }).node];
-  if (ws.getImages().length) pdfImageBands(wb, ws, PDF_W.art).forEach(b => nodes.push(b));
-  return nodes;
-}
-function pdfHeaderText(wb){
-  for (const ws of wb.worksheets) { const h = ws.headerFooter && ws.headerFooter.oddHeader; if (h) { const m = /&L([^&]*)/.exec(h); if (m && m[1].trim()) return m[1].trim(); } }
-  return 'SQ-04_MOD_LUX_31 V3';
-}
-function pdfDoc(wb, ctx){
-  const theme = pdfTheme(wb), avail = PDF_PAGE.w - PDF_M.l - PDF_M.r; const secs = [], content = [];
-  wb.worksheets.forEach(ws => {
-    if (ws.state === 'hidden' || ws.state === 'veryHidden') return;
-    const isArt = /^Art\./.test(ws.name);
-    if (!(ws.name === 'Page de garde' || ws.name === 'Page 2' || ws.name === 'Commentaires' || isArt)) return;
-    const nodes = pdfSectionNodes(wb, ws, theme, ctx); if (!nodes.length) return;
-    const W = isArt ? PDF_W.art : PDF_W.other, ins = (avail - W) / 2;
-    const id = 'sec_' + secs.length; secs.push({ id: id, label: ws.name === 'Page de garde' ? '' : ws.name, art: isArt, ins: ins });
-    if (secs.length > 1) content.push({ text: ' ', fontSize: 1, pageBreak: 'before' });
-    content.push({ text: ' ', fontSize: 0.5, id: id });   // repère : page de début de la section
-    nodes.forEach(x => { if (x.absolutePosition) { content.push(x); return; } const m = x.margin || [0, 0, 0, 0]; x.margin = [m[0] + ins, m[1], m[2] + ins, m[3]]; content.push(x); });
-  });
-  const starts = ctx.starts;
-  const secAt = cp => { let r = null; if (starts) secs.forEach(sx => { if (starts[sx.id] && starts[sx.id] <= cp) r = sx; }); return r || { label: '', art: false, ins: 12 }; };
-  return {
-    secs: secs,
-    def: {
-      pageSize: 'A4', pageMargins: [PDF_M.l, PDF_M.t, PDF_M.r, PDF_M.b], defaultStyle: { font: 'Roboto', fontSize: 8 }, info: { title: 'Attestation accessibilité', creator: 'ADAPTH' },
-      header: cp => ({ text: pdfHeaderText(wb), fontSize: 8, margin: [PDF_M.l + secAt(cp).ins, 24, 0, 0] }),
-      footer: (cp, pc) => { if (ctx.info) ctx.info.pageCount = pc; const sx = secAt(cp); return { margin: [PDF_M.l + sx.ins, 10, sx.art ? 24 : 44, 0], fontSize: 8, columns: [{ text: '', width: '*' }, { text: sx.label, alignment: 'center', width: '*' }, { text: cp + ' / ' + pc, alignment: 'right', width: '*' }] }; },
-      pageBreakBefore: (node) => { if (ctx.info && node.id && /^sec_/.test(node.id) && node.startPosition) ctx.info.starts[node.id] = node.startPosition.pageNumber; return false; },
-      content: content
-    }
-  };
-}
-function pdfRender(def){ return new Promise((ok, ko) => { try { pdfMake.createPdf(def).getBuffer(b => ok(b)); } catch (e) { ko(e); } }); }
-async function buildPdf(o){
-  await ensurePdfMake();
-  const f = await fillWorkbook(Object.assign({}, o, { ecrirePages: false }));
-  const info = { pageCount: 0, starts: {} };
-  const d1 = pdfDoc(f.wb, { N: '00', info: info, starts: null, writePages: o.ecrirePages !== false });
-  await pdfRender(d1.def);
-  const N = info.pageCount;
-  const d2 = pdfDoc(f.wb, { N: String(N), info: null, starts: info.starts, writePages: o.ecrirePages !== false });
-  const buffer = await pdfRender(d2.def);
-  return { buffer: buffer, pages: N, arts: f.arts, miss: f.miss, x: f.x };
-}
-async function exportPdf(msgId, btnId){
-  const msg = el(msgId || 'xlMsg'), go = el(btnId || 'pdfGo');
-  go.disabled = true; msg.textContent = 'Génération du PDF…';
-  try {
-    const r = await buildPdf(readOpts('pdf'));
-    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
-    downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
-    msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
-  } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
-  go.disabled = false;
-}
-
-/* ===== Mode « portail » : l'application est embarquée dans index.html (RAPSOACC) ===== */
-const EMBED = (typeof window.CANEVAS_ID !== 'undefined') && window.parent !== window;
-const RO = EMBED && !!window.CANEVAS_READONLY;
-(function(){
-  if (!EMBED) return;
-  const post = m => { try { window.parent.postMessage(m, '*'); } catch (e) {} };
-  const ser = () => JSON.stringify({ nodes: nodesState, points: points, info: reportInfo });
-  let lastSent = '', lastAffaire = '';
-  function applySynth(obj){
-    let d = {}; try { d = (obj && obj.json) ? JSON.parse(obj.json) : {}; } catch (e) { d = {}; }
-    nodesState = d.nodes || {}; points = d.points || []; reportInfo = d.info || {};
-  }
-  function refreshUI(){
-    renderRubriquesTable(); renderPointsInfo();
-    if (selectedNode) { try { loadTabContent(); updateAvisButtons(); } catch (e) {} }
-    if (typeof updateSelBanner === 'function') updateSelBanner();
-  }
-  // état initial envoyé par le portail
-  let init = {}; try { init = JSON.parse(window.RAPSO_SYNTH_DATA || '{}'); } catch (e) {}
-  applySynth(init); lastSent = ser();
-  function prefillFromPortal(){
-    if (!reportInfo.affaire && window.RAPSO_AFFAIRE) reportInfo.affaire = window.RAPSO_AFFAIRE;
-    if (!reportInfo.client && window.RAPSO_CLIENT) reportInfo.client = window.RAPSO_CLIENT;
-    if (!reportInfo.ville && window.RAPSO_VILLE) reportInfo.ville = window.RAPSO_VILLE;
-    if (!reportInfo.contrat && window.RAPSO_DOSSIER) reportInfo.contrat = window.RAPSO_DOSSIER;   // Dossier SOCOTEC du portail -> Contrat n°
-    ensureInfoDefaults(); injectRef(false);
-  }
-  prefillFromPortal();
-  lastAffaire = reportInfo.affaire || '';
-  function sendSave(force){
-    const cur = ser(); if (!force && cur === lastSent) return; if (RO) return;
-    lastSent = cur; post({ type: 'rapso_save', canId: window.CANEVAS_ID, data: { v: 3, json: cur } });
-    if ((reportInfo.affaire || '') !== lastAffaire && reportInfo.affaire) { lastAffaire = reportInfo.affaire; post({ type: 'rapso_update_affaire', canId: window.CANEVAS_ID, affaire: reportInfo.affaire }); }
-  }
-  setInterval(() => { try { saveTabContent(); } catch (e) {} sendSave(false); }, 1500);
-  window.addEventListener('beforeunload', () => sendSave(false));
-  window.addEventListener('message', e => {
-    const m = e.data; if (!m || typeof m !== 'object') return;
-    if (m.type === 'rapso_request_save') { try { saveTabContent(); } catch (x) {} sendSave(true); }
-    else if (m.type === 'rapso_inject') {
-      applySynth(m.data); lastSent = ser(); refreshUI();
-      post({ type: 'rapso_inject_ack', data: m.data });
-    } else if (m.type === 'rapso_action') {
-      const a = m.action;
-      if (a === 'pdf') openPdfModal(); else if (a === 'excel') openXlsModal(); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
-      else if (a === 'points') openPoints(); else if (a === 'info') openInfo();
-      else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = {}; prefillFromPortal(); refreshUI(); sendSave(true); } }
-    }
-  });
-  // sauvegarde / restauration locales : remplacées par le portail
-  saveToLocalStorage = function(){ try { saveTabContent(); } catch (e) {} sendSave(true); alert('Dossier enregistré sur le serveur.'); };
-  loadFromLocalStorage = function(){ alert('Les données de ce dossier sont gérées par le portail (synchronisation automatique).'); };
-  const st = document.createElement('style');
-  st.textContent = 'button[onclick="loadFromLocalStorage()"]{display:none!important}' + (RO ? 'body.ro .avis-btn,body.ro #chkHM,body.ro #inputTabContent,body.ro #inputLibelle,body.ro #btnSave,body.ro .rv-btn.edit{pointer-events:none;opacity:.55}body.ro::before{content:"Dossier archivé – lecture seule";position:fixed;top:0;left:0;right:0;z-index:99999;background:#fff3cd;color:#7a5b00;text-align:center;font:600 12px sans-serif;padding:3px}' : '');
-  document.head.appendChild(st);
-  if (RO) {
-    document.body.classList.add('ro');
-    ['setAvis', 'setInlineAvis', 'saveNode', 'clearNode', 'setHM', 'togglePointNode', 'addPoint', 'deletePoint', 'changePointId', 'detachFromModal', 'detachSelected', 'startSelect'].forEach(n => { try { window[n] = function(){}; } catch (e) {} });
-  }
-  refreshUI();
-})();
-
-/* ===== Barre de filtres : dépliage, niveau, menu ===== */
-function isAllExpanded(){ return !levelFilter && !Object.keys(collapsedState).some(k => collapsedState[k]); }
-function updateToggleBtn(){
-  const b = document.getElementById('btnToggleAll'); if (!b) return;
-  const ex = isAllExpanded(); b.textContent = ex ? '▼' : '►'; b.title = ex ? 'Tout replier' : 'Tout déplier';
-}
-function toggleAll(){ levelFilter = 0; updateLevelBtn(); if (isAllExpanded()) collapseAll(); else expandAll(); }
-function updateLevelBtn(){
-  const b = document.getElementById('btnLevel'); if (!b) return;
-  b.textContent = levelFilter ? 'Niv. ' + levelFilter + ' ▾' : 'Niveau ▾'; b.classList.toggle('active', !!levelFilter);
-  document.querySelectorAll('#levelMenu button').forEach((x, i) => x.classList.toggle('on', (i === 0 && !levelFilter) || i === levelFilter));
-}
-function toggleLevelMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('appMenu').classList.remove('open'); document.getElementById('levelMenu').classList.toggle('open'); }
-function setLevel(n){ levelFilter = n; document.getElementById('levelMenu').classList.remove('open'); updateLevelBtn(); renderRubriquesTable(); }
-function toggleAppMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('levelMenu').classList.remove('open'); document.getElementById('appMenu').classList.toggle('open'); }
-document.addEventListener('click', () => { const a = document.getElementById('appMenu'), l = document.getElementById('levelMenu'); if (a) a.classList.remove('open'); if (l) l.classList.remove('open'); });
-(function(){ const _rrt = renderRubriquesTable; renderRubriquesTable = function(){ _rrt.apply(this, arguments); updateToggleBtn(); }; })();
-function refreshAllUI(){
-  renderRubriquesTable(); renderPointsInfo(); updateFilterUI();
-  if (selectedNode) { try { loadTabContent(); updateAvisButtons(); } catch (e) {} }
-}
-/* ===== Enregistrer / ouvrir un dossier local (JSON) ===== */
-function saveJsonLocal(){
-  try { saveTabContent(); } catch (e) {}
-  const data = { app: 'RAPSOACC', v: 1, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
-  const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'dossier') + '_' + new Date().toISOString().slice(0, 10) + '.json';
-  downloadBlob(name, new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
-}
-function openJsonLocal(){
-  if (typeof RO !== 'undefined' && RO) { alert('Dossier archivé : lecture seule.'); return; }
-  const i = document.createElement('input'); i.type = 'file'; i.accept = '.json,application/json';
-  i.onchange = async () => {
-    const f = i.files[0]; if (!f) return;
-    try {
-      const d = JSON.parse(await f.text());
-      if (!d || typeof d.nodes !== 'object' || !Array.isArray(d.points || [])) throw new Error('format');
-      if (!confirm('Remplacer toutes les données de ce dossier par celles du fichier « ' + f.name + ' » ?')) return;
-      nodesState = d.nodes || {}; points = d.points || []; reportInfo = d.info || {};
-      refreshAllUI();
-    } catch (e) { alert('Fichier JSON invalide : ce n\'est pas un dossier RAPSOACC.'); }
-  };
-  i.click();
-}
-/* ===== Fenêtres simples : PDF et Excel ===== */
-function appMenuDo(a){
-  document.getElementById('appMenu').classList.remove('open');
-  if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
-  else if (a === 'pdf') openSimpleExport('pdfModal', 'pdfMsg', 'pdfGo2'); else if (a === 'excel') openSimpleExport('xlsModal', 'xlsMsg', 'xlsGo');
-}
-async function openSimpleExport(modalId, msgId, btnId){
-  const msg = el(msgId), go = el(btnId); msg.textContent = ''; go.disabled = true; el(modalId).classList.add('open');
-  if (!xlModele) xlModele = await findModele();
-  go.disabled = !xlModele;
-  if (!xlModele) msg.innerHTML = '<span style="color:#b71c1c">Modèle Excel introuvable : le fichier <b>modele.xlsm</b> doit être présent dans le dépôt, à côté de la page.</span>';
-}
-function openPdfModal(){ openSimpleExport('pdfModal', 'pdfMsg', 'pdfGo2'); }
-function openXlsModal(){ openSimpleExport('xlsModal', 'xlsMsg', 'xlsGo'); }
-
+/* ============================================================
+   INITIALISATION
+   ============================================================ */
 ensureInfoDefaults();
 renderRubriquesTable();
 initSommaire();
