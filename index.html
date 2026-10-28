@@ -576,10 +576,10 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
       <div class="ll-brand">RAPSO<span>ACC</span></div>
     </div>
     <div class="ll-tag" style="position:relative;z-index:1">
-      <h2>Rapport<br>d'accessibilité</h2>
+      <h2>Attestations<br>d'accessibilité</h2>
       <p>Gestion collaborative des dossiers d'accessibilité, des avis et des rapports.</p>
     </div>
-    <div class="ll-version" style="position:relative;z-index:1">v1.0 — AML Luxembourg</div>
+    <div class="ll-version" style="position:relative;z-index:1">v1.0 — SOCOTEC Luxembourg</div>
   </div>
   <div class="login-right">
     <div class="login-card">
@@ -662,8 +662,8 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Favoris
         </button>
-        <input class="fb-input" id="fNom"    placeholder="Nom du projet…"  oninput="renderCanevas()">
-        <input class="fb-input" id="fChrono" placeholder="Référence…"      oninput="renderCanevas()" style="width:130px">
+        <input class="fb-input" id="fNom"    placeholder="Affaire…"  oninput="renderCanevas()">
+        <input class="fb-input" id="fChrono" placeholder="Dossier SOCOTEC…"      oninput="renderCanevas()" style="width:130px">
         <input class="fb-input" id="fClient" placeholder="Client…"          oninput="renderCanevas()" style="width:105px">
         <input class="fb-input" id="fVille"  placeholder="Ville…"           oninput="renderCanevas()" style="width:90px">
         <select class="fb-select" id="fStatut" onchange="renderCanevas()">
@@ -679,8 +679,8 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
           <thead>
             <tr>
               <th></th>
-              <th onclick="sortCan('nom')">Nom du projet ↕</th>
-              <th onclick="sortCan('chrono')">Référence ↕</th>
+              <th onclick="sortCan('nom')">Affaire ↕</th>
+              <th onclick="sortCan('chrono')">Dossier ↕</th>
               <th onclick="sortCan('client')">Client ↕</th>
               <th onclick="sortCan('ville')">Ville ↕</th>
               <th onclick="sortCan('statut')">Statut ↕</th>
@@ -708,7 +708,7 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
         Les dossiers archivés sont en lecture seule. Vous pouvez les consulter ou les désarchiver.
       </div>
       <div class="filterbar">
-        <input class="fb-input" id="afNom" placeholder="Nom du projet…" oninput="renderArchive()">
+        <input class="fb-input" id="afNom" placeholder="Affaire…" oninput="renderArchive()">
         <input class="fb-input" id="afClient" placeholder="Client…" oninput="renderArchive()" style="width:110px">
         <input class="fb-input" id="afVille"  placeholder="Ville…"  oninput="renderArchive()" style="width:90px">
         <input class="fb-input" id="afPilote" placeholder="Pilote…" oninput="renderArchive()" style="width:90px">
@@ -718,7 +718,7 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
           <thead>
             <tr>
               <th></th>
-              <th>Nom du projet</th>
+              <th>Affaire</th>
               <th>Dossier</th>
               <th>Client</th>
               <th>Ville</th>
@@ -828,9 +828,9 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
       <button class="m-close" onclick="closeModal('mdCanevas')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="m-body">
-      <div class="mf-row"><label>Nom du projet <span class="req">*</span></label><input class="mf-input" id="mNom" placeholder="ex: Résidence Les Tilleuls – bâtiment A"></div>
+      <div class="mf-row"><label>Affaire <span class="req">*</span></label><input class="mf-input" id="mNom" placeholder="ex: Résidence Les Tilleuls – bâtiment A"></div>
       <div class="mf-grid">
-        <div class="mf-row"><label>Référence / Chronorapso <span class="req">*</span></label><input class="mf-input" id="mChrono" placeholder="ex: 2026-0456"></div>
+        <div class="mf-row"><label>Dossier SOCOTEC <span class="req">*</span></label><input class="mf-input" id="mChrono" placeholder="ex: 2026-0456"></div>
         <div class="mf-row"><label>Ville</label><input class="mf-input" id="mVille" placeholder="ex: Luxembourg"></div>
       </div>
       <div class="mf-grid">
@@ -1374,7 +1374,7 @@ function openModalCanevas(mode, id = null, e = null) {
 function saveCanevas() {
   const nom = gv('mNom').trim();
   const chrono = gv('mChrono').trim();
-  if (!nom || !chrono) { toast('Nom du projet et Dossier requis','r'); return; }
+  if (!nom || !chrono) { toast('Affaire et Dossier SOCOTEC requis','r'); return; }
   const sel = document.getElementById('mIntervenants');
   const intervenants = [...sel.options].filter(o => o.selected).map(o => o.value);
   if (editingCanId) {
@@ -1516,7 +1516,7 @@ function confirmDeleteCan(id, e) {
 
 function exportArchive() {
   const rows = canevas.filter(c => c.archived);
-  const lines = ['Nom du projet;Dossier;Client;Ville;Pilote;Archivé le', ...rows.map(c => [c.nom,c.chrono,c.client,c.ville,c.pilote,c.archivedDate||''].join(';'))];
+  const lines = ['Affaire;Dossier;Client;Ville;Pilote;Archivé le', ...rows.map(c => [c.nom,c.chrono,c.client,c.ville,c.pilote,c.archivedDate||''].join(';'))];
   const blob = new Blob(['\uFEFF' + lines.join('\n')], {type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'archives_rapsoacc.csv'; a.click();
   toast('Export CSV téléchargé','g');
@@ -1536,10 +1536,10 @@ async function openSynthese(id) {
     templateHTML = await response.text();
   } catch(err) { toast('Impossible de charger app.html','r'); return; }
   const synthData = (c.synthData && c.synthData.json) ? c.synthData : { v: 3, json: '' };
-  const Nom du projetValue = c.nomimp || c.nom || '';
+  const affaireValue = c.nomimp || c.nom || '';
   const metaScript = `<script>
     window.RAPSO_BASE       = ${JSON.stringify(location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, ''))};
-    window.RAPSO_Nom du projet    = ${JSON.stringify(Nom du projetValue)};
+    window.RAPSO_AFFAIRE    = ${JSON.stringify(affaireValue)};
     window.RAPSO_DOSSIER    = ${JSON.stringify(c.chrono)};
     window.RAPSO_CLIENT     = ${JSON.stringify(c.client || '')};
     window.RAPSO_VILLE      = ${JSON.stringify(c.ville || '')};
@@ -1686,7 +1686,7 @@ async function applyPendingUpdate() {
     _lastLocalHash = hashData(newData);
     try {
       document.getElementById('synFrame').contentWindow.postMessage(
-        { type: 'rapso_inject', data: newData, dossier: freshCan.chrono, Nom du projet: freshCan.nomimp || freshCan.nom || '', user: currentUser ? { prenom: currentUser.prenom, nom: currentUser.nom, initiales: currentUser.initiales, role: currentUser.role } : null },
+        { type: 'rapso_inject', data: newData, dossier: freshCan.chrono, affaire: freshCan.nomimp || freshCan.nom || '', user: currentUser ? { prenom: currentUser.prenom, nom: currentUser.nom, initiales: currentUser.initiales, role: currentUser.role } : null },
         '*'
       );
       updateSynCounters(newData);
@@ -1784,15 +1784,15 @@ window.addEventListener('message', function(e) {
       }
     }
   }
-  if (e.data.type === 'rapso_update_Nom du projet') {
+  if (e.data.type === 'rapso_update_affaire') {
     const canId = e.data.canId;
-    const Nom du projet = e.data.Nom du projet;
-    if (canId !== undefined && Nom du projet) {
+    const affaire = e.data.affaire;
+    if (canId !== undefined && affaire) {
       const c = canevas.find(x => String(x.id) === String(canId));
       if (c) {
-        c.nomimp = Nom du projet;
+        c.nomimp = affaire;
         saveToCloud();
-        toast('Nom du projet mise à jour', 'g');
+        toast('Affaire mise à jour', 'g');
       }
     }
   }
