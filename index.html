@@ -718,7 +718,7 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
           <thead>
             <tr>
               <th></th>
-              <th>Affaire</th>
+              <th>Nom du projet</th>
               <th>Dossier</th>
               <th>Client</th>
               <th>Ville</th>
@@ -828,7 +828,7 @@ td:first-child{text-align:center;}td:last-child{text-align:center;}
       <button class="m-close" onclick="closeModal('mdCanevas')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="m-body">
-      <div class="mf-row"><label>Affaire <span class="req">*</span></label><input class="mf-input" id="mNom" placeholder="ex: Résidence Les Tilleuls – bâtiment A"></div>
+      <div class="mf-row"><label>Nom du projet <span class="req">*</span></label><input class="mf-input" id="mNom" placeholder="ex: Résidence Les Tilleuls – bâtiment A"></div>
       <div class="mf-grid">
         <div class="mf-row"><label>Référence / Chronorapso <span class="req">*</span></label><input class="mf-input" id="mChrono" placeholder="ex: 2026-0456"></div>
         <div class="mf-row"><label>Ville</label><input class="mf-input" id="mVille" placeholder="ex: Luxembourg"></div>
@@ -1374,7 +1374,7 @@ function openModalCanevas(mode, id = null, e = null) {
 function saveCanevas() {
   const nom = gv('mNom').trim();
   const chrono = gv('mChrono').trim();
-  if (!nom || !chrono) { toast('Affaire et Dossier requis','r'); return; }
+  if (!nom || !chrono) { toast('n° Dossier requis','r'); return; }
   const sel = document.getElementById('mIntervenants');
   const intervenants = [...sel.options].filter(o => o.selected).map(o => o.value);
   if (editingCanId) {
