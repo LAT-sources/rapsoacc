@@ -4282,31 +4282,77 @@ function pdfMerges(ws){
   return map;
 }
 function pdfGrid(ws, theme, W, o){
-  o = o || {}; const A = pdfArea(ws, o.defCols); if (o.rowTo) A.r2 = Math.min(A.r2, o.rowTo); const mg = pdfMerges(ws);
-  const colPt = []; for (let c = A.c1; c <= A.c2; c++) colPt.push(((ws.getColumn(c).width || 8.43) * PDF_MDW + 5) * 0.75);
+  o = o || {};
+  const A = pdfArea(ws, o.defCols);
+  if (o.rowTo) A.r2 = Math.min(A.r2, o.rowTo);
+  const mg = pdfMerges(ws);
+  const colPt = [];
+  for (let c = A.c1; c <= A.c2; c++) colPt.push(((ws.getColumn(c).width || 8.43) * PDF_MDW + 5) * 0.75);
   const n = colPt.length, total = colPt.reduce((a, b) => a + b, 0);
-  const usable = W - 4 * n - 0.5 * (n + 1);                  // la largeur totale du tableau (marges internes et traits compris) vaut exactement W
+  const usable = W - 4 * n - 0.5 * (n + 1);
   const widths = colPt.map(x => x / total * usable);
   const fsc = o.fsc || 0.8, hsc = o.hsc || 0.8;
-  const body = [], hs = []; const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
-  for (let r = A.r1; r <= A.r2; r++) {
-    const row = ws.getRow(r); if (row.hidden) continue; const cells = [];
+  const body = [], hs = [];
+  const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
+
+  // 1) Lignes visibles uniquement (les lignes masquées ne consomment rien et ne cassent pas les fusions)
+  const visibleRows = [];
+  for (let r = A.r1; r <= A.r2; r++) if (!ws.getRow(r).hidden) visibleRows.push(r);
+  const visibleSet = new Set(visibleRows);
+
+  // 2) Construction des cellules avec rowSpan (fusions verticales)
+  for (const r of visibleRows) {
+    const row = ws.getRow(r);
+    const cells = [];
     for (let c = A.c1; c <= A.c2; c++) {
-      const m = mg[r + ',' + c], cell = ws.getCell(r, c);
-      if (m && (m.mr !== r || m.mc !== c)) {
-        if (m.mr < r && c === m.mc) { const cs = Math.min(m.c2, A.c2) - c + 1; cells.push(pdfCellObj(ws.getCell(m.mr, m.mc), ws, theme, fsc, cs, c, true, false)); for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1; }
-        else cells.push({});
-        continue;
+      const m = mg[r + ',' + c];
+
+      // Cellule couverte par une fusion dont la maîtresse est ailleurs
+      if (m && (m.mr !== r || m.mc !== c)) { cells.push({}); continue; }
+
+      let colSpan = 1, rowSpan = 1;
+      if (m) {
+        colSpan = Math.min(m.c2, A.c2) - c + 1;
+        let cnt = 0;
+        for (let rr = m.mr; rr <= m.r2; rr++) if (visibleSet.has(rr)) cnt++;
+        rowSpan = Math.max(1, cnt);
       }
-      const cs = m ? Math.min(m.c2, A.c2) - c + 1 : 1;
-      cells.push(pdfCellObj(cell, ws, theme, fsc, cs, c, false, o.bullets));
-      for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1;
+
+      const cell = ws.getCell(r, c);
+      const obj = pdfCellObj(cell, ws, theme, fsc, colSpan, c, false, o.bullets);
+      if (rowSpan > 1) obj.rowSpan = rowSpan;
+      cells.push(obj);
+
+      for (let k = 1; k < colSpan; k++) cells.push({});
+      c += colSpan - 1;
     }
-    body.push(cells); hs.push((row.height || defH) * hsc);
+    body.push(cells);
+    hs.push((row.height || defH) * hsc);
   }
+
   const lines = o.lines !== false;
-  return { node: { table: { widths: widths, body: body, heights: i => hs[i] || 0, dontBreakRows: true },
-    layout: { hLineWidth: () => lines ? 0.5 : 0, vLineWidth: () => lines ? 0.5 : 0, hLineColor: () => '#000', vLineColor: () => '#000', paddingLeft: () => 2, paddingRight: () => 2, paddingTop: () => 0.6, paddingBottom: () => 0.6 } } };
+  return {
+    node: {
+      table: {
+        widths: widths,
+        body: body,
+        // ✅ N'impose une hauteur QUE si elle est raisonnable (< 500 pt)
+        heights: i => { const h = hs[i] || 0; return (h > 0 && h < 500) ? h : undefined; },
+        // ✅ AUCUNE ligne jetée (au lieu de dontBreakRows: true)
+        dontBreakRows: false
+      },
+      layout: {
+        hLineWidth: () => lines ? 0.5 : 0,
+        vLineWidth: () => lines ? 0.5 : 0,
+        hLineColor: () => '#000',
+        vLineColor: () => '#000',
+        paddingLeft: () => 2,
+        paddingRight: () => 2,
+        paddingTop: () => 0.6,
+        paddingBottom: () => 0.6
+      }
+    }
+  };
 }
 function pdfB64(buf){
   const u = buf instanceof Uint8Array ? buf : new Uint8Array(buf); let s = ''; const CH = 0x8000;
