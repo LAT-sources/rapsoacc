@@ -322,32 +322,304 @@ body.point-selecting .c-label{cursor:pointer}
 .ref-row button{flex:none;border:1px solid #2b6be6;background:#fff;color:#2b6be6;border-radius:8px;padding:0 12px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit}
 .ref-row button:hover{background:#e7efff}
 .info-grid .ro-field{background:#f1f3f7!important;color:#475467}
+/* ══════════════════════════════════════════════════════
+   RUBAN D'ONGLETS DONNÉES GÉNÉRALES (remplace la toolbar)
+   ══════════════════════════════════════════════════════ */
+.info-tabs-bar{
+  display:flex;
+  gap:2px;
+  padding:0 4px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow);
+  flex-shrink:0;
+  position:relative;
+  z-index:5;
+  align-items:center;
+}
+.info-tabs-bar .spacer{flex:1}
+.info-tab{
+  padding:10px 20px;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--text-muted);
+  background:transparent;
+  border:none;
+  border-bottom:2px solid transparent;
+  cursor:pointer;
+  transition:all .15s;
+  font-family:inherit;
+  position:relative;
+  outline:none;
+}
+.info-tab:hover{ color:var(--accent); background:rgba(58,110,165,.05); }
+.info-tab.active{ color:var(--accent); border-bottom-color:var(--accent); background:transparent; }
+.info-tab .badge-dot{
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background:var(--accent); margin-left:6px; vertical-align:middle;
+  opacity:0; transition:opacity .15s;
+}
+.info-tab .badge-dot.on{opacity:1}
+
+/* Boutons d'action à droite du ruban */
+.info-tabs-bar .tab-actions{
+  display:flex; gap:6px; padding-right:6px;
+}
+.info-tabs-bar .tab-actions button{
+  display:flex; align-items:center; gap:6px;
+  padding:6px 12px;
+  font-size:12px; font-weight:600;
+  font-family:inherit;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s;
+}
+.info-tabs-bar .tab-actions button:hover{
+  background:var(--accent-light);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+/* ══════════════════════════════════════════════════════
+   Pages DG (dans le modal)
+   ══════════════════════════════════════════════════════ */
+.info-pages{
+  display:flex;
+  flex-direction:column;
+}
+.info-page{display:none}
+.info-page.active{display:block}
+
+.info-page .field{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:10px 14px;
+  align-items:start;
+  margin-bottom:12px;
+}
+.info-page .field label{
+  align-self:center;
+  color:#344054;
+  font-weight:600;
+  font-size:12px;
+  padding-top:2px;
+}
+.info-page .field input[type=text],
+.info-page .field input[type=date],
+.info-page .field textarea{
+  width:100%;
+  font-family:inherit;
+  font-size:13px;
+  border:1px solid #d5dbe6;
+  border-radius:8px;
+  padding:8px 11px;
+  background:#fff;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  color:var(--text);
+}
+.info-page .field input:focus,
+.info-page .field textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(58,110,165,.15);
+}
+.info-page .field textarea{ resize:vertical; min-height:80px; line-height:1.4; }
+
+.ref-meta{
+  grid-column:2; font-size:11px; color:var(--text-muted);
+  margin-top:-4px; line-height:1.5;
+}
+.ref-meta b{color:var(--accent)}
+
+/* ══════════════════════════════════════════════════════
+   Bloc GESTION DES VERSIONS
+   ══════════════════════════════════════════════════════ */
+.versions-block{
+  margin-top:18px;
+  padding:14px 16px;
+  background:var(--surface-alt);
+  border:1px solid #e3e8f0;
+  border-radius:10px;
+}
+.versions-block h4{
+  font-size:12px; font-weight:700; color:var(--accent);
+  margin:0 0 10px; letter-spacing:.3px; text-transform:uppercase;
+  display:flex; align-items:center; gap:8px;
+}
+.versions-block h4 .version-badge{
+  background:var(--accent-light);
+  color:var(--accent);
+  border:1px solid #b9cdf7;
+  padding:2px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+}
+.versions-empty{
+  font-size:11.5px;
+  color:var(--text-muted);
+  font-style:italic;
+  padding:4px 0;
+}
+.version-item{
+  display:grid;
+  grid-template-columns:60px 1fr 140px 30px;
+  gap:8px;
+  align-items:center;
+  padding:8px 10px;
+  background:#fff;
+  border:1px solid #e3e8f0;
+  border-radius:8px;
+  margin-bottom:6px;
+}
+.version-item:last-child{margin-bottom:0}
+.version-item .v-num{
+  font-size:11px;
+  font-weight:700;
+  color:var(--accent);
+  padding:2px 8px;
+  background:var(--accent-light);
+  border-radius:4px;
+  text-align:center;
+}
+.version-item .v-fields{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.version-item input{
+  width:100%;
+  padding:4px 8px;
+  font-family:inherit;
+  font-size:12px;
+  border:1px solid #d5dbe6;
+  border-radius:5px;
+  outline:none;
+  transition:border-color .15s;
+  background:#fff;
+  color:var(--text);
+}
+.version-item input:focus{ border-color:var(--accent); }
+.version-item .v-remove{
+  width:26px; height:26px;
+  display:flex; align-items:center; justify-content:center;
+  border:none; background:transparent; color:#b0aea6;
+  cursor:pointer; border-radius:5px; font-size:14px;
+  line-height:1; transition:all .12s;
+}
+.version-item .v-remove:hover{ background:#ffebee; color:#b71c1c; }
+
+/* ══════════════════════════════════════════════════════
+   Bloc EXPORT
+   ══════════════════════════════════════════════════════ */
+.export-block{
+  margin-top:18px;
+  padding:14px 16px;
+  background:var(--surface-alt);
+  border:1px solid #e3e8f0;
+  border-radius:10px;
+}
+.export-block h4{
+  font-size:12px; font-weight:700; color:var(--accent);
+  margin:0 0 10px; letter-spacing:.3px; text-transform:uppercase;
+}
+.export-opts{
+  display:flex; flex-direction:column; gap:6px; margin-bottom:12px;
+}
+.export-opts label{
+  display:flex; align-items:center; gap:7px;
+  font-size:12px; color:#344054; cursor:pointer;
+}
+.export-opts label.sub{ margin-left:22px; }
+.export-opts input[type=radio],
+.export-opts input[type=checkbox]{ accent-color:var(--accent); }
+
+.export-buttons{
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-top:4px;
+}
+.export-buttons button{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:9px 16px; font-size:12.5px; font-weight:600;
+  font-family:inherit; border:none; border-radius:8px;
+  color:#fff; background:var(--accent);
+  cursor:pointer; transition:all .15s;
+  box-shadow:0 2px 6px rgba(58,110,165,.25);
+}
+.export-buttons button:hover{ background:#2f5a87; transform:translateY(-1px); }
+.export-buttons button:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+.export-msg{
+  margin-top:10px; min-height:18px; font-size:12px; color:var(--text-muted);
+}
+
+
+/* Drag & drop Documents */
+.drop-zone{
+  border:2px dashed #c8c4b8; border-radius:10px;
+  padding:20px; text-align:center; background:#fafbfd;
+  cursor:pointer; transition:all .15s; margin-bottom:12px;
+}
+.drop-zone:hover{ border-color:var(--accent); background:var(--accent-light); }
+.drop-zone.drag-over{ border-color:var(--accent); background:var(--accent-light); border-style:solid; }
+.drop-zone .dz-icon{ font-size:26px; margin-bottom:4px; opacity:.55; }
+.drop-zone .dz-title{ font-size:12.5px; font-weight:700; color:var(--accent); margin-bottom:3px; }
+.drop-zone .dz-hint{ font-size:11px; color:var(--text-muted); line-height:1.4; }
+
+.doc-list{ display:flex; flex-direction:column; gap:5px; margin-bottom:10px; min-height:16px; }
+.doc-item{
+  display:flex; align-items:center; gap:8px;
+  padding:6px 10px; border:1px solid #e3e8f0;
+  border-radius:8px; background:#fafbfd; transition:all .12s;
+}
+.doc-item:hover{ border-color:#9db9f2; background:#f4f8ff; }
+.doc-item .doc-icon{ color:var(--accent); flex-shrink:0; display:flex; align-items:center; }
+.doc-item input[type=text]{
+  flex:1; padding:4px 8px; font-size:12.5px;
+  border:1px solid transparent; background:transparent;
+  border-radius:5px; font-family:inherit; color:var(--text);
+}
+.doc-item input[type=text]:focus{ outline:none; border-color:var(--accent); background:#fff; }
+.doc-item .doc-remove{
+  width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+  border:none; background:transparent; color:#b0aea6;
+  cursor:pointer; border-radius:5px; font-size:14px;
+  line-height:1; transition:all .12s; flex-shrink:0;
+}
+.doc-item .doc-remove:hover{ background:#ffebee; color:#b71c1c; }
+
+.doc-add-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 12px; font-size:12px; font-weight:600;
+  font-family:inherit; border:1.5px dashed #9db9f2;
+  background:#fff; color:var(--accent); border-radius:8px;
+  cursor:pointer; transition:all .15s;
+}
+.doc-add-btn:hover{ background:var(--accent-light); border-style:solid; }
+
+.doc-empty{
+  text-align:center; color:#a0a098;
+  font-size:11.5px; padding:10px; font-style:italic;
+}
+
+.toolbar{display:none}
+.info-page .field .ref-full{grid-column:2;font-size:11.5px;color:#475467;margin-top:-4px;line-height:1.5;word-break:break-all}
+.doc-count{font-size:11.5px;color:#667085;margin:6px 0}
+.doc-count.full{color:#b54708;font-weight:600}
 </style>
 </head>
 <body>
 
-<div class="toolbar">
-  <div class="menu-wrap">
-    <button class="menu-btn" onclick="toggleAppMenu(event)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg> Menu</button>
-    <div id="appMenu" class="app-menu">
-      <button onclick="appMenuDo('savejson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span><b>Enregistrer en local</b><small>Fichier JSON</small></span></button>
-      <button onclick="appMenuDo('openjson')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span><b>Ouvrir un dossier local</b><small>Fichier JSON</small></span></button>
-      <div class="am-sep"></div>
-      <button onclick="appMenuDo('pdf')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/></svg><span><b>Imprimer le PDF</b><small>Rapport complet</small></span></button>
-      <button onclick="appMenuDo('excel')"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg><span><b>Télécharger l'Excel</b><small>Classeur rempli</small></span></button>
-    </div>
-  </div>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="openInfo()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg> Données générales</button>
-  <div id="legacyBtns" style="display:none">
-    <button onclick="saveNode()">💾 Enregistrer l'avis</button>
-    <button onclick="clearNode()">↺ Réinitialiser</button>
-    <button onclick="saveToLocalStorage()">Sauvegarder</button>
-    <button onclick="loadFromLocalStorage()">Restaurer</button>
-    <button onclick="openReport()">📊 Rapport</button>
-    <button onclick="exportCSV()">📄 Export CSV</button>
-    <button onclick="openExport()">📤 Export Excel</button>
-  </div>
+<!-- Ruban Données générales (forme des pages) -->
+<div class="info-tabs-bar">
+  <button class="info-tab active" data-tab="relation" onclick="openInfoTab('relation')">Relation<span class="badge-dot" id="dot-relation"></span></button>
+  <button class="info-tab" data-tab="affaire" onclick="openInfoTab('affaire')">Affaire<span class="badge-dot" id="dot-affaire"></span></button>
+  <button class="info-tab" data-tab="documents" onclick="openInfoTab('documents')">Documents<span class="badge-dot" id="dot-documents"></span></button>
+  <button class="info-tab" data-tab="commentaires" onclick="openInfoTab('commentaires')">Commentaires<span class="badge-dot" id="dot-commentaires"></span></button>
+  <button class="info-tab" data-tab="livrable" onclick="openInfoTab('livrable')">Livrable<span class="badge-dot" id="dot-livrable"></span></button>
+  <div class="spacer"></div>
 </div>
 
 <div id="selBanner"></div>
@@ -434,9 +706,9 @@ body.point-selecting .c-label{cursor:pointer}
   </div>
 </div>
 <div class="modal-overlay" id="infoModal">
-  <div class="modal" style="max-width:760px">
-    <div class="modal-header"><span>Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
-    <div class="modal-body"><div class="info-grid" id="infoBody"></div></div>
+  <div class="modal" style="max-width:780px">
+    <div class="modal-header"><span id="infoModalTitle">Données générales</span><button onclick="closeModal('infoModal')">×</button></div>
+    <div class="modal-body"><div class="info-pages" id="infoPagesBody"></div></div>
     <div class="modal-footer"><button onclick="closeModal('infoModal')">Fermer</button></div>
   </div>
 </div>
@@ -3113,8 +3385,8 @@ const INFO_FIELDS = [
   { k: 'ville', l: 'Ville', sheet: 'Page de garde', cell: 'F10' },
   { k: 'attn', l: "À l'attention de", sheet: 'Page de garde', cell: 'F12', pre: "A l'attention de " },
   { k: 'mail', l: 'Adresse mail', sheet: 'Page de garde', cell: 'F13' },
-  { k: 'affaire', l: 'Nom de l'affaire', sheet: 'Page de garde', cell: 'A22', also: [{ sheet: 'Page 2', cell: 'A5' }] },
-  { k: 'dossier', l: 'N° du dossier', sheet: 'Page de garde', cell: 'C30' },
+  { k: 'affaire', l: 'Affaire (nom, aussi repris en page 2)', sheet: 'Page de garde', cell: 'A22', also: [{ sheet: 'Page 2', cell: 'A5' }] },
+  { k: 'dossier', l: 'Dossier SOCOTEC (n° du dossier)', sheet: 'Page de garde', cell: 'C30' },
   { k: 'date', l: 'Date', type: 'date', sheet: 'Page de garde', cell: 'C32' },
   { k: 'ref', l: 'Référence du rapport', type: 'ref', sheet: 'Page de garde', cell: 'C34' },
   { k: 'versionTxt', l: 'Version du rapport', type: 'ro' },
@@ -3123,7 +3395,7 @@ const INFO_FIELDS = [
   { k: 'charge', l: "Chargé d'affaire", sheet: 'Page de garde', cell: 'C47' },
   { k: 'tutore', l: 'Tutoré', sheet: 'Page de garde', cell: 'G47' },
   { g: 'Contrat de vérification technique' },
-  { k: 'contrat', l: 'Contrat n°', p2: 1 },
+  { k: 'contrat', l: 'Contrat n° (Dossier SOCOTEC du portail)', p2: 1 },
   { k: 'cdate', l: 'Date du contrat', type: 'date', p2: 1 },
   { k: 'moa', l: "Société (maître d'ouvrage)", p2: 1 },
   { g: 'Commentaires généraux' },
@@ -3137,39 +3409,156 @@ function frToIso(v){ const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v || ''); retu
 function isoToFr(v){ const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; }
 function verNum(){ return Math.max(1, parseInt(reportInfo.version, 10) || 1); }
 function versionText(){ const v = verNum(); return v > 1 ? 'Version ' + v + ' (annule et remplace la version ' + (v - 1) + ')' : 'Version 1'; }
-function ensureInfoDefaults(){ if (!reportInfo.date) reportInfo.date = todayFr(); }
-function computeRef(v){
-  const ri = k => (reportInfo[k] || '').trim(); const u = (window.RAPSO_USER && window.RAPSO_USER.initiales) || '';
-  return [ri('contrat'), String(u).toUpperCase(), 'DIAG', ri('dossier')].filter(Boolean).join('-') + '-V' + v;
+function ensureInfoDefaults(){ if (!reportInfo.date) reportInfo.date = todayFr(); if (!reportInfo.moa && reportInfo.client) reportInfo.moa = reportInfo.client; }
+const DOC_MAX = 7;   // documents remis au vérificateur : 7 au maximum
+function curInit(){ return String((window.RAPSO_USER && window.RAPSO_USER.initiales) || '').toUpperCase(); }
+function userFullName(){ const u = window.RAPSO_USER; return (u && u.prenom && u.nom) ? (u.prenom + ' ' + u.nom) : ''; }
+function composeRef(base, init, v){
+  return [String(base || '').trim(), init, 'DIAG', (reportInfo.dossier || '').trim()].filter(Boolean).join('-') + '-V' + v;
 }
-/* La référence est injectée une seule fois ; une nouvelle référence = nouvelle version du rapport (avec avertissement). */
-function injectRef(manual){
-  const ri = k => (reportInfo[k] || '').trim();
-  if (!ri('contrat') || !ri('dossier')) { if (manual) alert('Renseignez d\'abord le Contrat n° et le Dossier SOCOTEC.'); return false; }
+/* référence complète = référence saisie - initiales - DIAG - n° dossier SOCOTEC - Vn */
+function syncRef(){ const base = (reportInfo.refBase || '').trim(); if (base) reportInfo.ref = composeRef(base, reportInfo.refInit || curInit(), verNum()); }
+function syncPrev(){ const vs = reportInfo.versions || []; const last = vs[vs.length - 1]; reportInfo.prevRef = last ? last.ref : ''; reportInfo.prevDate = last ? last.date : ''; }
+function refBaseChange(value){
+  value = (value || '').trim(); const old = (reportInfo.refBase || '').trim();
+  if (value === old) return;
+  if (!old) { reportInfo.refBase = value; reportInfo.refInit = curInit(); if (value) { reportInfo.version = verNum(); syncRef(); } renderInfoPage('livrable'); return; }
+  if (!value) { renderInfoPage('livrable'); return; }
   const v = verNum();
-  if (!ri('ref')) { reportInfo.version = 1; reportInfo.ref = computeRef(1); return true; }
-  if (ri('ref') === computeRef(v)) { if (manual) alert('La référence du rapport est déjà à jour.'); return false; }
-  if (!manual) return false;
-  if (!confirm('⚠ Une nouvelle référence va remplacer « ' + ri('ref') + ' ».\n\nCela correspond à une NOUVELLE VERSION du rapport : version ' + (v + 1) + ' (annule et remplace la version ' + v + ').\nLa référence et la date actuelles deviennent « version précédente ».\n\nContinuer ?')) return false;
-  reportInfo.prevRef = ri('ref'); reportInfo.prevDate = ri('date') || todayFr();
-  reportInfo.version = v + 1; reportInfo.ref = computeRef(v + 1); reportInfo.date = todayFr();
-  return true;
+  if (!confirm('⚠ Changement de référence du rapport\n\nAncienne : ' + (reportInfo.ref || old) + '\nNouvelle : ' + composeRef(value, curInit(), v + 1) + '\n\nCela déclenche la VERSION ' + (v + 1) + ' du rapport (annule et remplace la version ' + v + ').\nL\'ancienne référence est conservée dans l\'historique des versions.\n\nConfirmer ?')) { renderInfoPage('livrable'); return; }
+  if (!reportInfo.versions) reportInfo.versions = [];
+  reportInfo.versions.push({ ref: reportInfo.ref || old, date: reportInfo.date || todayFr() });
+  reportInfo.version = v + 1; reportInfo.refBase = value; reportInfo.refInit = curInit(); reportInfo.date = todayFr();
+  syncRef(); syncPrev(); renderInfoPage('livrable');
 }
-function infoRoValue(k){ return k === 'versionTxt' ? versionText() : (reportInfo[k] || (k === 'prevDate' || k === 'prevRef' ? '—' : '')); }
-function openInfo(){
-  ensureInfoDefaults(); injectRef(false);
-  el('infoBody').innerHTML = INFO_FIELDS.map(f => {
-    if (f.g) return `<h4>${f.g}</h4>`;
-    const lab = `<label>${f.l}</label>`, v = reportInfo[f.k] || '';
-    if (f.type === 'ro') return lab + `<input type="text" class="ro-field" readonly value="${escAttr(infoRoValue(f.k))}">`;
-    if (f.type === 'date') return lab + `<input type="date" value="${frToIso(v)}" onchange="reportInfo['${f.k}']=isoToFr(this.value)">`;
-    if (f.type === 'ref') return lab + `<div class="ref-row"><input type="text" id="infoRef" class="ro-field" readonly value="${escAttr(v)}" placeholder="Générée à partir du contrat, de vos initiales et du dossier"><button type="button" onclick="injectRefClick()">Injecter la référence</button></div>`;
-    if (f.area) return lab + `<textarea rows="3" oninput="reportInfo['${f.k}']=this.value">${esc(v)}</textarea>`;
-    return lab + `<input type="text" value="${escAttr(v)}" oninput="reportInfo['${f.k}']=this.value">`;
-  }).join('');
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+function openInfo(){ openInfoTab('relation'); }
+function openInfoTab(tab){
+  if (!reportInfo.versions) reportInfo.versions = [];
+  ensureInfoDefaults();
+  if (!reportInfo.charge && userFullName()) reportInfo.charge = userFullName();
+  document.querySelectorAll('.info-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderInfoPage(tab);
+  el('infoModalTitle').textContent = 'Données générales — ' + capitalize(tab);
   el('infoModal').classList.add('open');
+  updateDots();
 }
-function injectRefClick(){ if (injectRef(true)) openInfo(); }
+function fld(label, inner){ return `<div class="field"><label>${label}</label>${inner}</div>`; }
+function inTxt(k, ph){ return `<input type="text" value="${escAttr(reportInfo[k] || '')}" oninput="infoChange('${k}', this.value)"${ph ? ' placeholder="' + escAttr(ph) + '"' : ''}>`; }
+function renderInfoPage(tab){
+  const body = el('infoPagesBody'); let html = '';
+  if (tab === 'relation') {
+    html = `<div class="info-page active">${fld('Client', inTxt('client'))}${fld('Adresse', inTxt('adr1'))}${fld("Complément d'adresse", inTxt('adr2'))}${fld('Ville', inTxt('ville'))}${fld("À l'attention de", inTxt('attn'))}${fld('Adresse mail', inTxt('mail'))}</div>`;
+  } else if (tab === 'affaire') {
+    html = `<div class="info-page active">${fld('Affaire', inTxt('affaire'))}${fld('Dossier SOCOTEC', inTxt('dossier', 'N° du dossier (ex. 25-325-01A)'))}${fld('Contrat n°', inTxt('contrat'))}${fld('Date du contrat', `<input type="date" value="${frToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)">`)}${fld("Société (maître d'ouvrage)", `<input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le client si vide">`)}</div>`;
+  } else if (tab === 'documents') {
+    html = `<div class="info-page active">
+      <div class="drop-zone" id="dropZone" onclick="docZoneClick()">
+        <div class="dz-icon">📎</div>
+        <div class="dz-title">Glissez vos fichiers ici</div>
+        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris sans leur extension — ${DOC_MAX} documents maximum</span></div>
+        <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
+      </div>
+      <div class="doc-count" id="docCount"></div>
+      <div class="doc-list" id="docList"></div>
+      <button class="doc-add-btn" id="docAddBtn" onclick="addDocManually()"><span style="font-size:14px;line-height:1">+</span> Ajouter un document</button>
+    </div>`;
+  } else if (tab === 'commentaires') {
+    const ta = (k, lab, ph) => fld(lab, `<textarea rows="3" oninput="infoChange('${k}', this.value)" placeholder="${ph}">${esc(reportInfo[k] || '')}</textarea>`);
+    html = `<div class="info-page active">${ta('locaux', 'Locaux non visités (complément)', 'Locaux non visités…')}${ta('derog', 'Dérogations obtenues', 'Dérogations…')}${ta('equiv', "Solutions d'effet équivalent", 'Solutions…')}</div>`;
+  } else if (tab === 'livrable') {
+    const v = verNum(); const vers = reportInfo.versions || [];
+    html = `<div class="info-page active">
+      ${fld('Date', `<input type="date" value="${frToIso(reportInfo.date)}" onchange="infoDateChange('date', this.value)">`)}
+      <div class="field"><label>Référence du rapport</label>
+        <input type="text" value="${escAttr(reportInfo.refBase || '')}" onchange="refBaseChange(this.value)" placeholder="ex. JB000-26-026">
+        <div class="ref-full">${reportInfo.ref ? 'Référence complète : <b>' + esc(reportInfo.ref) + '</b>' : 'La référence complète est composée : référence - initiales - DIAG - n° dossier SOCOTEC - Vn'}</div>
+        <div class="ref-meta">Version actuelle : <b>V${v}</b> — une nouvelle référence déclenche la version suivante.</div>
+      </div>
+      ${fld("Chargé d'affaire", inTxt('charge'))}${fld('Tutoré', inTxt('tutore'))}
+      <div class="versions-block">
+        <h4>Gestion des versions <span class="version-badge">V${v}</span></h4>
+        ${vers.length === 0 ? '<div class="versions-empty">Aucune version précédente. La version s\'incrémente à chaque changement de la référence du rapport.</div>'
+          : vers.map((ver, idx) => `<div class="version-item"><span class="v-num">V${idx + 1}</span><div class="v-fields"><input type="text" value="${escAttr(ver.ref || '')}" oninput="updateVersionField(${idx}, 'ref', this.value)" placeholder="Référence"><input type="text" value="${escAttr(ver.date || '')}" oninput="updateVersionField(${idx}, 'date', this.value)" placeholder="jj/mm/aaaa"></div><span></span><button class="v-remove" onclick="removeVersion(${idx})" title="Supprimer cette version">✕</button></div>`).join('')}
+      </div>
+      <div class="export-block">
+        <h4>Export du rapport</h4>
+        <div class="export-opts">
+          <label><input type="radio" name="expLignes" value="ren" onchange="onExportOptsChange()"> Lignes renseignées seulement</label>
+          <label><input type="radio" name="expLignes" value="all" checked onchange="onExportOptsChange()"> Toutes les lignes, même vides</label>
+          <label class="sub"><input type="checkbox" id="expTousArticles" checked> Garder aussi les articles sans avis</label>
+          <label><input type="checkbox" id="expMasquer" checked> Masquer les feuilles non imprimées</label>
+          <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
+          <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
+        </div>
+        <div class="export-buttons">
+          <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">Imprimer le PDF</button>
+          <button id="btnExportExcel" onclick="exportXlsx('exportMsg','btnExportExcel')">Télécharger l'Excel</button>
+        </div>
+        <div class="export-msg" id="exportMsg"></div>
+      </div>
+    </div>`;
+  }
+  body.innerHTML = html;
+  if (tab === 'documents') { renderDocList(); bindDropZone(); }
+  if (tab === 'livrable') onExportOptsChange();
+  updateDots();
+}
+function infoChange(key, value){
+  reportInfo[key] = value;
+  if (key === 'dossier') syncRef();
+  if (key === 'client' && !reportInfo.moa) reportInfo.moa = value;
+  updateDots();
+}
+function infoDateChange(key, iso){ reportInfo[key] = iso ? isoToFr(iso) : ''; updateDots(); }
+function updateVersionField(idx, field, value){ if (!reportInfo.versions[idx]) return; reportInfo.versions[idx][field] = value; syncPrev(); }
+function removeVersion(idx){
+  if (!confirm("Supprimer cette version de l'historique ?")) return;
+  reportInfo.versions.splice(idx, 1); syncPrev(); renderInfoPage('livrable');
+}
+function updateDots(){
+  const on = (id, v) => { const d = document.getElementById(id); if (d) d.classList.toggle('on', !!v); };
+  on('dot-relation', reportInfo.client || reportInfo.adr1 || reportInfo.adr2 || reportInfo.ville || reportInfo.attn || reportInfo.mail);
+  on('dot-affaire', reportInfo.affaire || reportInfo.dossier || reportInfo.contrat || reportInfo.cdate || reportInfo.moa);
+  on('dot-documents', reportInfo.docs && reportInfo.docs.trim());
+  on('dot-commentaires', reportInfo.locaux || reportInfo.derog || reportInfo.equiv);
+  on('dot-livrable', reportInfo.refBase || reportInfo.charge || reportInfo.tutore);
+}
+function onExportOptsChange(){
+  const mode = document.querySelector('input[name=expLignes]:checked'), cb = document.getElementById('expTousArticles');
+  if (cb && mode) { cb.disabled = (mode.value !== 'all'); if (mode.value !== 'all') cb.checked = false; }
+}
+/* ----- documents remis au vérificateur (7 maximum) ----- */
+function parseDocs(){ return (reportInfo.docs || '').split('\n').map(x => x.trim()).filter(Boolean); }
+function setDocs(arr){ reportInfo.docs = arr.slice(0, DOC_MAX).join('\n'); renderDocList(); updateDots(); }
+function docZoneClick(){ if (parseDocs().length >= DOC_MAX) { alert(DOC_MAX + ' documents maximum.'); return; } document.getElementById('fileInput').click(); }
+function bindDropZone(){
+  const dz = document.getElementById('dropZone'); if (!dz) return;
+  ['dragenter', 'dragover'].forEach(ev0 => dz.addEventListener(ev0, e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('drag-over'); }));
+  ['dragleave', 'drop'].forEach(ev0 => dz.addEventListener(ev0, e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('drag-over'); }));
+  dz.addEventListener('drop', e => { const files = e.dataTransfer && e.dataTransfer.files; if (files && files.length) handleFiles(files); });
+}
+function handleFiles(files){
+  const arr = parseDocs(); let refused = 0;
+  Array.from(files).forEach(f => { const name = f.name.replace(/\.[^.]+$/, '').trim(); if (!name || arr.includes(name)) return; if (arr.length >= DOC_MAX) { refused++; return; } arr.push(name); });
+  setDocs(arr);
+  if (refused) alert(DOC_MAX + ' documents maximum : ' + refused + ' fichier(s) non ajouté(s).');
+}
+function addDocManually(){
+  const arr = parseDocs(); if (arr.length >= DOC_MAX) { alert(DOC_MAX + ' documents maximum.'); return; }
+  const name = prompt('Nom du document (sans extension) :'); if (!name || !name.trim() || arr.includes(name.trim())) return;
+  arr.push(name.trim()); setDocs(arr);
+}
+function renderDocList(){
+  const list = document.getElementById('docList'); if (!list) return; const arr = parseDocs();
+  const c = document.getElementById('docCount'); if (c) { c.textContent = arr.length + ' / ' + DOC_MAX + ' documents'; c.classList.toggle('full', arr.length >= DOC_MAX); }
+  const ab = document.getElementById('docAddBtn'); if (ab) ab.disabled = arr.length >= DOC_MAX;
+  if (!arr.length) { list.innerHTML = '<div class="doc-empty">Aucun document.</div>'; return; }
+  list.innerHTML = arr.map((name, idx) => `<div class="doc-item"><span class="doc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><input type="text" value="${escAttr(name)}" oninput="updateDocName(${idx}, this.value)" onblur="onDocBlur()"><button class="doc-remove" onclick="removeDoc(${idx})" title="Supprimer">✕</button></div>`).join('');
+}
+function updateDocName(idx, val){ const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr[idx] = val; reportInfo.docs = arr.join('\n'); } }
+function onDocBlur(){ setDocs(parseDocs()); }
+function removeDoc(idx){ const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); setDocs(arr); } }
 function infoHtml(){
   const g = k => (reportInfo[k] || '').trim();
   const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('ref')], ['Date', g('date')]].filter(r => r[1]);
@@ -3240,7 +3629,7 @@ function buildExport(){
   }
   const docs = (reportInfo.docs || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   if (docs.length) {
-    const lines = docs.slice(0, 8); if (docs.length > 8) lines[7] = docs.slice(7).join(' ; ');
+    const lines = docs.slice(0, 7); if (docs.length > 7) lines[6] = docs.slice(6).join(' ; ');
     L.push(['C', 'Page 2', 'A16:A23'].join('\t'));
     lines.forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; });
   }
@@ -3769,6 +4158,10 @@ function downloadBlob(name, blob){
   a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 function readOpts(px){
+  if (document.getElementById('expTousArticles')) {
+    const all = document.querySelector('input[name=expLignes]:checked').value === 'all';
+    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked };
+  }
   const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
   return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked };
 }
@@ -4032,7 +4425,8 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
     if (!reportInfo.client && window.RAPSO_CLIENT) reportInfo.client = window.RAPSO_CLIENT;
     if (!reportInfo.ville && window.RAPSO_VILLE) reportInfo.ville = window.RAPSO_VILLE;
     if (!reportInfo.contrat && window.RAPSO_DOSSIER) reportInfo.contrat = window.RAPSO_DOSSIER;   // Dossier SOCOTEC du portail -> Contrat n°
-    ensureInfoDefaults(); injectRef(false);
+    if (!reportInfo.charge && userFullName()) reportInfo.charge = userFullName();
+    ensureInfoDefaults(); syncRef();
   }
   prefillFromPortal();
   lastAffaire = reportInfo.affaire || '';
@@ -4051,7 +4445,7 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
       post({ type: 'rapso_inject_ack', data: m.data });
     } else if (m.type === 'rapso_action') {
       const a = m.action;
-      if (a === 'pdf') openPdfModal(); else if (a === 'excel') openXlsModal(); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
+      if (a === 'pdf' || a === 'excel') openInfoTab('livrable'); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
       else if (a === 'points') openPoints(); else if (a === 'info') openInfo();
       else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = {}; prefillFromPortal(); refreshUI(); sendSave(true); } }
     }
@@ -4081,7 +4475,7 @@ function updateLevelBtn(){
   b.textContent = levelFilter ? 'Niv. ' + levelFilter + ' ▾' : 'Niveau ▾'; b.classList.toggle('active', !!levelFilter);
   document.querySelectorAll('#levelMenu button').forEach((x, i) => x.classList.toggle('on', (i === 0 && !levelFilter) || i === levelFilter));
 }
-function toggleLevelMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('appMenu').classList.remove('open'); document.getElementById('levelMenu').classList.toggle('open'); }
+function toggleLevelMenu(ev){ if (ev) ev.stopPropagation(); const am = document.getElementById('appMenu'); if (am) am.classList.remove('open'); document.getElementById('levelMenu').classList.toggle('open'); }
 function setLevel(n){ levelFilter = n; document.getElementById('levelMenu').classList.remove('open'); updateLevelBtn(); renderRubriquesTable(); }
 function toggleAppMenu(ev){ if (ev) ev.stopPropagation(); document.getElementById('levelMenu').classList.remove('open'); document.getElementById('appMenu').classList.toggle('open'); }
 document.addEventListener('click', () => { const a = document.getElementById('appMenu'), l = document.getElementById('levelMenu'); if (a) a.classList.remove('open'); if (l) l.classList.remove('open'); });
@@ -4106,8 +4500,8 @@ function openJsonLocal(){
       const d = JSON.parse(await f.text());
       if (!d || typeof d.nodes !== 'object' || !Array.isArray(d.points || [])) throw new Error('format');
       if (!confirm('Remplacer toutes les données de ce dossier par celles du fichier « ' + f.name + ' » ?')) return;
-      nodesState = d.nodes || {}; points = d.points || []; reportInfo = d.info || {};
-      refreshAllUI();
+      nodesState = d.nodes || {}; points = d.points || []; reportInfo = d.info || {}; if (!reportInfo.versions) reportInfo.versions = [];
+      refreshAllUI(); updateDots();
     } catch (e) { alert('Fichier JSON invalide : ce n\'est pas un dossier RAPSOACC.'); }
   };
   i.click();
