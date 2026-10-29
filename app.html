@@ -4328,10 +4328,12 @@ function pdfImageBands(wb, ws, avail){   // avail = largeur du contenu
 }
 function pdfCover(ws, wb, ctx, theme, W){
   const v = a => xlText(ws.getCell(a)).trim(); const ri = k => (reportInfo[k] || '').trim();
+  // ✅ valeur affichée pour la référence : la ref courte (refBase), pas la ref complète
+  const riRef = () => (reportInfo.refBase || '').trim();
   const logo = ws.getImages().length ? pdfImage(wb, ws.getImages()[0].imageId) : null;
   const banner = pdfColor(ws.getCell('A15').fill && ws.getCell('A15').fill.fgColor, theme) || '#8FB4E3';
   const box = (txt, w) => ({ table: { widths: [w], body: [[{ text: txt || ' ', fontSize: 8.5, fillColor: '#F2F2F2', margin: [3, 3, 3, 3] }]] }, layout: 'noBorders' });
-  const row = (label, k, lw, bw) => ({ columns: [{ width: lw, text: label, fontSize: 9, margin: [2, 4, 0, 0] }, { width: bw, stack: [box(ri(k), bw)] }], margin: [0, 0, 0, 7] });
+  const row = (label, val, lw, bw) => ({ columns: [{ width: lw, text: label, fontSize: 9, margin: [2, 4, 0, 0] }, { width: bw, stack: [box(val, bw)] }], margin: [0, 0, 0, 7] });
   const LW = 92, BW = 143;
   const client = [ri('client'), ri('adr1'), ri('adr2'), ri('ville'), ri('attn') ? "A l'attention de " + ri('attn') : '', ri('mail')].filter(Boolean);
   const left = [];
@@ -4341,7 +4343,9 @@ function pdfCover(ws, wb, ctx, theme, W){
   const nodes = [{ columns: [{ width: '*', stack: left }, { width: 170, text: client.join('\n'), fontSize: 9, lineHeight: 1.4, margin: [0, 60, 0, 0] }] }];
   nodes.push({ table: { widths: ['*'], body: [[{ text: v('A15'), bold: true, alignment: 'center', fontSize: 9.5, lineHeight: 1.4, fillColor: banner, margin: [0, 12, 0, 12] }]] }, layout: 'noBorders', margin: [0, 38, 0, 0] });
   nodes.push({ text: '', margin: [0, 118, 0, 0] });
-  nodes.push(row(v('A30'), 'dossier', LW, BW)); nodes.push(row(v('A32'), 'date', LW, BW)); nodes.push(row(v('A34'), 'ref', LW, BW));
+  nodes.push(row(v('A30'), ri('dossier'), LW, BW));
+  nodes.push(row(v('A32'), ri('date'), LW, BW));
+  nodes.push(row(v('A34'), riRef(), LW, BW));   // ✅ ref courte
   nodes.push({ columns: [{ width: LW + BW + 11, text: v('A36'), fontSize: 7 }, { width: '*', text: v('F36'), fontSize: 7 }], margin: [2, 0, 0, 0] });
   if (v('A37') && v('F37')) nodes.push({ columns: [{ width: LW + BW + 11, text: v('A37'), fontSize: 7 }, { width: '*', text: v('F37'), fontSize: 7 }], margin: [2, 1, 0, 0] });
   nodes.push({ text: v('A41'), italics: true, alignment: 'center', fontSize: 8.5, lineHeight: 1.3, margin: [0, 80, 0, 0] });
