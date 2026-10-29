@@ -3561,7 +3561,7 @@ function onDocBlur(){ setDocs(parseDocs()); }
 function removeDoc(idx){ const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); setDocs(arr); } }
 function infoHtml(){
   const g = k => (reportInfo[k] || '').trim();
-  const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('ref')], ['Date', g('date')]].filter(r => r[1]);
+  const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('refBase')], ['Date', g('date')]].filter(r => r[1]);
   return rows.length ? `<div class="rep-info">${rows.map(r => `<b>${r[0]} :</b> ${esc(r[1])}`).join(' &nbsp;|&nbsp; ')}</div>` : '';
 }
 function pointRubriques(p){
@@ -3605,17 +3605,31 @@ function exportMarksFromRenvois(){
   });
   return extra;
 }
+/* Nom du fichier exporté : RAPSOACC_<affaire>_<ref complète>_<date>.<ext>
+   ex. RAPSOACC_MonAffaire_JB000-26-888-LA-DIAG-25-235-14A-V1_2026-10-29.pdf */
+function exportFileName(ext){
+  const safe = s => String(s || '').trim().replace(/[^\w\-]+/g, '_').replace(/^_+|_+$/g, '');
+  const affaire = safe(reportInfo.affaire) || 'attestation';
+  const ref = safe(reportInfo.ref) || 'sans_ref';      // réf. complète : refBase-init-DIAG-dossier-Vn
+  const date = new Date().toISOString().slice(0, 10);
+  return 'RAPSOACC_' + affaire + '_' + ref + '_' + date + '.' + ext;
+}
 function buildExport(){
   saveTabContent();
   const t = x => String(x == null ? '' : x).replace(/\t/g, ' ').replace(/\r?\n/g, '<LF>');
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
   let nW = 0, nM = 0, nNR = 0, nR = 0, nSO = 0;
+
   INFO_FIELDS.forEach(f => {
     if (f.g || f.p2 || f.docs || !f.sheet) return;
-    const v = (reportInfo[f.k] || '').trim(); if (!v) return;
+    // ✅ sur le rapport livré, on n'écrit QUE la référence courte (refBase) dans C34
+    let v = (reportInfo[f.k] || '').trim();
+    if (f.k === 'ref') v = (reportInfo.refBase || '').trim();
+    if (!v) return;
     L.push(['W', f.sheet, f.cell, t((f.pre || '') + v)].join('\t')); nW++;
     (f.also || []).forEach(o => { L.push(['W', o.sheet, o.cell, t(v)].join('\t')); nW++; });
   });
+
   // Page de garde, lignes 36 et 37 : version du rapport (la version 1 garde le texte du modèle)
   if (verNum() > 1) {
     L.push(['W', 'Page de garde', 'A36', t(versionText())].join('\t'));
@@ -3623,16 +3637,19 @@ function buildExport(){
     L.push(['W', 'Page de garde', 'A37', t('Référence de la version précédente :')].join('\t'));
     L.push(['W', 'Page de garde', 'F37', t(reportInfo.prevRef || '')].join('\t')); nW += 4;
   }
+
   const ri = k => (reportInfo[k] || '').trim();
   if (ri('contrat') || ri('cdate') || ri('moa')) {
     L.push(['W', 'Page 2', 'A4', t('Par contrat de vérification technique n° ' + (ri('contrat') || 'XXXX') + ' en date du ' + (ri('cdate') || 'xx/xx/xxxx') + ', la société ' + (ri('moa') || 'XXXX') + ', maître d’ouvrage de l’opération de construction suivante :')].join('\t')); nW++;
   }
+
   const docs = (reportInfo.docs || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   if (docs.length) {
     const lines = docs.slice(0, 7); if (docs.length > 7) lines[6] = docs.slice(6).join(' ; ');
     L.push(['C', 'Page 2', 'A16:A23'].join('\t'));
     lines.forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; });
   }
+
   const extraMarks = exportMarksFromRenvois();
   TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
     if (!a.sh) return;
@@ -3647,8 +3664,10 @@ function buildExport(){
       if (n.children) w(n.children);
     }); })(a.children || []);
   }));
+
   const pts = points.slice().sort((a, b) => a.id - b.id);
   if (pts.length) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
+
   return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length };
 }
 const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
@@ -4175,7 +4194,7 @@ async function exportXlsx(msgId, btnId){
   go.disabled = true; msg.textContent = 'Génération du classeur…';
   try {
     const r = await buildXlsx(o);
-    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+    const name = exportFileName('xlsx');
     downloadBlob(name, new Blob([r.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé.';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
@@ -4393,7 +4412,7 @@ async function exportPdf(msgId, btnId){
   go.disabled = true; msg.textContent = 'Génération du PDF…';
   try {
     const r = await buildPdf(readOpts('pdf'));
-    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
+    const name = exportFileName('pdf');
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
@@ -4488,7 +4507,7 @@ function refreshAllUI(){
 function saveJsonLocal(){
   try { saveTabContent(); } catch (e) {}
   const data = { app: 'RAPSOACC', v: 1, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
-  const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().replace(/[^\w\-]+/g, '_')) || 'dossier') + '_' + new Date().toISOString().slice(0, 10) + '.json';
+  const name = exportFileName('json');
   downloadBlob(name, new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
 }
 function openJsonLocal(){
