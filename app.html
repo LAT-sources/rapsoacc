@@ -3561,7 +3561,7 @@ function onDocBlur(){ setDocs(parseDocs()); }
 function removeDoc(idx){ const arr = parseDocs(); if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); setDocs(arr); } }
 function infoHtml(){
   const g = k => (reportInfo[k] || '').trim();
-  const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('refBase')], ['Date', g('date')]].filter(r => r[1]);
+  const rows = [['Affaire', g('affaire')], ['Client', g('client')], ['Contrat', [g('contrat'), g('cdate')].filter(Boolean).join(' du ')], ["Maître d'ouvrage", g('moa')], ['Dossier SOCOTEC', g('dossier')], ['Référence du rapport', g('ref')], ['Date', g('date')]].filter(r => r[1]);
   return rows.length ? `<div class="rep-info">${rows.map(r => `<b>${r[0]} :</b> ${esc(r[1])}`).join(' &nbsp;|&nbsp; ')}</div>` : '';
 }
 function pointRubriques(p){
@@ -3605,31 +3605,17 @@ function exportMarksFromRenvois(){
   });
   return extra;
 }
-/* Nom du fichier exporté : RAPSOACC_<affaire>_<ref complète>_<date>.<ext>
-   ex. RAPSOACC_MonAffaire_JB000-26-888-LA-DIAG-25-235-14A-V1_2026-10-29.pdf */
-function exportFileName(ext){
-  const safe = s => String(s || '').trim().replace(/[^\w\-]+/g, '_').replace(/^_+|_+$/g, '');
-  const affaire = safe(reportInfo.affaire) || 'attestation';
-  const ref = safe(reportInfo.ref) || 'sans_ref';      // réf. complète : refBase-init-DIAG-dossier-Vn
-  const date = new Date().toISOString().slice(0, 10);
-  return 'RAPSOACC_' + affaire + '_' + ref + '_' + date + '.' + ext;
-}
 function buildExport(){
   saveTabContent();
   const t = x => String(x == null ? '' : x).replace(/\t/g, ' ').replace(/\r?\n/g, '<LF>');
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
   let nW = 0, nM = 0, nNR = 0, nR = 0, nSO = 0;
-
   INFO_FIELDS.forEach(f => {
     if (f.g || f.p2 || f.docs || !f.sheet) return;
-    // ✅ sur le rapport livré, on n'écrit QUE la référence courte (refBase) dans C34
-    let v = (reportInfo[f.k] || '').trim();
-    if (f.k === 'ref') v = (reportInfo.refBase || '').trim();
-    if (!v) return;
+    const v = (reportInfo[f.k] || '').trim(); if (!v) return;
     L.push(['W', f.sheet, f.cell, t((f.pre || '') + v)].join('\t')); nW++;
     (f.also || []).forEach(o => { L.push(['W', o.sheet, o.cell, t(v)].join('\t')); nW++; });
   });
-
   // Page de garde, lignes 36 et 37 : version du rapport (la version 1 garde le texte du modèle)
   if (verNum() > 1) {
     L.push(['W', 'Page de garde', 'A36', t(versionText())].join('\t'));
@@ -3637,19 +3623,16 @@ function buildExport(){
     L.push(['W', 'Page de garde', 'A37', t('Référence de la version précédente :')].join('\t'));
     L.push(['W', 'Page de garde', 'F37', t(reportInfo.prevRef || '')].join('\t')); nW += 4;
   }
-
   const ri = k => (reportInfo[k] || '').trim();
   if (ri('contrat') || ri('cdate') || ri('moa')) {
     L.push(['W', 'Page 2', 'A4', t('Par contrat de vérification technique n° ' + (ri('contrat') || 'XXXX') + ' en date du ' + (ri('cdate') || 'xx/xx/xxxx') + ', la société ' + (ri('moa') || 'XXXX') + ', maître d’ouvrage de l’opération de construction suivante :')].join('\t')); nW++;
   }
-
   const docs = (reportInfo.docs || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   if (docs.length) {
     const lines = docs.slice(0, 7); if (docs.length > 7) lines[6] = docs.slice(6).join(' ; ');
     L.push(['C', 'Page 2', 'A16:A23'].join('\t'));
     lines.forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; });
   }
-
   const extraMarks = exportMarksFromRenvois();
   TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
     if (!a.sh) return;
@@ -3664,10 +3647,8 @@ function buildExport(){
       if (n.children) w(n.children);
     }); })(a.children || []);
   }));
-
   const pts = points.slice().sort((a, b) => a.id - b.id);
   if (pts.length) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
-
   return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length };
 }
 const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
@@ -4194,7 +4175,7 @@ async function exportXlsx(msgId, btnId){
   go.disabled = true; msg.textContent = 'Génération du classeur…';
   try {
     const r = await buildXlsx(o);
-    const name = exportFileName('xlsx');
+    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
     downloadBlob(name, new Blob([r.buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé.';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
@@ -4282,77 +4263,31 @@ function pdfMerges(ws){
   return map;
 }
 function pdfGrid(ws, theme, W, o){
-  o = o || {};
-  const A = pdfArea(ws, o.defCols);
-  if (o.rowTo) A.r2 = Math.min(A.r2, o.rowTo);
-  const mg = pdfMerges(ws);
-  const colPt = [];
-  for (let c = A.c1; c <= A.c2; c++) colPt.push(((ws.getColumn(c).width || 8.43) * PDF_MDW + 5) * 0.75);
+  o = o || {}; const A = pdfArea(ws, o.defCols); if (o.rowTo) A.r2 = Math.min(A.r2, o.rowTo); const mg = pdfMerges(ws);
+  const colPt = []; for (let c = A.c1; c <= A.c2; c++) colPt.push(((ws.getColumn(c).width || 8.43) * PDF_MDW + 5) * 0.75);
   const n = colPt.length, total = colPt.reduce((a, b) => a + b, 0);
-  const usable = W - 4 * n - 0.5 * (n + 1);
+  const usable = W - 4 * n - 0.5 * (n + 1);                  // la largeur totale du tableau (marges internes et traits compris) vaut exactement W
   const widths = colPt.map(x => x / total * usable);
   const fsc = o.fsc || 0.8, hsc = o.hsc || 0.8;
-  const body = [], hs = [];
-  const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
-
-  // 1) Lignes visibles uniquement (les lignes masquées ne consomment rien et ne cassent pas les fusions)
-  const visibleRows = [];
-  for (let r = A.r1; r <= A.r2; r++) if (!ws.getRow(r).hidden) visibleRows.push(r);
-  const visibleSet = new Set(visibleRows);
-
-  // 2) Construction des cellules avec rowSpan (fusions verticales)
-  for (const r of visibleRows) {
-    const row = ws.getRow(r);
-    const cells = [];
+  const body = [], hs = []; const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
+  for (let r = A.r1; r <= A.r2; r++) {
+    const row = ws.getRow(r); if (row.hidden) continue; const cells = [];
     for (let c = A.c1; c <= A.c2; c++) {
-      const m = mg[r + ',' + c];
-
-      // Cellule couverte par une fusion dont la maîtresse est ailleurs
-      if (m && (m.mr !== r || m.mc !== c)) { cells.push({}); continue; }
-
-      let colSpan = 1, rowSpan = 1;
-      if (m) {
-        colSpan = Math.min(m.c2, A.c2) - c + 1;
-        let cnt = 0;
-        for (let rr = m.mr; rr <= m.r2; rr++) if (visibleSet.has(rr)) cnt++;
-        rowSpan = Math.max(1, cnt);
+      const m = mg[r + ',' + c], cell = ws.getCell(r, c);
+      if (m && (m.mr !== r || m.mc !== c)) {
+        if (m.mr < r && c === m.mc) { const cs = Math.min(m.c2, A.c2) - c + 1; cells.push(pdfCellObj(ws.getCell(m.mr, m.mc), ws, theme, fsc, cs, c, true, false)); for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1; }
+        else cells.push({});
+        continue;
       }
-
-      const cell = ws.getCell(r, c);
-      const obj = pdfCellObj(cell, ws, theme, fsc, colSpan, c, false, o.bullets);
-      if (rowSpan > 1) obj.rowSpan = rowSpan;
-      cells.push(obj);
-
-      for (let k = 1; k < colSpan; k++) cells.push({});
-      c += colSpan - 1;
+      const cs = m ? Math.min(m.c2, A.c2) - c + 1 : 1;
+      cells.push(pdfCellObj(cell, ws, theme, fsc, cs, c, false, o.bullets));
+      for (let k = 1; k < cs; k++) cells.push({}); c += cs - 1;
     }
-    body.push(cells);
-    hs.push((row.height || defH) * hsc);
+    body.push(cells); hs.push((row.height || defH) * hsc);
   }
-
   const lines = o.lines !== false;
-  return {
-    node: {
-      table: {
-        widths: widths,
-        body: body,
-        // ✅ N'impose une hauteur QUE si elle est raisonnable (< 500 pt)
-        heights: i => { const h = hs[i] || 0; return (h > 0 && h < 500) ? h : undefined; },
-        // ✅ AUCUNE ligne jetée (au lieu de dontBreakRows: true)
-        dontBreakRows: false
-      },
-      layout: {
-        hLineWidth: () => lines ? 0.5 : 0,
-        vLineWidth: () => lines ? 0.5 : 0,
-        hLineColor: () => '#000',
-        vLineColor: () => '#000',
-        paddingLeft: () => 2,
-        paddingRight: () => 2,
-        paddingTop: () => 0.6,
-        paddingBottom: () => 0.6
-      }
-    }
-  };
+  return { node: { table: { widths: widths, body: body, heights: i => hs[i] || 0, dontBreakRows: true },
+    layout: { hLineWidth: () => lines ? 0.5 : 0, vLineWidth: () => lines ? 0.5 : 0, hLineColor: () => '#000', vLineColor: () => '#000', paddingLeft: () => 2, paddingRight: () => 2, paddingTop: () => 0.6, paddingBottom: () => 0.6 } } };
 }
 function pdfB64(buf){
   const u = buf instanceof Uint8Array ? buf : new Uint8Array(buf); let s = ''; const CH = 0x8000;
@@ -4374,12 +4309,10 @@ function pdfImageBands(wb, ws, avail){   // avail = largeur du contenu
 }
 function pdfCover(ws, wb, ctx, theme, W){
   const v = a => xlText(ws.getCell(a)).trim(); const ri = k => (reportInfo[k] || '').trim();
-  // ✅ valeur affichée pour la référence : la ref courte (refBase), pas la ref complète
-  const riRef = () => (reportInfo.refBase || '').trim();
   const logo = ws.getImages().length ? pdfImage(wb, ws.getImages()[0].imageId) : null;
   const banner = pdfColor(ws.getCell('A15').fill && ws.getCell('A15').fill.fgColor, theme) || '#8FB4E3';
   const box = (txt, w) => ({ table: { widths: [w], body: [[{ text: txt || ' ', fontSize: 8.5, fillColor: '#F2F2F2', margin: [3, 3, 3, 3] }]] }, layout: 'noBorders' });
-  const row = (label, val, lw, bw) => ({ columns: [{ width: lw, text: label, fontSize: 9, margin: [2, 4, 0, 0] }, { width: bw, stack: [box(val, bw)] }], margin: [0, 0, 0, 7] });
+  const row = (label, k, lw, bw) => ({ columns: [{ width: lw, text: label, fontSize: 9, margin: [2, 4, 0, 0] }, { width: bw, stack: [box(ri(k), bw)] }], margin: [0, 0, 0, 7] });
   const LW = 92, BW = 143;
   const client = [ri('client'), ri('adr1'), ri('adr2'), ri('ville'), ri('attn') ? "A l'attention de " + ri('attn') : '', ri('mail')].filter(Boolean);
   const left = [];
@@ -4389,9 +4322,7 @@ function pdfCover(ws, wb, ctx, theme, W){
   const nodes = [{ columns: [{ width: '*', stack: left }, { width: 170, text: client.join('\n'), fontSize: 9, lineHeight: 1.4, margin: [0, 60, 0, 0] }] }];
   nodes.push({ table: { widths: ['*'], body: [[{ text: v('A15'), bold: true, alignment: 'center', fontSize: 9.5, lineHeight: 1.4, fillColor: banner, margin: [0, 12, 0, 12] }]] }, layout: 'noBorders', margin: [0, 38, 0, 0] });
   nodes.push({ text: '', margin: [0, 118, 0, 0] });
-  nodes.push(row(v('A30'), ri('dossier'), LW, BW));
-  nodes.push(row(v('A32'), ri('date'), LW, BW));
-  nodes.push(row(v('A34'), riRef(), LW, BW));   // ✅ ref courte
+  nodes.push(row(v('A30'), 'dossier', LW, BW)); nodes.push(row(v('A32'), 'date', LW, BW)); nodes.push(row(v('A34'), 'ref', LW, BW));
   nodes.push({ columns: [{ width: LW + BW + 11, text: v('A36'), fontSize: 7 }, { width: '*', text: v('F36'), fontSize: 7 }], margin: [2, 0, 0, 0] });
   if (v('A37') && v('F37')) nodes.push({ columns: [{ width: LW + BW + 11, text: v('A37'), fontSize: 7 }, { width: '*', text: v('F37'), fontSize: 7 }], margin: [2, 1, 0, 0] });
   nodes.push({ text: v('A41'), italics: true, alignment: 'center', fontSize: 8.5, lineHeight: 1.3, margin: [0, 80, 0, 0] });
@@ -4462,7 +4393,7 @@ async function exportPdf(msgId, btnId){
   go.disabled = true; msg.textContent = 'Génération du PDF…';
   try {
     const r = await buildPdf(readOpts('pdf'));
-    const name = exportFileName('pdf');
+    const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\-]+/g, '_')) || 'attestation') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
   } catch (e) { msg.innerHTML = '<span style="color:#b71c1c">Échec : ' + esc(e.message || e) + '</span>'; }
@@ -4557,7 +4488,7 @@ function refreshAllUI(){
 function saveJsonLocal(){
   try { saveTabContent(); } catch (e) {}
   const data = { app: 'RAPSOACC', v: 1, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
-  const name = exportFileName('json');
+  const name = 'RAPSOACC_' + (((reportInfo.affaire || '').trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\-]+/g, '_')) || 'dossier') + '_' + new Date().toISOString().slice(0, 10) + '.json';
   downloadBlob(name, new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
 }
 function openJsonLocal(){
