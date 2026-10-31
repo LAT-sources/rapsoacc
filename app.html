@@ -4230,28 +4230,20 @@ function pdfBullet(kind){
   return kind === 'r' ? [{ type: 'rect', x: 0.5, y: 1.2, w: 6, h: 6, lineWidth: 0.7, lineColor: '#000' }]
     : [{ type: 'polyline', closePath: true, color: '#222', lineWidth: 0.2, points: [{ x: 0, y: 1 }, { x: 6, y: 4.2 }, { x: 0, y: 7.4 }] }];
 }
-function pdfCellObj(cell, ws, theme, sc, colSpan, col, cont, bullets, contBorder){
+function pdfCellObj(cell, ws, theme, sc, colSpan, col, cont, bullets){
   let runs = pdfRuns(cell, theme, sc); const ind = ((cell.alignment || {}).indent || 0) * 6 * sc;
-  const fill = pdfFill(cell, theme); const bd = pdfBorderFlags(cell);
-  // cont = cellule de continuation (fusion) : on n'affiche pas de texte, on reprend la bordure passée
+  const fill = pdfFill(cell, theme); const bd = pdfBorderFlags(cell); if (cont) { bd[1] = false; }
   const txt = xlText(cell).trim();
   let obj;
-  if (cont) {
-    obj = { text: '' };
-    if (contBorder) obj.border = contBorder;
-    if (fill) obj.fillColor = fill;
-    return obj;
-  }
-  if (col >= 3 && col <= 5 && ['R', 'NR', 'SO'].includes(txt))
-    obj = { text: txt, bold: true, alignment: 'center', color: txt === 'R' ? '#1b9a4b' : (txt === 'NR' ? '#d40000' : '#000000'), fontSize: runs[0].fontSize };
+  if (cont) obj = { text: '' };
+  else if (col >= 3 && col <= 5 && ['R', 'NR', 'SO'].includes(txt)) obj = { text: txt, bold: true, alignment: 'center', color: txt === 'R' ? '#1b9a4b' : (txt === 'NR' ? '#d40000' : '#000000'), fontSize: runs[0].fontSize };
   else if (bullets && runs.length > 1 && ['r', 'Ø'].includes(String(runs[0].text).trim())) {
     const rest = runs.slice(1).map(r => Object.assign({}, r)); rest[0].text = String(rest[0].text).replace(/^\s+/, '');
     obj = { columns: [{ width: 11, canvas: pdfBullet(String(runs[0].text).trim()) }, { width: '*', text: rest, alignment: pdfAlign(cell) }], columnGap: 2 };
   } else obj = { text: runs, alignment: pdfAlign(cell) };
   if (ind && obj.text) obj.margin = [ind, 0, 0, 0];
   if (fill) obj.fillColor = fill;
-  obj.border = bd;
-  if (colSpan > 1) obj.colSpan = colSpan;
+  obj.border = bd; if (colSpan > 1) obj.colSpan = colSpan;
   return obj;
 }
 function pdfArea(ws, defCols){
@@ -4286,10 +4278,12 @@ function pdfGrid(ws, theme, W, o){
   const body = [], hs = [];
   const defH = (ws.properties && ws.properties.defaultRowHeight) || 13.5;
 
-  // Lignes visibles uniquement
   const visibleRows = [];
   for (let r = A.r1; r <= A.r2; r++) if (!ws.getRow(r).hidden) visibleRows.push(r);
   const visibleSet = new Set(visibleRows);
+
+  // ✅ petite cellule invisible mais NON VIDE : oblige pdfmake à dessiner la bordure
+  const EMPTY_DRAWN = { text: '\u00A0', fontSize: 0.1, color: '#FFFFFF' };
 
   for (const r of visibleRows) {
     const row = ws.getRow(r);
@@ -4297,20 +4291,14 @@ function pdfGrid(ws, theme, W, o){
     for (let c = A.c1; c <= A.c2; c++) {
       const m = mg[r + ',' + c];
 
-      // Cellule couverte par une fusion : on copie les bordures pour que le cadre extérieur reste visible
+      // Cellule couverte par une fusion : on force le rendu avec la bordure de la maîtresse
       if (m && (m.mr !== r || m.mc !== c)) {
         const masterCell = ws.getCell(m.mr, m.mc);
-        const contBd = pdfBorderFlags(masterCell);
-        // colonne de droite de la fusion ? on garde le border-right de la maîtresse
-        const isRightEdge = (c === m.c2);
-        // dernière ligne de la fusion ? on garde le border-bottom de la maîtresse
-        const isBottomEdge = (r === m.r2);
+        const bd = pdfBorderFlags(masterCell);
         const fill = pdfFill(masterCell, theme);
-        cells.push({
-          text: '',
-          border: contBd,
-          ...(fill ? { fillColor: fill } : {})
-        });
+        const obj = { text: '\u00A0', fontSize: 0.1, color: '#FFFFFF', border: bd };
+        if (fill) obj.fillColor = fill;
+        cells.push(obj);
         continue;
       }
 
@@ -4327,14 +4315,17 @@ function pdfGrid(ws, theme, W, o){
       if (rowSpan > 1) obj.rowSpan = rowSpan;
       cells.push(obj);
 
-      for (let k = 1; k < colSpan; k++) cells.push({});
+      // Cellules absorbées par un colSpan : doivent être dessinées aussi (bordure droite du bloc)
+      for (let k = 1; k < colSpan; k++) {
+        cells.push({ text: '\u00A0', fontSize: 0.1, color: '#FFFFFF', border: pdfBorderFlags(cell) });
+      }
       c += colSpan - 1;
     }
     body.push(cells);
     hs.push((row.height || defH) * hsc);
   }
 
-  const lines = o.lines !== false;
+  const lines = (o.lines !== false) && (typeof showBorders !== 'undefined' ? showBorders : true);
   return {
     node: {
       table: {
