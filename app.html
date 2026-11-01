@@ -3472,7 +3472,7 @@ function renderInfoPage(tab){
       ${fld('Date', `<input type="date" value="${frToIso(reportInfo.date)}" onchange="infoDateChange('date', this.value)">`)}
       <div class="field"><label>Référence du rapport</label>
         <input type="text" value="${escAttr(reportInfo.refBase || '')}" onchange="refBaseChange(this.value)" placeholder="ex. JB000-26-026">
-        <div class="ref-full">${reportInfo.ref ? 'Référence complète : <b>' + esc(reportInfo.ref) + '</b>' : 'La référence complète est composée : référence - initiales - DIAG - n° dossier SOCOTEC - Vn'}</div>
+        <div class="ref-full" style="display:none;">${reportInfo.ref ? 'Référence complète : <b>' + esc(reportInfo.ref) + '</b>' : 'La référence complète est composée : référence - initiales - DIAG - n° dossier SOCOTEC - Vn'}</div>
         <div class="ref-meta">Version actuelle : <b>V${v}</b> — une nouvelle référence déclenche la version suivante.</div>
       </div>
       ${fld("Chargé d'affaire", inTxt('charge'))}${fld('Tutoré', inTxt('tutore'))}
