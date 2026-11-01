@@ -4412,7 +4412,7 @@ async function exportPdf(msgId, btnId){
     const o = readOpts('pdf');
     const cb = document.getElementById('expAnnexePoints');
     if (cb) o.annexePoints = cb.checked;
-    const r = await buildPdf(readOpts('pdf'));
+    const r = await buildPdf(o);
     const name = exportFileName('pdf');
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
     msg.innerHTML = '✔ <b>' + esc(name) + '</b> téléchargé (' + r.pages + ' pages).';
