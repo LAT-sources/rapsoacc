@@ -3547,7 +3547,7 @@ function handleFiles(files){
 }
 function addDocManually(){
   const arr = parseDocs(); if (arr.length >= DOC_MAX) { alert(DOC_MAX + ' documents maximum.'); return; }
-  const name = prompt('Nom du document (sans extension) :'); if (!name || !name.trim() || arr.includes(name.trim())) return;
+  const name = prompt('Nom du document/commentaire :'); if (!name || !name.trim() || arr.includes(name.trim())) return;
   arr.push(name.trim()); setDocs(arr);
 }
 function renderDocList(){
