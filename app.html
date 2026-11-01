@@ -3461,7 +3461,7 @@ function renderInfoPage(tab){
       </div>
       <div class="doc-count" id="docCount"></div>
       <div class="doc-list" id="docList"></div>
-      <button class="doc-add-btn" id="docAddBtn" onclick="addDocManually()"><span style="font-size:14px;line-height:1">+</span> Ajouter un document</button>
+      <button class="doc-add-btn" id="docAddBtn" onclick="addDocManually()"><span style="font-size:14px;line-height:1">+</span> Ajouter un document/commentaire</button>
     </div>`;
   } else if (tab === 'commentaires') {
     const ta = (k, lab, ph) => fld(lab, `<textarea rows="3" oninput="infoChange('${k}', this.value)" placeholder="${ph}">${esc(reportInfo[k] || '')}</textarea>`);
