@@ -3490,6 +3490,7 @@ function renderInfoPage(tab){
           <label><input type="checkbox" id="expMasquer" checked> Masquer les feuilles non imprimées</label>
           <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
           <label style="display:none"><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
+          <label><input type="checkbox" id="expAnnexePoints" checked> Inclure l'Annexe – Points (PDF et Excel)</label>
         </div>
         <div class="export-buttons">
           <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">⎙ Imprimer le PDF</button>
@@ -3614,7 +3615,7 @@ function exportFileName(ext){
   const date = new Date().toISOString().slice(0, 10);
   return 'RAPSOACC_' + affaire + '_' + ref + '_' + date + '.' + ext;
 }
-function buildExport(){
+function buildExport(opts){
   saveTabContent();
   const t = x => String(x == null ? '' : x).replace(/\t/g, ' ').replace(/\r?\n/g, '<LF>');
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
@@ -3660,7 +3661,7 @@ function buildExport(){
     }); })(a.children || []);
   }));
   const pts = points.slice().sort((a, b) => a.id - b.id);
-  if (pts.length) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
+  if (pts.length && opts && opts.annexePoints !== false) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
   return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length };
 }
 const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
@@ -4088,7 +4089,7 @@ async function fillWorkbook(o){
   await ensureExcelJS();
   if (!xlModele) xlModele = await findModele();
   if (!xlModele) throw new Error('Modèle Excel introuvable : le fichier modele.xlsm doit être présent dans le dépôt, à côté de la page.');
-  const x = buildExport();
+  const x = buildExport(o);
   const wb = new ExcelJS.Workbook(); await wb.xlsx.load(xlModele.buf);
   const miss = new Set(); const un = t => String(t || '').replace(/<LF>/g, '\n');
   let pRow = 13, nP = 0, lastCom = 11;
@@ -4172,10 +4173,10 @@ function downloadBlob(name, blob){
 function readOpts(px){
   if (document.getElementById('expTousArticles')) {
     const all = document.querySelector('input[name=expLignes]:checked').value === 'all';
-    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked };
+    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked, annexePoints: document.getElementById('expAnnexePoints').checked };
   }
   const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
-  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked };
+  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked, annexePoints: true };
 }
 function updateOptsUI(px){
   const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all'; const t = document.getElementById(px + 'Tous'); t.disabled = !all; if (!all) t.checked = false; else if (!t.dataset.touched) t.checked = true;
@@ -4408,6 +4409,9 @@ async function exportPdf(msgId, btnId){
   const msg = el(msgId || 'xlMsg'), go = el(btnId || 'pdfGo');
   go.disabled = true; msg.textContent = 'Génération du PDF…';
   try {
+    const o = readOpts('pdf');
+    const cb = document.getElementById('expAnnexePoints');
+    if (cb) o.annexePoints = cb.checked;
     const r = await buildPdf(readOpts('pdf'));
     const name = exportFileName('pdf');
     downloadBlob(name, new Blob([r.buffer], { type: 'application/pdf' }));
