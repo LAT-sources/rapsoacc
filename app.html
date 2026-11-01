@@ -722,7 +722,7 @@ body.point-selecting .c-label{cursor:pointer}
 
 <div class="modal-overlay" id="pdfModal">
   <div class="modal" style="max-width:460px">
-    <div class="modal-header"><span>Imprimer le PDF</span><button onclick="closeModal('pdfModal')">×</button></div>
+    <div class="modal-header"><span>⎙ Imprimer le PDF</span><button onclick="closeModal('pdfModal')">×</button></div>
     <div class="modal-body simple-exp">
       <div class="exp-opts">
         <label class="exp-radio"><input type="radio" name="pdfL" value="ren" onchange="updateOptsUI('pdf')"> Lignes renseignées seulement</label>
@@ -3492,8 +3492,8 @@ function renderInfoPage(tab){
           <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
         </div>
         <div class="export-buttons">
-          <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">Imprimer le PDF</button>
-          <button id="btnExportExcel" onclick="exportXlsx('exportMsg','btnExportExcel')">Télécharger l'Excel</button>
+          <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">⎙ Imprimer le PDF</button>
+          <button id="btnExportExcel" onclick="exportXlsx('exportMsg','btnExportExcel')">⌗ Télécharger l'Excel</button>
         </div>
         <div class="export-msg" id="exportMsg"></div>
       </div>
