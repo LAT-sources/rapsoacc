@@ -3661,7 +3661,7 @@ function buildExport(opts){
     }); })(a.children || []);
   }));
   const pts = points.slice().sort((a, b) => a.id - b.id);
-  if (pts.length && opts && opts.annexePoints !== false) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
+  if (pts.length && (!opts || opts.annexePoints !== false)) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
   return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length };
 }
 const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
