@@ -651,7 +651,7 @@ body.point-selecting .c-label{cursor:pointer}
       <button id="rvSomBtn" class="rv-som-btn" onclick="toggleRvSommaire()">▸ Renvois de l'article</button>
       <div id="rvSommaire" style="display:none"></div>
     </div>
-    <button class="btn-points" onclick="openPoints()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M8 8h.01M14 11v6M11 14h6"/></svg> Ajouter points</button>
+    <button class="btn-points" onclick="openPoints()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M8 8h.01M14 11v6M11 14h6"/></svg> Ajouter/modifier points</button>
   </div>
 </div>
 
@@ -3489,7 +3489,7 @@ function renderInfoPage(tab){
           <label class="sub"><input type="checkbox" id="expTousArticles" checked> Garder aussi les articles sans avis</label>
           <label><input type="checkbox" id="expMasquer" checked> Masquer les feuilles non imprimées</label>
           <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
-          <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
+          <label style="display:none"><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
         </div>
         <div class="export-buttons">
           <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">⎙ Imprimer le PDF</button>
