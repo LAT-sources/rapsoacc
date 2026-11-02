@@ -3292,10 +3292,15 @@ function attach(p, code){
 }
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
+  
+  // 1. On retire la ligne cliquée
   p.codes.splice(i, 1);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
 
+  // 2. On cherche la correspondance exacte (le renvoi) pour la retirer aussi
+  const labelToMatch = (n.long || n.label || '').trim();
+  
   const restoreIfFree = c => {
     const s = nodesState[c];
     if (s && s.autoNR && pointsOf(c).length === 0) {
@@ -3303,12 +3308,22 @@ function detach(p, code){
       delete s.autoNR; delete s.prevAvis;
     }
   };
+
+  // On restaure la ligne cliquée
   restoreIfFree(code);
-  if (n.ins && n.cf) restoreIfFree(n.cf);
-  if (n.ins && n.ref) {
+
+  // On cherche et restaure la ligne cible (le renvoi)
+  if (labelToMatch) {
     (function walk(nodes){
       nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code);
+        if (x !== n && (x.long || x.label || '').trim() === labelToMatch && !x.ins) {
+           // Retirer le point de la ligne cible
+           const idx = p.codes.indexOf(x.code);
+           if (idx >= 0) {
+             p.codes.splice(idx, 1);
+             restoreIfFree(x.code);
+           }
+        }
         if (x.children) walk(x.children);
       });
     })(TREE_DATA);
