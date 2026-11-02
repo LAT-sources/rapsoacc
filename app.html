@@ -4467,7 +4467,7 @@ const RO = EMBED && !!window.CANEVAS_READONLY;
       const a = m.action;
       if (a === 'pdf' || a === 'excel') openInfoTab('livrable'); else if (a === 'savejson') saveJsonLocal(); else if (a === 'openjson') openJsonLocal();
       else if (a === 'points') openPoints(); else if (a === 'info') openInfo();
-      else if (a === 'reset') { if (!RO && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = {}; prefillFromPortal(); refreshUI(); sendSave(true); } }
+      else if (a === 'reset') { if (!RO && requestResetPassword() && confirm('Réinitialiser tous les avis, points et infos de ce dossier ?')) { nodesState = {}; points = []; reportInfo = {}; prefillFromPortal(); refreshUI(); sendSave(true); } }
     }
   });
   // sauvegarde / restauration locales : remplacées par le portail
@@ -4510,6 +4510,13 @@ function saveJsonLocal(){
   const data = { app: 'RAPSOACC', v: 1, exportedAt: new Date().toISOString(), nodes: nodesState, points: points, info: reportInfo };
   const name = exportFileName('json');
   downloadBlob(name, new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
+}
+function requestResetPassword(){
+  const PWD = 'SOCOTEC';   // ← mot de passe à personnaliser
+  const saisie = prompt('Mot de passe requis pour réinitialiser ce dossier :');
+  if (saisie === null) return false;           // annulé
+  if (saisie !== PWD) { alert('Mot de passe incorrect — réinitialisation annulée.'); return false; }
+  return true;
 }
 function openJsonLocal(){
   if (typeof RO !== 'undefined' && RO) { alert('Dossier archivé : lecture seule.'); return; }
