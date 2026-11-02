@@ -3264,29 +3264,23 @@ function exportRemark(n){
 function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
 function attach(p, code){
   if (p.codes.includes(code)) return;
-  
-  // 1. On ajoute la ligne cliquée au point
   p.codes.push(code);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
-  
-  // 2. On cherche les renvois (les lignes citées) et on les ajoute aussi
-  if (n.ins && n.cf) { // Si c'est une ligne insérée par un renvoi
-    if (!p.codes.includes(n.cf)) p.codes.push(n.cf);
-  }
-  if (n.ins && n.ref) { // Si c'est une ligne insérée avec référence
+
+  const toAdd = [code];
+  const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
+  if (n.ins && n.cf) addC(n.cf);
+  if (n.ins && n.ref) {
     (function walk(nodes){
       nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) {
-           if (!p.codes.includes(x.code)) p.codes.push(x.code);
-        }
+        if (x !== n && x.ref === n.ref && x.xr) addC(x.code);
         if (x.children) walk(x.children);
       });
     })(TREE_DATA);
   }
-  
-  // 3. On applique l'avis "D" (NR) à toutes les lignes concernées
-  p.codes.forEach(c => {
+  toAdd.forEach(c => {
+    if (!p.codes.includes(c)) p.codes.push(c);
     const node = findNodeByCode(TREE_DATA, c);
     if (!node) return;
     const s = nodesState[c] || (nodesState[c] = {});
@@ -3312,11 +3306,7 @@ function detach(p, code){
       delete s.autoNR; delete s.prevAvis;
     }
   };
-  
-  // On restaure la ligne cliquée
   restoreIfFree(code);
-
-  // On restaure les lignes liées
   if (n.ins && n.cf) restoreIfFree(n.cf);
   if (n.ins && n.ref) {
     (function walk(nodes){
