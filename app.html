@@ -3237,42 +3237,84 @@ function remarkFor(n){
   return parts.join('\n');
 }
 function exportRemark(n){
-  const parts = []; const base = remarkFor(n); if (base) parts.push(base);
+  const parts = []; 
+  const base = remarkFor(n); 
+  if (base) parts.push(base); // Ajoute "Voir point 1" si la ligne a un point
+  
   const seen = new Set();
+  
+  // 1. On cherche les vrais renvois (les lignes insérées avec le bouton +)
   (CITED[n.code] || []).forEach(c => {
     const s = nodesState[c.code] || {};
     if (s.avis === 'D' || isHM(c.code)) {
-      const o = (s.obs || '').trim(); const ids = pointsOf(c.code);
+      const o = (s.obs || '').trim(); 
+      const ids = pointsOf(c.code);
       const tag = [s.avis === 'D' ? 'NR' : '', isHM(c.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
       const line = (c.ref || c.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
       if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
     }
   });
+
+  // 2. NOUVEAU : On cherche les articles cités en texte brut (ex: "cf. Art. 3")
+  const txt = ((n.long || '') + ' ' + (n.label || '')).toLowerCase();
+  const match = txt.match(/art\.\s*(\d+)/);
+  
+  if (match) {
+    const artNum = match[1];
+    // On cherche l'article correspondant dans l'arborescence (ex: code 'A3')
+    const artNode = findNodeByCode(TREE_DATA, 'A' + artNum);
+    
+    if (artNode && artNode.children) {
+      // On vérifie si les sous-lignes de cet article ont été cochées (NR)
+      artNode.children.forEach(child => {
+        const s = nodesState[child.code] || {};
+        if (s.avis === 'D' || isHM(child.code)) {
+          const o = (s.obs || '').trim(); 
+          const ids = pointsOf(child.code);
+          const tag = [s.avis === 'D' ? 'NR' : '', isHM(child.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
+          
+          // On utilise la référence de l'enfant (ex: "Art. 3 (1)")
+          const line = (child.ref || child.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
+          
+          if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
+        }
+      });
+    }
+  }
+  
   return parts.join('\n');
 }
 function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
 function attach(p, code){
   if (p.codes.includes(code)) return;
+  
+  // 1. On ajoute la ligne cliquée
   p.codes.push(code);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
 
-  const toAdd = [code];
-  const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
-  if (n.ins && n.cf) addC(n.cf);
-  if (n.ins && n.ref) {
+  // 2. On cherche la correspondance exacte dans les autres articles (le renvoi)
+  // On utilise le libellé exact (ex: "Pas d'éblouissement direct ni de reflet")
+  const labelToMatch = (n.long || n.label || '').trim();
+  
+  if (labelToMatch) {
     (function walk(nodes){
       nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) addC(x.code);
+        // Si on trouve une ligne dans l'Art. 18 avec le même libellé
+        if (x !== n && (x.long || x.label || '').trim() === labelToMatch && !x.ins && x.code !== code) {
+           if (!p.codes.includes(x.code)) p.codes.push(x.code);
+        }
         if (x.children) walk(x.children);
       });
     })(TREE_DATA);
   }
-  toAdd.forEach(c => {
-    if (!p.codes.includes(c)) p.codes.push(c);
+
+  // 3. On applique l'avis "D" à toutes les lignes trouvées (la source + la cible)
+  p.codes.forEach(c => {
     const node = findNodeByCode(TREE_DATA, c);
     if (!node) return;
     const s = nodesState[c] || (nodesState[c] = {});
+    
     if (s.avis !== 'D') {
       s.prevAvis = s.avis || null;
       s.autoNR = true;
@@ -3282,13 +3324,17 @@ function attach(p, code){
     }
   });
 }
-
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
+  
+  // 1. On retire la ligne cliquée
   p.codes.splice(i, 1);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
 
+  // 2. On cherche la correspondance exacte (le renvoi) pour la retirer aussi
+  const labelToMatch = (n.long || n.label || '').trim();
+  
   const restoreIfFree = c => {
     const s = nodesState[c];
     if (s && s.autoNR && pointsOf(c).length === 0) {
@@ -3296,12 +3342,22 @@ function detach(p, code){
       delete s.autoNR; delete s.prevAvis;
     }
   };
+
+  // On restaure la ligne cliquée
   restoreIfFree(code);
-  if (n.ins && n.cf) restoreIfFree(n.cf);
-  if (n.ins && n.ref) {
+
+  // On cherche et restaure la ligne cible (le renvoi)
+  if (labelToMatch) {
     (function walk(nodes){
       nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code);
+        if (x !== n && (x.long || x.label || '').trim() === labelToMatch && !x.ins) {
+           // Retirer le point de la ligne cible
+           const idx = p.codes.indexOf(x.code);
+           if (idx >= 0) {
+             p.codes.splice(idx, 1);
+             restoreIfFree(x.code);
+           }
+        }
         if (x.children) walk(x.children);
       });
     })(TREE_DATA);
