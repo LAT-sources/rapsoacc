@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>RAPSOACC – Attestation accessibilité PMR</title>
+<title>RAPSOACC – Accessibilité à tous</title>
 <!-- RAPSO_META -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -3451,12 +3451,12 @@ function renderInfoPage(tab){
     html = `<div class="info-page active">${fld('Client', inTxt('client'))}${fld('Adresse', inTxt('adr1'))}${fld("Complément d'adresse", inTxt('adr2'))}${fld('Ville', inTxt('ville'))}${fld("À l'attention de", inTxt('attn'))}${fld('Adresse mail', inTxt('mail'))}</div>`;
   } else if (tab === 'affaire') {
     html = `<div class="info-page active">${fld('Affaire', inTxt('affaire'))}${fld('Dossier', inTxt('dossier', 'N° du dossier (ex. 25-325-01A)'))}${fld('Contrat n°', inTxt('contrat'))}${fld('Date du contrat', `<input type="date" value="${frToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)">`)}${fld("Société (maître d'ouvrage)", `<input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le client si vide">`)}</div>`;
-  } else if (tab === 'documents') {
+  } else if (tab === 'documentss') {
     html = `<div class="info-page active">
       <div class="drop-zone" id="dropZone" onclick="docZoneClick()">
         <div class="dz-icon">📎</div>
         <div class="dz-title">Glissez vos fichiers ici</div>
-        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris sans leur extension — ${DOC_MAX} documents maximum</span></div>
+        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris — ${DOC_MAX} documents maximum</span></div>
         <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
       </div>
       <div class="doc-count" id="docCount"></div>
