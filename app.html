@@ -3238,44 +3238,49 @@ function remarkFor(n){
 }
 function exportRemark(n){
   const parts = []; 
-  const base = remarkFor(n); 
-  if (base) parts.push(base); // Ajoute "Voir point 1" si la ligne a un point
+  
+  // 1. On force l'affichage du point au début (s'il existe)
+  const ids = pointsOf(n.code);
+  if (ids.length) {
+    parts.push('Voir point ' + ids.join(', '));
+  } else if (isHM(n.code)) {
+    parts.push('Hors Mission');
+  }
+  
+  // 2. On ajoute les observations s'il y en a
+  const s = nodesState[n.code] || {};
+  if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
   
   const seen = new Set();
   
-  // 1. On cherche les vrais renvois (les lignes insérées avec le bouton +)
+  // 3. On cherche les vrais renvois
   (CITED[n.code] || []).forEach(c => {
-    const s = nodesState[c.code] || {};
-    if (s.avis === 'D' || isHM(c.code)) {
-      const o = (s.obs || '').trim(); 
-      const ids = pointsOf(c.code);
-      const tag = [s.avis === 'D' ? 'NR' : '', isHM(c.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
-      const line = (c.ref || c.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
+    const sC = nodesState[c.code] || {};
+    if (sC.avis === 'D' || isHM(c.code)) {
+      const o = (sC.obs || '').trim(); 
+      const idsC = pointsOf(c.code);
+      const tag = [sC.avis === 'D' ? 'NR' : '', isHM(c.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
+      const line = (c.ref || c.label) + ' : ' + tag + (idsC.length ? ' (voir point ' + idsC.join(', ') + ')' : '') + (o ? ' - ' + o : '');
       if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
     }
   });
 
-  // 2. NOUVEAU : On cherche les articles cités en texte brut (ex: "cf. Art. 3")
+  // 4. On cherche les articles cités en texte brut (ex: "cf. Art. 3")
   const txt = ((n.long || '') + ' ' + (n.label || '')).toLowerCase();
   const match = txt.match(/art\.\s*(\d+)/);
   
   if (match) {
     const artNum = match[1];
-    // On cherche l'article correspondant dans l'arborescence (ex: code 'A3')
     const artNode = findNodeByCode(TREE_DATA, 'A' + artNum);
     
     if (artNode && artNode.children) {
-      // On vérifie si les sous-lignes de cet article ont été cochées (NR)
       artNode.children.forEach(child => {
-        const s = nodesState[child.code] || {};
-        if (s.avis === 'D' || isHM(child.code)) {
-          const o = (s.obs || '').trim(); 
-          const ids = pointsOf(child.code);
-          const tag = [s.avis === 'D' ? 'NR' : '', isHM(child.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
-          
-          // On utilise la référence de l'enfant (ex: "Art. 3 (1)")
-          const line = (child.ref || child.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
-          
+        const sC = nodesState[child.code] || {};
+        if (sC.avis === 'D' || isHM(child.code)) {
+          const o = (sC.obs || '').trim(); 
+          const idsC = pointsOf(child.code);
+          const tag = [sC.avis === 'D' ? 'NR' : '', isHM(child.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
+          const line = (child.ref || child.label) + ' : ' + tag + (idsC.length ? ' (voir point ' + idsC.join(', ') + ')' : '') + (o ? ' - ' + o : '');
           if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
         }
       });
