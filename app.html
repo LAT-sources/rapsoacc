@@ -3229,11 +3229,28 @@ function closeModal(id){ el(id).classList.remove('open'); }
 function pointsOf(code){ return points.filter(p => p.codes.includes(code)).map(p => p.id).sort((a,b)=>a-b); }
 function curPoint(){ return points.find(p => p.id === curPointId); }
 function remarkFor(n){
-  const s = nodesState[n.code] || {}; const parts = [];
+  const parts = [];
   if (isHM(n.code)) parts.push('Hors Mission');
-  const ids = pointsOf(n.code);
+  
+  // On cherche le point sur la ligne courante
+  let ids = pointsOf(n.code);
+  
+  // Si on n'en trouve pas, on cherche sur les parents (pour les sous-rubriques)
+  if (ids.length === 0) {
+    const path = findPathToNode(TREE_DATA, n.code);
+    if (path) {
+      for (let i = path.length - 1; i >= 0; i--) {
+        const pIds = pointsOf(path[i].code);
+        if (pIds.length > 0) { ids = pIds; break; }
+      }
+    }
+  }
+  
   if (ids.length) parts.push((ids.length > 1 ? 'Voir points ' : 'Voir point ') + ids.join(', '));
+  
+  const s = nodesState[n.code] || {};
   if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
+  
   return parts.join('\n');
 }
 function exportRemark(n){
