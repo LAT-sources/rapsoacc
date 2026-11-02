@@ -3313,7 +3313,10 @@ function collectBranch(node, includeIns){
     out.push(n.code);
     (n.children || []).forEach(c => {
       const childIsIns = !!c.ins;
-      if (childIsIns && !includeIns && !insideIns && !node.ins) return;
+      
+      // 👇 On ne propage plus aux renvois, SAUF si la case "inclure les renvois" est cochée
+      if (childIsIns && !includeIns) return; 
+      
       w(c, insideIns || childIsIns);
     });
   })(node, !!node.ins);
