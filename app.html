@@ -3451,7 +3451,7 @@ function renderInfoPage(tab){
     html = `<div class="info-page active">${fld('Client', inTxt('client'))}${fld('Adresse', inTxt('adr1'))}${fld("Complément d'adresse", inTxt('adr2'))}${fld('Ville', inTxt('ville'))}${fld("À l'attention de", inTxt('attn'))}${fld('Adresse mail', inTxt('mail'))}</div>`;
   } else if (tab === 'affaire') {
     html = `<div class="info-page active">${fld('Affaire', inTxt('affaire'))}${fld('Dossier', inTxt('dossier', 'N° du dossier (ex. 25-325-01A)'))}${fld('Contrat n°', inTxt('contrat'))}${fld('Date du contrat', `<input type="date" value="${frToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)">`)}${fld("Société (maître d'ouvrage)", `<input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le client si vide">`)}</div>`;
-  } else if (tab === 'documentss') {
+  } else if (tab === 'documents') {
     html = `<div class="info-page active">
       <div class="drop-zone" id="dropZone" onclick="docZoneClick()">
         <div class="dz-icon">📎</div>
