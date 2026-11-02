@@ -3231,45 +3231,18 @@ function curPoint(){ return points.find(p => p.id === curPointId); }
 function remarkFor(n){
   const s = nodesState[n.code] || {}; const parts = [];
   if (isHM(n.code)) parts.push('Hors Mission');
-  
-  // 1. On cherche le point sur la ligne courante
-  let ids = pointsOf(n.code);
-  
-  // 2. Si on ne trouve rien, on cherche le point sur la ligne parente
-  if (ids.length === 0) {
-    const path = findPathToNode(TREE_DATA, n.code);
-    if (path) {
-      for (let i = path.length - 1; i >= 0; i--) {
-        const pIds = pointsOf(path[i].code);
-        if (pIds.length > 0) { ids = pIds; break; }
-      }
-    }
-  }
-  
-  // 3. Si on ne trouve toujours rien, on cherche un point qui contient cette ligne dans ses codes
-  if (ids.length === 0) {
-    ids = points.filter(p => p.codes.includes(n.code)).map(p => p.id);
-  }
-
+  const ids = pointsOf(n.code);
   if (ids.length) parts.push((ids.length > 1 ? 'Voir points ' : 'Voir point ') + ids.join(', '));
-  
   if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
   return parts.join('\n');
 }
-
 function exportRemark(n){
   const parts = []; const base = remarkFor(n); if (base) parts.push(base);
   const seen = new Set();
   (CITED[n.code] || []).forEach(c => {
     const s = nodesState[c.code] || {};
     if (s.avis === 'D' || isHM(c.code)) {
-      const o = (s.obs || '').trim(); 
-      // On cherche le point de la même façon que dans remarkFor
-      let ids = pointsOf(c.code);
-      if (ids.length === 0) {
-        ids = points.filter(p => p.codes.includes(c.code)).map(p => p.id);
-      }
-      
+      const o = (s.obs || '').trim(); const ids = pointsOf(c.code);
       const tag = [s.avis === 'D' ? 'NR' : '', isHM(c.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
       const line = (c.ref || c.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
       if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
