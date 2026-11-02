@@ -3254,21 +3254,41 @@ function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(
 function attach(p, code){
   if (p.codes.includes(code)) return;
   
-  // 1. On ajoute UNIQUEMENT la ligne exacte sur laquelle on a cliqué
+  // 1. On ajoute la ligne cliquée
   p.codes.push(code);
+  const n = findNodeByCode(TREE_DATA, code);
+  if (!n) return;
+
+  // 2. On cherche la correspondance exacte dans les autres articles (le renvoi)
+  // On utilise le libellé exact (ex: "Pas d'éblouissement direct ni de reflet")
+  const labelToMatch = (n.long || n.label || '').trim();
   
-  // 2. On la passe en "D" (Défavorable)
-  const node = findNodeByCode(TREE_DATA, code);
-  if (!node) return;
-  const s = nodesState[code] || (nodesState[code] = {});
-  
-  if (s.avis !== 'D') {
-    s.prevAvis = s.avis || null;
-    s.autoNR = true;
-    s.avis = 'D';
-    if (!s.libelle) s.libelle = node.long || node.label;
-    if (!s.article) s.article = node.ref || '';
+  if (labelToMatch) {
+    (function walk(nodes){
+      nodes.forEach(x => {
+        // Si on trouve une ligne dans l'Art. 18 avec le même libellé
+        if (x !== n && (x.long || x.label || '').trim() === labelToMatch && !x.ins && x.code !== code) {
+           if (!p.codes.includes(x.code)) p.codes.push(x.code);
+        }
+        if (x.children) walk(x.children);
+      });
+    })(TREE_DATA);
   }
+
+  // 3. On applique l'avis "D" à toutes les lignes trouvées (la source + la cible)
+  p.codes.forEach(c => {
+    const node = findNodeByCode(TREE_DATA, c);
+    if (!node) return;
+    const s = nodesState[c] || (nodesState[c] = {});
+    
+    if (s.avis !== 'D') {
+      s.prevAvis = s.avis || null;
+      s.autoNR = true;
+      s.avis = 'D';
+      if (!s.libelle) s.libelle = node.long || node.label;
+      if (!s.article) s.article = node.ref || '';
+    }
+  });
 }
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
