@@ -3263,23 +3263,19 @@ function exportRemark(n){
 function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
 function attach(p, code){
   if (p.codes.includes(code)) return;
+  
+  // 1. On ajoute UNIQUEMENT la ligne sur laquelle on a cliqué
   p.codes.push(code);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
 
-  const toAdd = [code];
-  const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
-  if (n.ins && n.cf) addC(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) addC(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
+  // 2. Si on a cliqué sur une ligne insérée, on ajoute sa ligne source (le parent)
+  if (n.ins && n.cf && !p.codes.includes(n.cf)) {
+    p.codes.push(n.cf);
   }
-  toAdd.forEach(c => {
-    if (!p.codes.includes(c)) p.codes.push(c);
+
+  // 3. On applique l'avis "D" (NR) à ces lignes
+  p.codes.forEach(c => {
     const node = findNodeByCode(TREE_DATA, c);
     if (!node) return;
     const s = nodesState[c] || (nodesState[c] = {});
@@ -3292,7 +3288,6 @@ function attach(p, code){
     }
   });
 }
-
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
   p.codes.splice(i, 1);
@@ -3306,16 +3301,9 @@ function detach(p, code){
       delete s.autoNR; delete s.prevAvis;
     }
   };
+  
   restoreIfFree(code);
   if (n.ins && n.cf) restoreIfFree(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
-  }
 }
 function collectBranch(node, includeIns){
   const out = [];
