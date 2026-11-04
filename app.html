@@ -3334,16 +3334,8 @@ function togglePointNode(code, ev){
   const p = points.find(x => x.id === selPoint); if (!p) return;
   const node = findNodeByCode(TREE_DATA, code); if (!node) return;
   const on = p.codes.includes(code);
-  
-  if (on) {
-    detach(p, code); // Détache uniquement la rubrique ciblée
-  } else {
-    attach(p, code); // Attache uniquement la rubrique ciblée
-  }
-  
-  renderRubriquesTable(); 
-  renderPointsInfo(); 
-  updateSelBanner();
+  collectBranch(node, selIncludeIns).forEach(c => on ? detach(p, c) : attach(p, c));
+  renderRubriquesTable(); renderPointsInfo(); updateSelBanner();
 }
 function updateSelBanner(){
   const b = el('selBanner'); const p = points.find(x => x.id === selPoint);
