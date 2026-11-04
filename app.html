@@ -2618,9 +2618,8 @@ const TREE_DATA = [
 ]}
 ]}
 ];
-
 /* === FIN DE L'ARBORESCENCE === */
-
+  
 if (!TREE_DATA.length) { document.body.insertAdjacentHTML('afterbegin', '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#fde9e9;color:#8a1c1c;padding:10px 16px;font:600 13px sans-serif;text-align:center">Arborescence absente : collez le bloc const TREE_DATA = [ ... ]; de l\'ancien app.html a l\'emplacement indique en haut du script.</div>'); }
 /* Imbrication hiérarchique des rubriques d'article selon `level`
    (le sommaire déroulant s'appuie sur children, pas sur level) */
@@ -3261,61 +3260,66 @@ function exportRemark(n){
   return parts.join('\n');
 }
 function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
+/* Rubrique d'origine EXACTE d'une ligne insérée par un renvoi (même article cité, même référence, même texte, même rang) :
+   on ne coche plus tous les articles qui partagent la même référence (ex. tout l'Art. 18), seulement la ligne correspondante. */
+let SRC_OF = null;
+function buildSrcOf(){
+  SRC_OF = {}; const SRC = {}, occ = {};
+  TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
+    const am = /^A(\d+)$/.exec(a.code || ''); if (!am) return;
+    (function w(ns){ ns.forEach(n => { if (!n.ins && n.xr) { const k = am[1] + '|' + (n.ref || '') + '|' + (n.long || n.label); (SRC[k] = SRC[k] || []).push(n); } if (n.children) w(n.children); }); })(a.children || []);
+  }));
+  (function w(ns){ ns.forEach(n => {
+    if (n.ins) {
+      const m = /\.x\d+\.(\d+)\.\d+$/.exec(n.code || '');
+      if (m) { const key = m[1] + '|' + (n.ref || '') + '|' + (n.long || n.label); const bk = (n.cf || '') + '|' + key; const k = occ[bk] = (occ[bk] == null ? 0 : occ[bk] + 1); const list = SRC[key]; const src = list && (list[k] || list[list.length - 1]); if (src) SRC_OF[n.code] = src.code; }
+    }
+    if (n.children) w(n.children);
+  }); })(TREE_DATA);
+}
+function srcOf(code){ if (!SRC_OF) buildSrcOf(); return SRC_OF[code] || null; }
+function markNR(c){
+  const node = findNodeByCode(TREE_DATA, c); if (!node) return;
+  const st = nodesState[c] || (nodesState[c] = {});
+  if (st.avis !== 'D') {
+    st.prevAvis = st.avis || null; st.autoNR = true; st.avis = 'D';
+    if (!st.libelle) st.libelle = node.long || node.label;
+    if (!st.article) st.article = node.ref || '';
+  }
+}
 function attach(p, code){
   if (p.codes.includes(code)) return;
   p.codes.push(code);
   const n = findNodeByCode(TREE_DATA, code);
   if (!n) return;
-
-  const toAdd = [code];
-  const addC = c => { if (c && !toAdd.includes(c)) toAdd.push(c); };
-  if (n.ins && n.cf) addC(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) addC(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
+  const extra = [];
+  if (n.ins) {   // ligne insérée : on lui associe sa ligne citante et sa rubrique d'origine exacte (jamais l'article entier)
+    [n.cf, srcOf(code)].forEach(c => { if (c && c !== code && !p.codes.includes(c)) { p.codes.push(c); extra.push(c); } });
+    if (extra.length) (p.linked = p.linked || {})[code] = extra;
   }
-  toAdd.forEach(c => {
-    if (!p.codes.includes(c)) p.codes.push(c);
-    const node = findNodeByCode(TREE_DATA, c);
-    if (!node) return;
-    const s = nodesState[c] || (nodesState[c] = {});
-    if (s.avis !== 'D') {
-      s.prevAvis = s.avis || null;
-      s.autoNR = true;
-      s.avis = 'D';
-      if (!s.libelle) s.libelle = node.long || node.label;
-      if (!s.article) s.article = node.ref || '';
-    }
-  });
+  [code].concat(extra).forEach(markNR);
 }
 
 function detach(p, code){
   const i = p.codes.indexOf(code); if (i < 0) return;
   p.codes.splice(i, 1);
-  const n = findNodeByCode(TREE_DATA, code);
-  if (!n) return;
-
   const restoreIfFree = c => {
-    const s = nodesState[c];
-    if (s && s.autoNR && pointsOf(c).length === 0) {
-      if (s.avis === 'D') s.avis = s.prevAvis || null;
-      delete s.autoNR; delete s.prevAvis;
+    const st = nodesState[c];
+    if (st && st.autoNR && pointsOf(c).length === 0) {
+      if (st.avis === 'D') st.avis = st.prevAvis || null;
+      delete st.autoNR; delete st.prevAvis;
     }
   };
-  restoreIfFree(code);
-  if (n.ins && n.cf) restoreIfFree(n.cf);
-  if (n.ins && n.ref) {
-    (function walk(nodes){
-      nodes.forEach(x => {
-        if (x !== n && x.ref === n.ref && x.xr) restoreIfFree(x.code);
-        if (x.children) walk(x.children);
-      });
-    })(TREE_DATA);
+  const drop = [code];
+  const lk = p.linked && p.linked[code];
+  if (lk) {   // lignes associées à l'attachement de cette ligne insérée : retirées si aucune autre ligne insérée ne les réclame
+    delete p.linked[code];
+    lk.forEach(c => {
+      const still = Object.keys(p.linked || {}).some(k => p.linked[k].includes(c)); const j = p.codes.indexOf(c);
+      if (!still && j >= 0) { p.codes.splice(j, 1); drop.push(c); }
+    });
   }
+  drop.forEach(restoreIfFree);
 }
 function collectBranch(node, includeIns){
   const out = [];
