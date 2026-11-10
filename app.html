@@ -794,9 +794,6 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
 .pt-right{min-height:0;overflow-y:auto}
 @media (max-width:1100px){.info-tab{padding:8px 10px!important}}
 
-/* ---- zoom de lancement : 80 % ---- */
-html{zoom:.8}
-body{height:calc(100vh / .8)!important}
 /* ---- filtre Obs, onglets renseignés ---- */
 .stat-badge.obs{background:#feebd0!important;color:#b34000!important}
 .stat-badge.obs:hover{background:#fdd9ac!important}
@@ -3857,7 +3854,7 @@ function buildExport(){
     lines.forEach((d, i) => { L.push(['W', 'Page 2', 'A' + (16 + i), t(d)].join('\t')); nW++; });
   }
   const extraMarks = exportMarksFromRenvois();
-  const artFlags = {}, keepRows = [];
+  const artFlags = {};
   TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
     if (!a.sh) return;
     const sk = window.articleSOHM ? window.articleSOHM(a) : '';
@@ -3867,7 +3864,6 @@ function buildExport(){
         const s = nodesState[n.code] || {}; let mk = MARK[s.avis] || ''; const ex = extraMarks[n.code];
         if (ex && (!mk || MARK_RANK[ex] > MARK_RANK[mk])) mk = ex;
         const rem = exportRemark(n);
-        if ((CITED[n.code] || []).some(c => isFilled(c.code))) keepRows.push(a.sh + '|' + n.xr);   // ligne citante (cf. Art. x) : affichée si une ligne citée est renseignée
         const clr = PRESET_HM_CODES.has(n.code) && !isHM(n.code);
         if (mk || rem || clr) { L.push(['M', a.sh, n.xr, mk, t(rem), clr ? 'CLR' : ''].join('\t')); nM++; if (mk === 'NR') nNR++; else if (mk === 'R') nR++; else if (mk === 'SO') nSO++; }
       }
@@ -3876,7 +3872,7 @@ function buildExport(){
   }));
   const pts = points.slice().sort((a, b) => a.id - b.id);
   if (pts.length) { L.push(['P', 'Commentaires', 'H', t('Annexe - Points')].join('\t')); pts.forEach(p => L.push(['P', 'Commentaires', 'B', t(pointText(p))].join('\t'))); }
-  return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length, art: artFlags, keep: keepRows };
+  return { text: L.join('\r\n') + '\r\n', nW, nM, nR, nNR, nSO, nP: pts.length, art: artFlags };
 }
 const VBA_MACRO = `Attribute VB_Name = "ImporterAdapth"
 Option Explicit
@@ -4349,27 +4345,28 @@ async function fillWorkbook(o){
       if (/^hors\s*mission$/i.test(xlText(c).trim()) && !keepHM.has(ws.name + '|' + r)) c.value = null;
     }
   });
-  // --- Article (niveau 2) en SO ou HM : on ne renseigne que les lignes bleues du tableau ---
+  // Lignes écrites par l'application (seules celles-ci comptent comme « renseignées »)
+  const written = new Set();
+  x.text.split('\r\n').forEach(ln => { const p = ln.split('\t'); if (p[0] === 'M' && (p[3] || p[4])) written.add(p[1] + '|' + p[2]); });
+  // --- Article (niveau 2) en SO ou HM : on garde les lignes bleues du haut, toutes les lignes du bas sont masquées,
+  //     et « Sans objet. » / « Hors mission. » (+ observations) s'écrit à gauche, après un saut de ligne ---
   Object.keys(x.art || {}).forEach(name => {
     const ws = wb.getWorksheet(name); if (!ws) return;
     const fl = x.art[name];
     let r1 = 3; for (let i = 1; i <= 6; i++) if (xlText(ws.getCell(i, 1)).trim() === '#') { r1 = i + 1; break; }
     const mm = /\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?(\d+)/.exec((ws.pageSetup && ws.pageSetup.printArea) || '');
     const r2 = mm ? +mm[1] : ws.rowCount;
-    const blue = []; for (let r = r1; r <= r2; r++) if (xlHasFill(ws.getCell(r, 2))) blue.push(r);
-    if (!blue.length) return;
+    let first = 0; for (let r = r1; r <= r2; r++) if (xlHasFill(ws.getCell(r, 2))) { first = r; break; }
+    if (!first) return;
+    let last = first; while (last + 1 <= r2 && xlHasFill(ws.getCell(last + 1, 2))) last++;   // bloc bleu du haut (titre, note…)
     const txt = (fl.kind === 'HM' ? 'Hors mission.' : 'Sans objet.') + (fl.obs ? '\n' + fl.obs : '');
-    const writable = c => !(c.isMerged && c.master && c.master.address !== c.address);
-    let tgt = null; for (const r of blue) { if (writable(ws.getCell(r, 6))) { tgt = r; break; } }
-    if (tgt != null) {
-      const c = ws.getCell(tgt, 6); c.value = txt; c.alignment = Object.assign({}, c.alignment, { wrapText: true });
-      const row = ws.getRow(tgt); const need = 12 * txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / 14)), 0) + 2;
-      if (!row.height || row.height < need) row.height = need;
-    } else {
-      const c0 = ws.getCell(blue[0], 2); const m = (c0.isMerged && c0.master) ? c0.master : c0; const t0 = xlText(m).trim();
-      m.value = (t0 ? t0 + '\n' : '') + txt; m.alignment = Object.assign({}, m.alignment, { wrapText: true });
-    }
-    for (let r = r1; r <= r2; r++) if (!blue.includes(r)) ws.getRow(r).hidden = true;
+    const c0 = ws.getCell(last, 2); const m = (c0.isMerged && c0.master) ? c0.master : c0; const t0 = xlText(m).trim();
+    m.value = (t0 ? t0 + '\n' : '') + txt;
+    m.alignment = Object.assign({}, m.alignment, { wrapText: true });
+    const row = ws.getRow(last); const w = Math.max(20, xlColW(ws, 2) * 1.05);
+    const add = txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / w)), 0);
+    row.height = (row.height || 15) + 13 * add;
+    for (let r = r1; r <= r2; r++) if (r < first || r > last) ws.getRow(r).hidden = true;
   });
   // --- préparation de l'impression (équivalent de ImprimerRapport) ---
   let pages = 0, nArt = 0;
@@ -4388,8 +4385,7 @@ async function fillWorkbook(o){
     const r2 = m ? +m[1] : ws.rowCount;
     const keepRow = {}; let nb = 0;
     for (let r = r1; r <= r2; r++) {
-      let f = false; for (let c = 3; c <= 6; c++) if (xlCellFilled(ws.getCell(r, c))) { f = true; break; }
-      if (!f && x.keep && x.keep.indexOf(ws.name + '|' + r) >= 0) f = true;
+      let f = written.has(ws.name + '|' + r);
       if (f) { keepRow[r] = true; nb++; if (!xlHasFill(ws.getCell(r, 2))) for (let t = r - 1; t >= r1; t--) if (xlHasFill(ws.getCell(t, 2))) { keepRow[t] = true; break; } }
     }
     const incl = nb > 0 || !!(x.art && x.art[ws.name]) || (o.toutes && o.tousArticles);
@@ -4801,7 +4797,7 @@ initSommaire();
 <script>
 /* Onglets, navigation, filtre Obs, volet réglable */
 (function(){
-  var Z = 0.8; window.__Z = Z;
+  var Z = 1; window.__Z = Z;
   var tc = function(){ return document.querySelector('.tab-content'); };
   function showLibelle(){
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
