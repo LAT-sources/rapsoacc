@@ -4352,7 +4352,7 @@ async function fillWorkbook(o){
   //     et « Sans objet. » / « Hors mission. » (+ observations) s'écrit à gauche, après un saut de ligne ---
   Object.keys(x.art || {}).forEach(name => {
     const ws = wb.getWorksheet(name); if (!ws) return;
-    const fl = x.art[name];
+    const fl = x.art[name]; ws._soArt = true;   // PDF : pas de cadre extérieur autour du texte
     let r1 = 3; for (let i = 1; i <= 6; i++) if (xlText(ws.getCell(i, 1)).trim() === '#') { r1 = i + 1; break; }
     const mm = /\$?[A-Z]+\$?\d+:\$?[A-Z]+\$?(\d+)/.exec((ws.pageSetup && ws.pageSetup.printArea) || '');
     const r2 = mm ? +mm[1] : ws.rowCount;
@@ -4360,13 +4360,22 @@ async function fillWorkbook(o){
     if (!first) return;
     let last = first; while (last + 1 <= r2 && xlHasFill(ws.getCell(last + 1, 2))) last++;   // bloc bleu du haut (titre, note…)
     const txt = (fl.kind === 'HM' ? 'Hors mission.' : 'Sans objet.') + (fl.obs ? '\n' + fl.obs : '');
-    const c0 = ws.getCell(last, 2); const m = (c0.isMerged && c0.master) ? c0.master : c0; const t0 = xlText(m).trim();
-    m.value = (t0 ? t0 + '\n' : '') + txt;
-    m.alignment = Object.assign({}, m.alignment, { wrapText: true });
-    const row = ws.getRow(last); const w = Math.max(20, xlColW(ws, 2) * 1.05);
-    const add = txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / w)), 0);
-    row.height = (row.height || 15) + 13 * add;
-    for (let r = r1; r <= r2; r++) if (r < first || r > last) ws.getRow(r).hidden = true;
+    const tr = (last + 1 <= r2) ? last + 1 : null;   // ligne de texte : juste sous le cadre bleu, à gauche, sans cadre
+    if (tr) {
+      const f0 = Object.assign({}, ws.getCell(tr, 2).font || {});
+      for (let c = 1; c <= 9; c++) { const cc = ws.getCell(tr, c); if (cc.isMerged && cc.master) { try { ws.unMergeCells(cc.master.address); } catch (e) {} } }
+      for (let c = 1; c <= 9; c++) { const cc = ws.getCell(tr, c); cc.value = null; cc.border = {}; cc.fill = { type: 'pattern', pattern: 'none' }; }
+      ws.mergeCells(tr, 1, tr, 6);
+      const mc = ws.getCell(tr, 1);
+      mc.value = txt; mc.font = Object.assign({}, f0, { bold: false }); mc.alignment = { horizontal: 'left', vertical: 'top', wrapText: true };
+      let W = 0; for (let c = 1; c <= 6; c++) W += xlColW(ws, c); W = Math.max(30, W * 1.05);
+      const lines = txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / W)), 0);
+      const rw = ws.getRow(tr); rw.height = 13 * lines + 6; rw.hidden = false;
+    } else {
+      const c0 = ws.getCell(last, 2); const mc = (c0.isMerged && c0.master) ? c0.master : c0; const t0 = xlText(mc).trim();
+      mc.value = (t0 ? t0 + '\n' : '') + txt; mc.alignment = Object.assign({}, mc.alignment, { wrapText: true });
+    }
+    for (let r = r1; r <= r2; r++) if ((r < first || r > last) && r !== tr) ws.getRow(r).hidden = true;
   });
   // --- préparation de l'impression (équivalent de ImprimerRapport) ---
   let pages = 0, nArt = 0;
@@ -4611,7 +4620,7 @@ function pdfSectionNodes(wb, ws, theme, ctx){
     return nodes;
   }
   if (n === 'Commentaires') return [pdfGrid(ws, theme, PDF_W.other, { lines: false, defCols: 9, fsc: 0.86, hsc: 0.9 }).node];
-  const nodes = [pdfGrid(ws, theme, PDF_W.art, { defCols: 6, fsc: 0.84, hsc: 0.8 }).node];
+  const nodes = [pdfGrid(ws, theme, PDF_W.art, { defCols: 6, fsc: 0.84, hsc: 0.8, outer: !ws._soArt }).node];
   if (ws.getImages().length) pdfImageBands(wb, ws, PDF_W.art).forEach(b => nodes.push(b));
   return nodes;
 }
@@ -4627,7 +4636,7 @@ function pdfDoc(wb, ctx){
     if (!(ws.name === 'Page de garde' || ws.name === 'Page 2' || ws.name === 'Commentaires' || isArt)) return;
     const nodes = pdfSectionNodes(wb, ws, theme, ctx); if (!nodes.length) return;
     const W = isArt ? PDF_W.art : PDF_W.other, ins = (avail - W) / 2;
-    const id = 'sec_' + secs.length; secs.push({ id: id, label: ws.name === 'Page de garde' ? '' : ws.name, art: isArt, ins: ins });
+    const id = 'sec_' + secs.length; secs.push({ id: id, label: (ws.name === 'Page de garde' || ws.name === 'Page 2') ? '' : ws.name, art: isArt, ins: ins });
     if (secs.length > 1) content.push({ text: ' ', fontSize: 1, pageBreak: 'before' });
     content.push({ text: ' ', fontSize: 0.5, id: id });   // repère : page de début de la section
     nodes.forEach(x => { if (x.absolutePosition) { content.push(x); return; } const m = x.margin || [0, 0, 0, 0]; x.margin = [m[0] + ins, m[1], m[2] + ins, m[3]]; content.push(x); });
