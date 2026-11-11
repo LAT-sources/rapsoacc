@@ -4360,11 +4360,16 @@ async function fillWorkbook(o){
     const txt = (fl.kind === 'HM' ? 'Hors mission.' : 'Sans objet.') + (fl.obs ? '\n' + fl.obs : '');
     const tr = hr || r1;   // ligne de texte : celle de l'en-tête du tableau (juste sous le cadre du titre)
     const f0 = Object.assign({}, ws.getCell(r1, 2).font || {});
-    for (let c = 1; c <= 9; c++) { const cc = ws.getCell(tr, c); if (cc.isMerged && cc.master) { try { ws.unMergeCells(cc.master.address); } catch (e) {} } }
-    for (let c = 1; c <= 9; c++) { const cc = ws.getCell(tr, c); cc.value = null; cc.border = {}; cc.fill = { type: 'pattern', pattern: 'none' }; }
-    ws.mergeCells(tr, 1, tr, 6);
+    // fusions existantes sur la ligne : on les défait (unMergeCells veut la plage complète)
+    ((ws.model && ws.model.merges) || []).slice().forEach(rg => { const q = /^([A-Z]+)(\d+):([A-Z]+)(\d+)$/.exec(rg); if (q && +q[2] <= tr && +q[4] >= tr) { try { ws.unMergeCells(rg); } catch (e) {} } });
+    // ATTENTION : ExcelJS partage le même objet de style entre toutes les cellules identiques (toutes feuilles).
+    // On remplace donc le style de CES cellules uniquement, jamais cell.border = … / cell.font = … directement.
+    const own = (cell, patch) => { cell.style = Object.assign({}, cell.style, patch); };
+    for (let c = 1; c <= 9; c++) { const cc = ws.getCell(tr, c); cc.value = null; own(cc, { border: {}, fill: { type: 'pattern', pattern: 'none' } }); }
     const mc = ws.getCell(tr, 1);
-    mc.value = txt; mc.font = Object.assign({}, f0, { bold: false }); mc.alignment = { horizontal: 'left', vertical: 'top', wrapText: true };
+    own(mc, { font: Object.assign({}, f0, { bold: false }), alignment: { horizontal: 'left', vertical: 'top', wrapText: true } });
+    try { ws.mergeCells(tr, 1, tr, 6); } catch (e) {}
+    mc.value = txt;
     let W = 0; for (let c = 1; c <= 6; c++) W += xlColW(ws, c); W = Math.max(30, W * 1.05);
     const lines = txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / W)), 0);
     const rw = ws.getRow(tr); rw.height = 13 * lines + 8; rw.hidden = false;
