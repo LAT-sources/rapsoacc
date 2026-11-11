@@ -3709,6 +3709,7 @@ function renderInfoPage(tab){
           <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
           <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
           <label><input type="checkbox" id="expPoints"> Afficher l'Annexe – Points (PDF et Excel)</label>
+          <label><input type="checkbox" id="expDesc"> Insérer la Conception - Description sous le libellé (en italique)</label>
         </div>
         <div class="export-buttons">
           <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">Imprimer le PDF</button>
@@ -4375,6 +4376,35 @@ async function fillWorkbook(o){
     const rw = ws.getRow(tr); rw.height = 13 * lines + 8; rw.hidden = false;
     for (let r = tr + 1; r <= r2; r++) ws.getRow(r).hidden = true;
   });
+  // --- Option : Conception - Description insérée dans la case « Dispositions », sous le libellé, en italique,
+  //     avec un saut de ligne avant et un saut de ligne final. Seule la valeur de la cellule est modifiée (aucun style partagé touché). ---
+  if (o.desc) {
+    TREE_DATA.forEach(ch => (ch.children || []).forEach(a => {
+      if (!a.sh || (x.art && x.art[a.sh])) return;
+      const ws = wb.getWorksheet(a.sh); if (!ws) return;
+      (function w(ns){ ns.forEach(n => {
+        if (n.xr && !n.ins) {
+          const d = (((nodesState[n.code] || {}).desc) || '').trim();
+          if (d) {
+            const c0 = ws.getCell(n.xr, 2); const m = (c0.isMerged && c0.master) ? c0.master : c0;
+            const f0 = Object.assign({}, m.font || {}); const base = m.value;
+            const baseTxt = xlText(m);
+            const runs = (base && typeof base === 'object' && base.richText) ? base.richText.map(r => Object.assign({}, r)) : [{ text: baseTxt, font: f0 }];
+            runs.push({ text: '\n' + d, font: Object.assign({}, f0, { italic: true }) });
+            runs.push({ text: '\n', font: f0 });
+            m.value = { richText: runs };
+            m.style = Object.assign({}, m.style, { alignment: Object.assign({}, m.alignment, { wrapText: true }) });
+            const wch = Math.max(10, xlColW(ws, 2) * 1.05);
+            const cnt = t => t.split('\n').reduce((k, l) => k + Math.max(1, Math.ceil(l.length / wch)), 0);
+            const need = (cnt(baseTxt) + cnt(d) + 1) * ((f0.size || 10) * 1.25) + 2;
+            const rw = ws.getRow(n.xr); rw.height = Math.max(rw.height || 0, need);
+            written.add(a.sh + '|' + n.xr);   // la ligne compte comme renseignée (mode « lignes renseignées seulement »)
+          }
+        }
+        if (n.children) w(n.children);
+      }); })(a.children || []);
+    }));
+  }
   // --- préparation de l'impression (équivalent de ImprimerRapport) ---
   let pages = 0, nArt = 0;
   ['Page de garde', 'Page 2'].forEach(n => { if (wb.getWorksheet(n)) pages += 1; });
@@ -4415,10 +4445,10 @@ function downloadBlob(name, blob){
 function readOpts(px){
   if (document.getElementById('expTousArticles')) {
     const all = document.querySelector('input[name=expLignes]:checked').value === 'all';
-    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked, points: document.getElementById('expPoints').checked };
+    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked, points: document.getElementById('expPoints').checked, desc: !!(document.getElementById('expDesc') && document.getElementById('expDesc').checked) };
   }
   const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
-  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked, points: false };
+  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked, points: false, desc: false };
 }
 function updateOptsUI(px){
   const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all'; const t = document.getElementById(px + 'Tous'); t.disabled = !all; if (!all) t.checked = false; else if (!t.dataset.touched) t.checked = true;
@@ -4613,8 +4643,11 @@ function pdfSectionNodes(wb, ws, theme, ctx){
     let last = 38; for (let r = 1; r <= 60; r++) if (xlText(ws.getCell(r, 1)).trim() === 'A supprimer') { last = r - 1; break; }
     const g = pdfGrid(ws, theme, PDF_W.other, { lines: false, bullets: true, rowTo: last, defCols: 6, fsc: 0.86, hsc: 0.9 });
     // total de pages exact dans la phrase du modèle
-    if (ctx.writePages !== false) g.node.table.body.forEach(rw => { const c = rw[0]; if (c && Array.isArray(c.text) && c.text.map(t => t.text).join('').indexOf('Ce document comporte') === 0) { c.text = [{ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: c.text[0].fontSize }]; } });
-    const nodes = [g.node]; const lg = ws.getImages(); if (lg.length) { const im = pdfImage(wb, lg[0].imageId); if (im) nodes.unshift({ image: im, width: 26, absolutePosition: { x: PDF_PAGE.w - ((PDF_PAGE.w - PDF_W.other) / 2) - 28, y: 40 } }); }
+    let pgDone = false;
+    if (ctx.writePages !== false) g.node.table.body.forEach(rw => { const c = rw[0]; if (c && Array.isArray(c.text) && c.text.map(t => t.text).join('').indexOf('Ce document comporte') === 0) { c.text = [{ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: c.text[0].fontSize }]; pgDone = true; } });
+    const nodes = [g.node];
+    // le modèle ne contient pas la phrase (cellule A38 vide ou autre libellé) : on l'écrit sous le tableau
+    if (ctx.writePages !== false && !pgDone) nodes.push({ text: 'Ce document comporte ' + ctx.N + ' pages y compris la page de garde', bold: true, fontSize: 9, margin: [3, 6, 0, 0] }); const lg = ws.getImages(); if (lg.length) { const im = pdfImage(wb, lg[0].imageId); if (im) nodes.unshift({ image: im, width: 26, absolutePosition: { x: PDF_PAGE.w - ((PDF_PAGE.w - PDF_W.other) / 2) - 28, y: 40 } }); }
     return nodes;
   }
   if (n === 'Commentaires') return [pdfGrid(ws, theme, PDF_W.other, { lines: false, defCols: 9, fsc: 0.86, hsc: 0.9 }).node];
