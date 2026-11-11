@@ -799,6 +799,10 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
 .stat-badge.obs:hover{background:#fdd9ac!important}
 .stat-badge.obs.active{background:#b34000!important;color:#fff!important}
 .tab.has-text{border-top-color:#000091!important}
+/* ---- filtre Conc ---- */
+.stat-badge.conc{background:#d3f0ea!important;color:#00655a!important}
+.stat-badge.conc:hover{background:#b9e6dd!important}
+.stat-badge.conc.active{background:#00655a!important;color:#fff!important}
 </style>
 
 </head>
@@ -828,6 +832,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
       <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Filtrer les rubriques Favorables">F <b id="statF">0</b></span>
       <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Filtrer les rubriques Défavorables">D <b id="statD">0</b></span>
       <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Filtrer les rubriques Sans objet">SO <b id="statSO">0</b></span>
+      <span class="stat-badge conc" id="filterDesc" onclick="toggleFilter('C')" title="Rubriques avec un texte dans l'onglet Conception - Description (ouvre l'onglet)">Conc <b id="statDesc">0</b></span>
       <span class="stat-badge obs" id="filterObs" onclick="toggleFilter('O')" title="Rubriques avec Observations - Commentaires (ouvre l'onglet)">Obs <b id="statObs">0</b></span>
     </div>
     <div class="rubriques-scroll" id="rubriquesScroll">
@@ -2871,7 +2876,7 @@ let currentNodePath = [];
 let currentTab = 'desc';
 
 /* ✅ Filtres F / D / SO (0 = inactif, 1 = actif) */
-let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, filterObs = 0, levelFilter = 0;
+let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, filterObs = 0, filterDesc = 0, levelFilter = 0;
 
 const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(7,d(TREE_DATA)); })();
 
@@ -2898,7 +2903,7 @@ function findPathToNode(nodes, target, cur = []) {
 }
 function flattenTree(nodes, parentVisible = true, result = []) {
   nodes.forEach(node => {
-    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT || filterObs);
+    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT || filterObs || filterDesc);
     if (node.ins && !renvoiOpen[node.cf] && !flt) return;
     if (levelFilter && (node.level || 1) > levelFilter) return;
     const hasChildren = node.children && node.children.length > 0;
@@ -2926,9 +2931,10 @@ function isFilled(code) {
   const s = nodesState[code] || {};
   return !!(s.avis || isHM(code) || (s.desc && s.desc.trim()) || (s.reference && s.reference.trim()) || (s.obs && s.obs.trim()));
 }
+function hasDesc(code) { const s = nodesState[code] || {}; return !!(s.desc && s.desc.trim()); }
 function hasObs(code) { const s = nodesState[code] || {}; return !!(s.obs && s.obs.trim()); }
 function nodeMatchesFilter(node) {
-  if (!filterF && !filterD && !filterSO && !filterT && !filterObs) return true;
+  if (!filterF && !filterD && !filterSO && !filterT && !filterObs && !filterDesc) return true;
   const state = nodesState[node.code] || {};
   const av = state.avis;
   if (av === 'F' && filterF) return true;
@@ -2936,6 +2942,7 @@ function nodeMatchesFilter(node) {
   if (av === 'SO' && filterSO) return true;
   if (filterT && isFilled(node.code)) return true;
   if (filterObs && hasObs(node.code)) return true;
+  if (filterDesc && hasDesc(node.code)) return true;
   if (node.children) {
     for (let c of node.children) {
       if (nodeMatchesFilter(c)) return true;
@@ -2949,7 +2956,7 @@ function renderRubriquesTable() {
   const flat = flattenTree(TREE_DATA);
   let html = '';
   flat.forEach(node => {
-    if ((filterF || filterD || filterSO || filterT || filterObs) && !nodeMatchesFilter(node)) return;
+    if ((filterF || filterD || filterSO || filterT || filterObs || filterDesc) && !nodeMatchesFilter(node)) return;
 
     const state = nodesState[node.code] || {};
     const avis = state.avis || '';
@@ -3079,11 +3086,12 @@ function toggleFilter(type) {
   else if (type === 'SO') filterSO = filterSO ? 0 : 1;
   else if (type === 'T') filterT = filterT ? 0 : 1;
   else if (type === 'O') filterObs = filterObs ? 0 : 1;
+  else if (type === 'C') filterDesc = filterDesc ? 0 : 1;
   updateFilterUI();
   renderRubriquesTable();
 }
 function resetFilters() {
-  filterF = filterD = filterSO = filterT = filterObs = 0;
+  filterF = filterD = filterSO = filterT = filterObs = filterDesc = 0;
   updateFilterUI();
   renderRubriquesTable();
 }
@@ -3093,6 +3101,7 @@ function updateFilterUI() {
   document.getElementById('filterSO').classList.toggle('active', !!filterSO);
   document.getElementById('filterTotal').classList.toggle('active', !!filterT);
   { const o = document.getElementById('filterObs'); if (o) o.classList.toggle('active', !!filterObs); }
+  { const o = document.getElementById('filterDesc'); if (o) o.classList.toggle('active', !!filterDesc); }
 }
 
 function initSommaire() {
@@ -3242,16 +3251,34 @@ document.addEventListener('keydown', function(e) {
   else if (key === 'S') { setInlineAvis(code, 'SO'); e.preventDefault(); }
   else if (e.key === 'Delete' || e.key === 'Backspace' || e.key === 'Escape') { setInlineAvis(code, null); e.preventDefault(); }
   else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-    const flat = flattenTree(TREE_DATA);
-    const idx = flat.findIndex(n => n.code === code);
-    if (idx === -1) return;
-    let nextIdx = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
-    if (nextIdx >= 0 && nextIdx < flat.length) {
-      handleRowClick(flat[nextIdx].code, null);
-      e.preventDefault();
-    }
+    const nx = navNext(code, e.key === 'ArrowDown' ? 1 : -1);
+    if (nx) { handleRowClick(nx, null); ensureRowVisible(nx); }
+    e.preventDefault();
   }
 });
+/* Rubriques réellement affichées (filtres, repli, renvois ouverts). Avec un filtre actif, seules les rubriques qui
+   correspondent au filtre sont atteintes (les lignes de contexte sont sautées). */
+function navNext(code, dir) {
+  const rows = Array.prototype.map.call(document.querySelectorAll('#rubriquesBody tr[data-code]'), tr => tr.getAttribute('data-code'));
+  if (!rows.length) return null;
+  const flt = filterF || filterD || filterSO || filterT || filterObs || filterDesc;
+  const direct = c => { const st = nodesState[c] || {}, av = st.avis;   // correspondance directe (nodeMatchesFilter inclut aussi les parents)
+    return !!((av === 'F' && filterF) || (av === 'D' && filterD) || (av === 'SO' && filterSO) || (filterT && isFilled(c)) || (filterObs && hasObs(c)) || (filterDesc && hasDesc(c))); };
+  const ok = c => !flt || direct(c);
+  const i = rows.indexOf(code);
+  if (dir > 0) { for (let j = i + 1; j < rows.length; j++) if (ok(rows[j])) return rows[j]; }
+  else { for (let j = (i < 0 ? rows.length : i) - 1; j >= 0; j--) if (ok(rows[j])) return rows[j]; }
+  return null;
+}
+/* L'arbo défile seulement quand la ligne sélectionnée sort de la zone affichée (haut ou bas), en tenant compte de l'en-tête collant. */
+function ensureRowVisible(code) {
+  const c = document.getElementById('rubriquesScroll'); if (!c) return;
+  const row = c.querySelector('tr[data-code="' + code + '"]'); if (!row) return;
+  const th = c.querySelector('thead'); const hh = th ? th.getBoundingClientRect().height : 0;
+  const cr = c.getBoundingClientRect(), rr = row.getBoundingClientRect(), m = 6;
+  if (rr.top < cr.top + hh + m) c.scrollTop -= (cr.top + hh + m - rr.top);
+  else if (rr.bottom > cr.bottom - m) c.scrollTop += (rr.bottom - (cr.bottom - m));
+}
 
 function setInlineAvis(code, value) {
   const node = findNodeByCode(TREE_DATA, code);
@@ -3449,19 +3476,23 @@ function remarkFor(n){
   if (s.obs && s.obs.trim()) parts.push(s.obs.trim());
   return parts.join('\n');
 }
-function exportRemark(n){
-  const parts = []; const base = remarkFor(n); if (base) parts.push(base);
-  const seen = new Set();
-  (CITED[n.code] || []).forEach(c => {
+function exportRemark(n, opt){
+  opt = opt || {};
+  const base = remarkFor(n);
+  const cited = []; const seen = new Set();
+  if (opt.cites !== false) (CITED[n.code] || []).forEach(c => {
     const s = nodesState[c.code] || {};
     if (s.avis === 'D' || isHM(c.code)) {
       const o = (s.obs || '').trim(); const ids = pointsOf(c.code);
       const tag = [s.avis === 'D' ? 'NR' : '', isHM(c.code) ? 'Hors Mission' : ''].filter(Boolean).join(', ');
-      const line = (c.ref || c.label) + ' : ' + tag + (ids.length ? ' (voir point ' + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
-      if (!seen.has(line)) { seen.add(line); parts.push('- ' + line); }
+      const line = (c.ref || c.label) + ' : ' + tag + (ids.length ? ' (voir ' + (ids.length > 1 ? 'points ' : 'point ') + ids.join(', ') + ')' : '') + (o ? ' - ' + o : '');
+      if (!seen.has(line)) { seen.add(line); cited.push('- ' + line); }
     }
   });
-  return parts.join('\n');
+  if (!cited.length) return base;
+  // export Excel / PDF (rich) : ligne vide puis lignes citées repérées par un marqueur (écrites en italique bleu)
+  if (opt.rich) return (base ? base + '\n\n' : '') + '\uE000' + cited.join('\n');
+  return (base ? base + '\n' : '') + cited.join('\n');
 }
 function isLeaf(code){ const n = findNodeByCode(TREE_DATA, code); return n && !(n.children && n.children.length); }
 /* Rubrique d'origine EXACTE d'une ligne insérée par un renvoi (même article cité, même référence, même texte, même rang) :
@@ -3509,7 +3540,7 @@ function detach(p, code){
   p.codes.splice(i, 1);
   const restoreIfFree = c => {
     const st = nodesState[c];
-    if (st && st.autoNR && pointsOf(c).length === 0) {
+    if (st && st.autoNR && pointsOf(c).length === 0 && !(st.dFrom && Object.keys(st.dFrom).length)) {
       if (st.avis === 'D') st.avis = st.prevAvis || null;
       delete st.autoNR; delete st.prevAvis;
     }
@@ -3710,7 +3741,7 @@ function renderInfoPage(tab){
           <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
           <label><input type="checkbox" id="expPoints"> Afficher l'Annexe – Points (PDF et Excel)</label>
           <label><input type="checkbox" id="expDesc"> Insérer la Conception - Description sous le libellé (italique bleu)</label>
-          <label class="sub">Phrase avant la description (facultatif) <input type="text" id="expDescPhrase" placeholder="ex. Description :" style="margin-left:6px;width:230px"></label>
+          <label><input type="checkbox" id="expCites" checked> Afficher les lignes citées « - Art. 12 (2) : NR (voir point…) » sous « Voir points… »</label>
         </div>
         <div class="export-buttons">
           <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">Imprimer le PDF</button>
@@ -3827,7 +3858,8 @@ function exportMarksFromRenvois(){
   });
   return extra;
 }
-function buildExport(){
+function buildExport(opt){
+  opt = opt || {};
   saveTabContent();
   const t = x => String(x == null ? '' : x).replace(/\t/g, ' ').replace(/\r?\n/g, '<LF>');
   const L = ['ADAPTH-EXPORT\t1\t' + new Date().toISOString().slice(0, 10)];
@@ -3865,7 +3897,7 @@ function buildExport(){
       if (n.xr) {
         const s = nodesState[n.code] || {}; let mk = MARK[s.avis] || ''; const ex = extraMarks[n.code];
         if (ex && (!mk || MARK_RANK[ex] > MARK_RANK[mk])) mk = ex;
-        const rem = exportRemark(n);
+        const rem = exportRemark(n, opt);
         const clr = PRESET_HM_CODES.has(n.code) && !isHM(n.code);
         if (mk || rem || clr) { L.push(['M', a.sh, n.xr, mk, t(rem), clr ? 'CLR' : ''].join('\t')); nM++; if (mk === 'NR') nNR++; else if (mk === 'R') nR++; else if (mk === 'SO') nSO++; }
       }
@@ -4301,7 +4333,7 @@ async function fillWorkbook(o){
   await ensureExcelJS();
   if (!xlModele) xlModele = await findModele();
   if (!xlModele) throw new Error('Modèle Excel introuvable : le fichier modele.xlsm doit être présent dans le dépôt, à côté de la page.');
-  const x = buildExport();
+  const x = buildExport({ rich: true, cites: o.cites !== false });
   const wb = new ExcelJS.Workbook(); await wb.xlsx.load(xlModele.buf);
   const miss = new Set(); const un = t => String(t || '').replace(/<LF>/g, '\n');
   let pRow = 13, nP = 0, lastCom = 11;
@@ -4314,7 +4346,14 @@ async function fillWorkbook(o){
       if (p[5] === 'CLR') ws.getCell(r, 6).value = null;
       const col = { R: 3, NR: 4, SO: 5 }[p[3]]; if (col) ws.getCell(r, col).value = p[3];
       if (p[4]) {
-        const txt = un(p[4]); const cell = ws.getCell(r, 6); cell.value = txt;
+        const raw = un(p[4]); const txt = raw.replace('\uE000', ''); const cell = ws.getCell(r, 6);
+        const mi = raw.indexOf('\uE000');
+        if (mi >= 0) {   // lignes citées (« - Art. 12 (2) : NR (voir points …) ») en italique bleu, sous une ligne vide
+          const f0 = Object.assign({}, cell.font || {}); const runs = []; const head = raw.slice(0, mi);
+          if (head) runs.push({ text: head, font: f0 });
+          runs.push({ text: raw.slice(mi + 1), font: Object.assign({}, f0, { italic: true, color: { argb: 'FF0070C0' } }) });
+          cell.value = { richText: runs };
+        } else cell.value = txt;
         cell.alignment = Object.assign({}, cell.alignment, { wrapText: true });
         const row = ws.getRow(r); const need = 12 * txt.split('\n').reduce((n, l) => n + Math.max(1, Math.ceil(l.length / 14)), 0) + 2;
         if (row.height && row.height < need) row.height = need;
@@ -4381,7 +4420,7 @@ async function fillWorkbook(o){
   //     (précédé d'une phrase facultative), puis ligne vide finale. Les lignes insérées (renvois) reportent leur description
   //     sur la ligne d'origine, comme les avis. Seule la valeur de la cellule est modifiée (aucun style partagé touché). ---
   if (o.desc) {
-    const BLUE = { argb: 'FF0070C0' }; const phrase = (o.descPhrase || '').trim();
+    const BLUE = { argb: 'FF0070C0' };
     const targets = {};
     const add = (sh, xr, d) => { const k = sh + '|' + xr; const t = targets[k] || (targets[k] = { sh: sh, xr: xr, texts: [] }); if (t.texts.indexOf(d) < 0) t.texts.push(d); };
     const dOf = code => (((nodesState[code] || {}).desc) || '').trim();
@@ -4399,7 +4438,7 @@ async function fillWorkbook(o){
       const f0 = Object.assign({}, m.font || {}); const base = m.value; const baseTxt = xlText(m);
       const runs = (base && typeof base === 'object' && base.richText) ? base.richText.map(r => Object.assign({}, r)) : [{ text: baseTxt, font: f0 }];
       const fb = Object.assign({}, f0, { italic: true, color: BLUE });
-      const body = t.texts.map(d => (phrase ? phrase + ' ' : '') + d);
+      const body = t.texts.slice();
       body.forEach(txt => runs.push({ text: '\n\n' + txt, font: fb }));      // ligne vide avant, puis le texte
       runs.push({ text: '\n\u00A0', font: f0 });                              // ligne vide finale
       m.value = { richText: runs };
@@ -4452,10 +4491,10 @@ function downloadBlob(name, blob){
 function readOpts(px){
   if (document.getElementById('expTousArticles')) {
     const all = document.querySelector('input[name=expLignes]:checked').value === 'all';
-    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked, points: document.getElementById('expPoints').checked, desc: !!(document.getElementById('expDesc') && document.getElementById('expDesc').checked), descPhrase: (document.getElementById('expDescPhrase') || {}).value || '' };
+    return { toutes: all, tousArticles: all && document.getElementById('expTousArticles').checked, masquerFeuilles: document.getElementById('expMasquer').checked, annexes: document.getElementById('expAnnexes').checked, ecrirePages: document.getElementById('expPages').checked, points: document.getElementById('expPoints').checked, desc: !!(document.getElementById('expDesc') && document.getElementById('expDesc').checked), cites: !(document.getElementById('expCites') && !document.getElementById('expCites').checked) };
   }
   const g = id => document.getElementById(px + id); const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all';
-  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked, points: false, desc: false };
+  return { toutes: all, tousArticles: all && g('Tous').checked, masquerFeuilles: g('Hide').checked, annexes: g('Ann').checked, ecrirePages: g('Pages').checked, points: false, desc: false, cites: true };
 }
 function updateOptsUI(px){
   const all = document.querySelector('input[name=' + px + 'L]:checked').value === 'all'; const t = document.getElementById(px + 'Tous'); t.disabled = !all; if (!all) t.checked = false; else if (!t.dataset.touched) t.checked = true;
@@ -4865,7 +4904,12 @@ initSommaire();
   /* onglet ouvert à la navigation : Observations si la rubrique en a (ou si le filtre Obs est actif), sinon Libellé long */
   function applyDefaultTab(){
     var code = selectedNode && selectedNode.code;
-    if (filterObs || (code && hasObs(code))) switchTab('obs'); else switchTab('libelle');
+    var t;
+    if (filterObs && !filterDesc) t = 'obs';
+    else if (filterDesc && !filterObs) t = 'desc';
+    else if (filterObs && filterDesc) t = (code && hasObs(code)) ? 'obs' : 'desc';
+    else t = (code && hasObs(code)) ? 'obs' : 'libelle';
+    switchTab(t);
   }
   var _ltc = loadTabContent;
   loadTabContent = function(){ _ltc.apply(this, arguments); updateTabMarks(); };
@@ -4884,7 +4928,7 @@ initSommaire();
   var _tf = toggleFilter;
   toggleFilter = function(type){
     var r = _tf.apply(this, arguments);
-    if (type === 'O' && selectedNode) applyDefaultTab();
+    if ((type === 'O' || type === 'C') && selectedNode) applyDefaultTab();
     return r;
   };
   var _us = updateStats;
@@ -4892,6 +4936,8 @@ initSommaire();
     _us.apply(this, arguments);
     var n = 0; (function c(ns){ ns.forEach(function(x){ if (hasObs(x.code)) n++; if (x.children) c(x.children); }); })(TREE_DATA);
     var e = document.getElementById('statObs'); if (e) e.textContent = n;
+    var nd = 0; (function c(ns){ ns.forEach(function(x){ if (hasDesc(x.code)) nd++; if (x.children) c(x.children); }); })(TREE_DATA);
+    var e2 = document.getElementById('statDesc'); if (e2) e2.textContent = nd;
   };
   /* article (niveau 2) en SO ou HM : seules les lignes bleues du tableau sont renseignées à l'export */
   window.articleSOHM = function(a){
@@ -4899,6 +4945,35 @@ initSommaire();
     if (isHM(a.code)) return 'HM';
     return ((nodesState[a.code] || {}).avis === 'SO') ? 'SO' : '';
   };
+  /* Avis D sur une ligne insérée (renvoi) : répercuté sur la ligne qui cite et sur la rubrique d'origine exacte,
+     comme le cochage lors de l'ajout d'un point (autoNR / avis précédent restauré au retrait). */
+  function hasDFrom(st){ return !!(st && st.dFrom && Object.keys(st.dFrom).length); }
+  function syncRenvoiD(code){
+    var n = findNodeByCode(TREE_DATA, code); if (!n || !n.ins) return false;
+    var st = nodesState[code] || {};
+    var ext = [n.cf, srcOf(code)].filter(function(c, i, a){ return c && c !== code && a.indexOf(c) === i; });
+    if (st.avis === 'D') {
+      ext.forEach(function(c){ var s2 = nodesState[c] || (nodesState[c] = {}); (s2.dFrom = s2.dFrom || {})[code] = 1; markNR(c); });
+      st.dLinked = ext;
+    } else {
+      (st.dLinked || ext).forEach(function(c){
+        var s2 = nodesState[c]; if (!s2) return;
+        if (s2.dFrom) { delete s2.dFrom[code]; if (!hasDFrom(s2)) delete s2.dFrom; }
+        if (s2.autoNR && pointsOf(c).length === 0 && !hasDFrom(s2)) { if (s2.avis === 'D') s2.avis = s2.prevAvis || null; delete s2.autoNR; delete s2.prevAvis; }
+      });
+      delete st.dLinked;
+    }
+    return true;
+  }
+  function redrawAvis(code){
+    renderRubriquesTable();
+    var row = document.querySelector('tr[data-code="' + code + '"]');
+    if (row && selectedNode && selectedNode.code === code) row.classList.add('sel');
+  }
+  var _sa = setAvis;
+  setAvis = function(v){ var code = selectedNode && selectedNode.code; var r = _sa.apply(this, arguments); if (code && syncRenvoiD(code)) redrawAvis(code); return r; };
+  var _sia = setInlineAvis;
+  setInlineAvis = function(code, v){ var r = _sia.apply(this, arguments); if (syncRenvoiD(code)) redrawAvis(code); return r; };
   var ta = document.getElementById('inputLibelle');
   if (ta) ta.addEventListener('input', function(){
     if (typeof selectedNode === 'undefined' || !selectedNode) return;
