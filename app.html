@@ -3731,7 +3731,7 @@ function renderInfoPage(tab){
           : vers.map((ver, idx) => `<div class="version-item"><span class="v-num">V${idx + 1}</span><div class="v-fields"><input type="text" value="${escAttr(ver.ref || '')}" oninput="updateVersionField(${idx}, 'ref', this.value)" placeholder="Référence"><input type="text" value="${escAttr(ver.date || '')}" oninput="updateVersionField(${idx}, 'date', this.value)" placeholder="jj/mm/aaaa"></div><span></span><button class="v-remove" onclick="removeVersion(${idx})" title="Supprimer cette version">✕</button></div>`).join('')}
       </div>
       <div class="export-block">
-        <h4>Export du rapport</h4>
+        <h4>Edition du rapport</h4>
         <div class="export-opts">
           <label><input type="radio" name="expLignes" value="ren" onchange="onExportOptsChange()"> Lignes renseignées seulement</label>
           <label><input type="radio" name="expLignes" value="all" checked onchange="onExportOptsChange()"> Toutes les lignes, même vides</label>
