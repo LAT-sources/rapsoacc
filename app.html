@@ -899,7 +899,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
 
 <div class="modal-overlay" id="pointsModal">
   <div class="modal" style="max-width:900px">
-    <div class="modal-header"><span>Ajouter des points</span><button onclick="closeModal('pointsModal')">×</button></div>
+    <div class="modal-header"><span>Ajouter/Modifier des points</span><button onclick="closeModal('pointsModal')">×</button></div>
     <div class="modal-body"><div class="pt-wrap" id="pointsBody"></div></div>
     <div class="modal-footer"><button onclick="closeModal('pointsModal')">Fermer</button></div>
   </div>
@@ -3699,18 +3699,18 @@ function renderInfoPage(tab){
   if (tab === 'relation') {
     html = `<div class="info-page active">${fld('Client', inTxt('client'))}${fld('Adresse', inTxt('adr1'))}${fld("Complément d'adresse", inTxt('adr2'))}${fld('Ville', inTxt('ville'))}${fld("À l'attention de", inTxt('attn'))}${fld('Adresse mail', inTxt('mail'))}</div>`;
   } else if (tab === 'affaire') {
-    html = `<div class="info-page active">${fld('Affaire', inTxt('affaire'))}${fld('Dossier SOCOTEC', inTxt('dossier', 'N° du dossier (ex. 25-325-01A)'))}${fld('Contrat n°', inTxt('contrat'))}${fld('Date du contrat', `<input type="date" value="${frToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)">`)}${fld("Société (maître d'ouvrage)", `<input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le client si vide">`)}</div>`;
+    html = `<div class="info-page active">${fld('Affaire', inTxt('affaire'))}${fld('Dossier', inTxt('dossier', 'N° du dossier (ex. 25-325-01A)'))}${fld('Contrat n°', inTxt('contrat'))}${fld('Date du contrat', `<input type="date" value="${frToIso(reportInfo.cdate)}" onchange="infoDateChange('cdate', this.value)">`)}${fld("Société (maître d'ouvrage)", `<input type="text" value="${escAttr(reportInfo.moa || reportInfo.client || '')}" oninput="infoChange('moa', this.value)" placeholder="Pré-rempli avec le client si vide">`)}</div>`;
   } else if (tab === 'documents') {
     html = `<div class="info-page active">
       <div class="drop-zone" id="dropZone" onclick="docZoneClick()">
         <div class="dz-icon">📎</div>
         <div class="dz-title">Glissez vos fichiers ici</div>
-        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris sans leur extension — ${DOC_MAX} documents maximum</span></div>
+        <div class="dz-hint">ou cliquez pour choisir<br><span style="font-size:10.5px;opacity:.7">Les noms sont repris — ${DOC_MAX} documents maximum</span></div>
         <input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this.files)">
       </div>
       <div class="doc-count" id="docCount"></div>
       <div class="doc-list" id="docList"></div>
-      <button class="doc-add-btn" id="docAddBtn" onclick="addDocManually()"><span style="font-size:14px;line-height:1">+</span> Ajouter un document</button>
+      <button class="doc-add-btn" id="docAddBtn" onclick="addDocManually()"><span style="font-size:14px;line-height:1">+</span> Ajouter un document/commentaire</button>
     </div>`;
   } else if (tab === 'commentaires') {
     const ta = (k, lab, ph) => fld(lab, `<textarea rows="3" oninput="infoChange('${k}', this.value)" placeholder="${ph}">${esc(reportInfo[k] || '')}</textarea>`);
@@ -3721,7 +3721,7 @@ function renderInfoPage(tab){
       ${fld('Date', `<input type="date" value="${frToIso(reportInfo.date)}" onchange="infoDateChange('date', this.value)">`)}
       <div class="field"><label>Référence du rapport</label>
         <input type="text" value="${escAttr(reportInfo.refBase || '')}" onchange="refBaseChange(this.value)" placeholder="ex. JB000-26-026">
-        <div class="ref-full">${reportInfo.ref ? 'Référence complète : <b>' + esc(reportInfo.ref) + '</b>' : 'La référence complète est composée : référence - initiales - DIAG - n° dossier SOCOTEC - Vn'}</div>
+        <div class="ref-full">${reportInfo.ref ? 'Référence complète : <b>' + esc(reportInfo.ref) + '</b>' : 'La référence complète est composée : référence - initiales - DIAG - n° dossier - Vn'}</div>
         <div class="ref-meta">Version actuelle : <b>V${v}</b> — une nouvelle référence déclenche la version suivante.</div>
       </div>
       ${fld("Chargé d'affaire", inTxt('charge'))}${fld('Tutoré', inTxt('tutore'))}
@@ -3738,10 +3738,10 @@ function renderInfoPage(tab){
           <label class="sub"><input type="checkbox" id="expTousArticles" checked> Garder aussi les articles sans avis</label>
           <label><input type="checkbox" id="expMasquer" checked> Masquer les feuilles non imprimées</label>
           <label><input type="checkbox" id="expAnnexes" checked> Inclure les annexes Art. 14 et 19</label>
-          <label><input type="checkbox" id="expPages" checked> Écrire le nombre de pages en Page 2</label>
-          <label><input type="checkbox" id="expPoints"> Afficher l'Annexe – Points (PDF et Excel)</label>
-          <label><input type="checkbox" id="expDesc"> Insérer la Conception - Description sous le libellé (italique bleu)</label>
-          <label><input type="checkbox" id="expCites" checked> Afficher les lignes citées « - Art. 12 (2) : NR (voir point…) » sous « Voir points… »</label>
+          <label><input type="checkbox" id="expPages" checked> Afficher le nombre de pages</label>
+          <label><input type="checkbox" id="expPoints"> Afficher l'Annexe – Points</label>
+          <label><input type="checkbox" id="expDesc"> Afficher la Conception - Description sous le libellé</label>
+          <label><input type="checkbox" id="expCites" checked> Afficher les renvois d'articles citées</label>
         </div>
         <div class="export-buttons">
           <button id="btnExportPdf" onclick="exportPdf('exportMsg','btnExportPdf')">Imprimer le PDF</button>
@@ -3803,7 +3803,7 @@ function addDocManually(){
 }
 function renderDocList(){
   const list = document.getElementById('docList'); if (!list) return; const arr = parseDocs();
-  const c = document.getElementById('docCount'); if (c) { c.textContent = arr.length + ' / ' + DOC_MAX + ' documents'; c.classList.toggle('full', arr.length >= DOC_MAX); }
+  const c = document.getElementById('docCount'); if (c) { c.textContent = arr.length + ' / ' + DOC_MAX + ' documents/commentaires'; c.classList.toggle('full', arr.length >= DOC_MAX); }
   const ab = document.getElementById('docAddBtn'); if (ab) ab.disabled = arr.length >= DOC_MAX;
   if (!arr.length) { list.innerHTML = '<div class="doc-empty">Aucun document.</div>'; return; }
   list.innerHTML = arr.map((name, idx) => `<div class="doc-item"><span class="doc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><input type="text" value="${escAttr(name)}" oninput="updateDocName(${idx}, this.value)" onblur="onDocBlur()"><button class="doc-remove" onclick="removeDoc(${idx})" title="Supprimer">✕</button></div>`).join('');
