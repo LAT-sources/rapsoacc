@@ -3138,7 +3138,8 @@ function updateSommaireFromPath(path) {
     const filledClass = selectedCode ? 'filled' : '';
     const disabledAttr = (disabled || options.length === 0) ? 'disabled' : '';
 
-    html += `<div class="select-row"><select class="${filledClass}" ${disabledAttr} onchange="onSommaireChange(${i}, this.value)">`;
+    const none = (!selectedCode && options.length > 0 && !disabled) ? ' data-none="1"' : '';   // aucune sélection à ce niveau
+    html += `<div class="select-row"><select class="${filledClass}" ${disabledAttr}${none} onchange="onSommaireChange(${i}, this.value)">`;
 
     options.forEach(opt => {
       const sel = opt.code === selectedCode ? 'selected' : '';
@@ -3151,6 +3152,8 @@ function updateSommaireFromPath(path) {
   }
 
   container.innerHTML = html;
+  // niveau sans sélection : champ affiché vide (sinon le navigateur montre le 1er élément comme choisi et un clic dessus ne déclenche rien)
+  container.querySelectorAll('select[data-none]').forEach(sel => { sel.selectedIndex = -1; });
 }
 
 function onSommaireChange(level, code) {
@@ -4254,15 +4257,19 @@ function renderRvSommaire(){
   const citing = [];
   (function w(ns){ ns.forEach(n => { if (!n.ins && CITED[n.code]) citing.push(n); if (n.children) w(n.children); }); })(art.children || []);
   if (!citing.length) { box.innerHTML = '<div class="rv-help">Aucun renvoi dans ' + esc(art.label) + '.</div>'; return; }
-  let cur = selectedNode && (selectedNode.ins ? selectedNode.cf : selectedNode.code);
-  if (!citing.some(c => c.code === cur)) cur = citing.some(c => c.code === rvSomCiting) ? rvSomCiting : citing[0].code;
-  rvSomCiting = cur;
-  const o1 = citing.map(c => `<option value="${escAttr(c.code)}" ${c.code === cur ? 'selected' : ''} title="${escAttr(c.long || c.label)}">${esc(nodeLabel(c))} (+${CITED[c.code].length})</option>`).join('');
-  const list = CITED[cur] || []; const m = Math.min(...list.map(x => x.level));
-  const o2 = '<option value="">— Choisir une ligne insérée —</option>' + list.map(x => `<option value="${escAttr(x.code)}" title="${escAttr((x.ref ? x.ref + ' – ' : '') + (x.long || x.label))}">${'\u00a0\u00a0'.repeat(x.level - m)}${esc(nodeLabel(x))}</option>`).join('');
+  // sélection = celle de la rubrique courante (ligne qui renvoie, ou ligne insérée) ; sinon aucun élément sélectionné :
+  // champ affiché vide, sans ligne vide dans la liste, et le premier élément reste sélectionnable
+  const cur = selectedNode ? (selectedNode.ins ? selectedNode.cf : selectedNode.code) : '';
+  const hasCur = citing.some(c => c.code === cur);
+  rvSomCiting = hasCur ? cur : '';
+  const o1 = citing.map(c => `<option value="${escAttr(c.code)}" ${hasCur && c.code === cur ? 'selected' : ''} title="${escAttr(c.long || c.label)}">${esc(nodeLabel(c))} (+${CITED[c.code].length})</option>`).join('');
+  const list = hasCur ? (CITED[cur] || []) : []; const m = list.length ? Math.min(...list.map(x => x.level)) : 0;
+  const selIns = (selectedNode && selectedNode.ins && list.some(x => x.code === selectedNode.code)) ? selectedNode.code : '';
+  const o2 = list.map(x => `<option value="${escAttr(x.code)}" ${x.code === selIns ? 'selected' : ''} title="${escAttr((x.ref ? x.ref + ' – ' : '') + (x.long || x.label))}">${'\u00a0\u00a0'.repeat(x.level - m)}${esc(nodeLabel(x))}</option>`).join('');
   box.innerHTML = `<div class="rv-help">Rubriques de l'article qui renvoient à d'autres articles</div>
-    <div class="select-row"><select onchange="var v=this.value;rvSomCiting=v;handleRowClick(v);setTimeout(function(){scrollToRowFlash(v)},30)">${o1}</select></div>
-    <div class="select-row"><select onchange="var v=this.value;if(v){handleRowClick(v);setTimeout(function(){scrollToRowFlash(v)},30)}">${o2}</select></div>`;
+    <div class="select-row"><select class="${hasCur ? 'filled' : ''}" ${hasCur ? '' : 'data-none="1"'} onchange="var v=this.value;rvSomCiting=v;handleRowClick(v);setTimeout(function(){scrollToRowFlash(v)},30)">${o1}</select></div>
+    <div class="select-row"><select class="${selIns ? 'filled' : ''}" ${list.length ? '' : 'disabled'} ${(list.length && !selIns) ? 'data-none="1"' : ''} onchange="var v=this.value;if(v){handleRowClick(v);setTimeout(function(){scrollToRowFlash(v)},30)}">${o2}</select></div>`;
+  box.querySelectorAll('select[data-none]').forEach(sel => { sel.selectedIndex = -1; });
 }
 
 /* ===== Export Excel direct : classeur modèle rempli (.xlsx), sans macro ===== */
