@@ -901,7 +901,9 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
   #btnClear{order:5;color:#555;font-size:0!important;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 5H9l-6 7 6 7h12z'/%3E%3Cpath d='m13 9 4 6M17 9l-4 6'/%3E%3C/svg%3E") center no-repeat}
   #mSheetBar{display:grid;grid-template-columns:1.05fr 1.5fr 48px 48px;gap:8px}
   .panel-bottom .tab[data-tab="reference"]{order:1}.panel-bottom .tab[data-tab="desc"]{order:2}.panel-bottom .tab[data-tab="libelle"]{order:3}.panel-bottom .tab[data-tab="obs"]{order:4}
-  .hm-chk{display:flex!important;align-items:center;justify-content:center;color:#000091!important}.hm-chk::after{color:inherit}
+  .hm-chk{display:flex!important;align-items:center;justify-content:center;color:#000091!important}
+  .hm-chk:has(input:checked){background:#000091!important;color:#fff!important}
+  .hm-chk::after{color:inherit}
   #btnClear{order:1}.hm-chk{order:2!important}#btnSO{order:3}#btnF{order:4}#btnD{order:5}
   .m-bt{box-shadow:inset 0 0 0 1.5px #000091;min-width:0;padding:0 6px}
   .m-bt.m-pri{box-shadow:none}
