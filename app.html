@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#000091">
-<title>RAPSOACC – Accessibilité à tous</title>
+<title>RAPSOACC – Attestation à tous</title>
 <!-- RAPSO_META -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -82,7 +82,9 @@ table.rubriques tbody td{border-bottom:1px solid #eceae4;padding:0 4px;vertical-
 .c-code{text-align:center;font-size:10px;color:var(--text-muted);font-family:'Courier New',monospace;cursor:pointer;user-select:none}
 .c-label{padding-left:6px;cursor:pointer}
 .c-label.ins{color:#1f4e79}
-body.point-selecting .c-label{cursor:pointer}
+body.point-selecting .c-label,body.multi-selecting .c-label{cursor:pointer}
+.sb-som{display:none}.sb-short{display:none}
+.c-avis.prev{outline:2px dashed #000091;outline-offset:-3px}.c-avis.prev:not(.F):not(.D):not(.SO){color:#000091;background:#e8edff}
 .c-avis{text-align:center;font-weight:bold;font-size:12px}
 .c-avis.F{color:var(--f-color);background:var(--f-bg)}
 .c-avis.D{color:var(--d-color);background:var(--d-bg)}
@@ -807,7 +809,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
 .stat-badge.conc.active{background:#00655a!important;color:#fff!important}
 /* ============ VERSION MOBILE (≤ 720 px) : sobre, uniforme, une main ============
    Un seul gabarit de bouton : 48 px de haut, coins 12 px, ombre légère. Bleu plein = action principale, blanc = secondaire, rouge = supprimer. */
-#mFab,#mDial,#mDim,#mSheetBar,#mSheetTitle,#mHandle,#mSomOk,#mSomX,#mInfoNav,#mBack,#mFltHead,#mFltReset,#mFltDone{display:none}
+#mAvisAsk,#mSomFab,#mFab,#mDial,#mDim,#mSheetBar,#mSheetTitle,#mHandle,#mSomOk,#mSomX,#mInfoNav,#mBack,#mFltHead,#mFltReset,#mFltDone{display:none}
 #mActions{display:contents}
 @media (max-width:720px){
   html,body{height:100%}
@@ -836,7 +838,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
   body.m-fab #mFab{background:#fff;color:#000091}
   body.m-fab #mFab svg{transform:rotate(45deg)}
   body.has-filter #mFab::after{content:"";position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#b34000;border:2px solid #fff}
-  body.m-detail #mFab,body.m-menu #mFab,body.m-filter #mFab,body.m-sommaire #mFab,body.point-selecting #mFab{display:none}
+  body.m-detail #mFab,body.m-menu #mFab,body.m-filter #mFab,body.m-sommaire #mFab,body.point-selecting #mFab,body.multi-selecting #mFab{display:none}
   #mDial{position:fixed;right:16px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:95;flex-direction:column-reverse;gap:8px;align-items:flex-end}
   body.m-fab #mDial{display:flex}
   .m-sd{width:184px;justify-content:flex-start;animation:mUp .18s ease-out both}
@@ -896,7 +898,10 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
   .hm-chk::after{content:"HM";font-size:15px;font-weight:700;line-height:1}
   .hm-chk:has(input:checked){background:#000091;color:#fff}
   #btnClear{order:5;color:#555;font-size:0!important;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 5H9l-6 7 6 7h12z'/%3E%3Cpath d='m13 9 4 6M17 9l-4 6'/%3E%3C/svg%3E") center no-repeat}
-  #mSheetBar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  #mSheetBar{display:grid;grid-template-columns:1.05fr 1.5fr 48px 48px;gap:8px}
+  .panel-bottom .tab[data-tab="reference"]{order:1}.panel-bottom .tab[data-tab="desc"]{order:2}.panel-bottom .tab[data-tab="libelle"]{order:3}.panel-bottom .tab[data-tab="obs"]{order:4}
+  .hm-chk{display:flex!important;align-items:center;justify-content:center;color:#000091!important}.hm-chk::after{color:inherit}
+  #btnClear{order:1}.hm-chk{order:2!important}#btnSO{order:3}#btnF{order:4}#btnD{order:5}
   .m-bt{box-shadow:inset 0 0 0 1.5px #000091;min-width:0;padding:0 6px}
   .m-bt.m-pri{box-shadow:none}
   body.m-typing #mActions{display:none}
@@ -948,13 +953,65 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
   #pointsModal .pt-actions button:nth-child(1)::after{content:"Sélectionner"}
   #pointsModal .pt-actions button:nth-child(2)::after{content:"Supprimer"}
   #pointsModal .pt-actions button:nth-child(2){color:#b30000!important}
-  #mBack{display:flex;position:fixed;left:16px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:90;width:112px;justify-content:center}
+  #mBack{display:flex}
+  /* barre du bas des points : ‹ Retour | ✕ Supprimer | Sélectionner | + Ajouter */
+  #pointsModal.open::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(72px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #d9d9d9;z-index:89}
+  #pointsModal .pt-actions{display:contents}
+  #pointsModal .pt-left>button,#pointsModal .pt-actions button,#mBack{position:fixed!important;top:auto;right:auto;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;height:48px;padding:0 4px!important;margin:0!important;flex-direction:column;gap:0;font-size:0!important;justify-content:center;background:#fff!important;color:#000091!important;box-shadow:inset 0 0 0 1.5px #000091!important}
+  #mBack{left:12px;width:calc((100vw - 42px) * .20)!important;flex-direction:row;font-size:14px!important;gap:2px}
+  #pointsModal .pt-actions button:nth-child(2){left:calc(12px + (100vw - 42px) * .20 + 6px);width:calc((100vw - 42px) * .21)!important;color:#c9191e!important;box-shadow:none!important}
+  #pointsModal .pt-actions button:nth-child(2)::before{content:"✕";font-size:20px;line-height:1;font-weight:700}
+  #pointsModal .pt-actions button:nth-child(2)::after{content:"Supprimer";font-size:11px;font-weight:600}
+  #pointsModal .pt-actions button:nth-child(1){left:calc(12px + (100vw - 42px) * .41 + 12px);width:calc((100vw - 42px) * .295)!important;background:#000091!important;color:#fff!important;box-shadow:none!important}
+  #pointsModal .pt-left>button{left:calc(12px + (100vw - 42px) * .705 + 18px);width:calc((100vw - 42px) * .295)!important;background:#000091!important;color:#fff!important;box-shadow:none!important}
+  #pointsModal .pt-left>button::after{content:"+ Ajouter";font-size:15px;font-weight:600}
+  #pointsModal .pt-actions button:nth-child(1)::after{content:"Sélectionner";font-size:15px;font-weight:600}
   /* sélection de rubriques d'un point */
-  #selBanner{position:fixed!important;top:auto!important;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:90;flex-wrap:wrap;gap:10px!important;border:0!important;border-radius:16px;padding:14px 16px!important;background:#fff!important;box-shadow:0 8px 26px rgba(0,0,0,.32);font-size:15px;animation:mUp .2s ease-out}
-  #selBanner .sb-txt{flex:1 1 100%;line-height:1.35}
-  #selBanner .sb-ins{flex:1 1 100%;font-size:15px;padding:2px 0}
-  #selBanner .sb-ins input{width:24px;height:24px;vertical-align:middle;margin-right:8px}
-  #selBanner .sb-done{flex:1 1 100%;height:52px;border:0!important;border-radius:12px!important;background:#000091!important;color:#fff!important;font-size:16px!important;font-weight:600}
+  #selBanner{position:relative!important;flex:none;top:auto!important;left:auto;right:auto;bottom:auto;z-index:90;display:flex;flex-wrap:nowrap!important;align-items:center;gap:8px!important;border:0!important;border-radius:0;padding:4px 10px!important;background:#e8edff!important;box-shadow:0 1px 4px rgba(0,0,0,.18);font-size:11px;line-height:1.25;animation:none}
+  #selBanner .sb-txt{flex:1 1 auto;min-width:0;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #selBanner .sb-ins{flex:none;font-size:11px;padding:0;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+  #selBanner .sb-ins input{width:14px;height:14px;margin:0}
+  #selBanner .sb-cancel{flex:none;font-size:11px!important;padding:2px 8px!important;height:auto!important;min-height:0!important}
+  .sb-full{display:none}.sb-short{display:inline}
+  /* boutons superposés en bas à droite : sommaire (petit) au-dessus de ✓ Terminer */
+  #selBanner .sb-som{display:grid!important;place-items:center;position:fixed;right:24px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:91;width:40px;height:40px;padding:0!important;border:1px solid #b5b5d0!important;border-radius:12px!important;background:#fff!important;color:#000091!important;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  #selBanner .sb-done{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:91;width:56px;height:56px;padding:0!important;border:0!important;border-radius:14px!important;background:#000091!important;color:#fff!important;font-size:0!important;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  #selBanner .sb-done::after{content:"✓";font-size:28px;line-height:56px;font-weight:600}
+  body.m-sommaire #selBanner .sb-som,body.m-sommaire #selBanner .sb-done{display:none!important}
+  /* arborescence mobile : plus de numéros, un « › » et le décalage marquent les niveaux */
+  .c-label .num{font-size:0;min-width:0;margin:0 6px 0 0}
+  table.rubriques td.c-label.i1{--p:4px}
+  table.rubriques td.c-label.i2{--p:8px}
+  table.rubriques td.c-label.i3{--p:18px}
+  table.rubriques td.c-label.i4{--p:38px}
+  table.rubriques td.c-label.i5{--p:58px}
+  table.rubriques td.c-label.i6{--p:78px}
+  table.rubriques td.c-label.i7{--p:98px}
+  table.rubriques td.c-label.i8{--p:112px}
+  table.rubriques td.c-label.i9{--p:124px}
+  table.rubriques td.c-label.i10{--p:136px}
+  td.c-label.i3 .num::before{content:"›";font-size:16px;font-weight:700;color:#000091}
+  td.c-label.i4 .num::before{content:"–";font-size:16px;font-weight:700;color:#2f4fa8}
+  td.c-label.i5 .num::before{content:"•";font-size:9px;font-weight:700;color:#6b6b6b}
+  td.c-label.i6 .num::before{content:"›";font-size:16px;font-weight:700;color:#000091}
+  td.c-label.i7 .num::before{content:"–";font-size:16px;font-weight:700;color:#2f4fa8}
+  td.c-label.i8 .num::before{content:"•";font-size:9px;font-weight:700;color:#6b6b6b}
+  td.c-label.i9 .num::before{content:"›";font-size:16px;font-weight:700;color:#000091}
+  td.c-label.i10 .num::before{content:"–";font-size:16px;font-weight:700;color:#2f4fa8}
+  .c-label .num{display:inline-block;width:14px;text-align:center;text-indent:0}
+  .c-label .rv-btn,.c-label .pt,.c-label .selchk{text-indent:0}
+  #mSomFab{display:grid;place-items:center;position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:94;width:40px;height:40px;padding:0;border:1px solid #b5b5d0;border-radius:12px;background:#fff;color:#000091;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  body.m-fab #mSomFab,body.m-detail #mSomFab,body.m-menu #mSomFab,body.m-filter #mSomFab,body.m-sommaire #mSomFab,body.point-selecting #mSomFab,body.multi-selecting #mSomFab{display:none}
+  /* retour à la ligne aligné sur le début du texte (indentation suspendue) */
+  table.rubriques td.c-label{--h:20px;--p:4px;padding-left:calc(var(--p) + var(--h))!important;text-indent:calc(-1 * var(--h))}
+  body.point-selecting table.rubriques td.c-label,body.multi-selecting table.rubriques td.c-label{--h:42px}
+  table.rubriques td.c-label.i1,table.rubriques td.c-label.i2{--h:0px}
+  body.point-selecting table.rubriques td.c-label.i1,body.point-selecting table.rubriques td.c-label.i2,body.multi-selecting table.rubriques td.c-label.i1,body.multi-selecting table.rubriques td.c-label.i2{--h:22px}
+  table.rubriques td.c-label.i1,table.rubriques td.c-label.i2{font-weight:700}
+  .m-bt.m-ico{padding:0}
+  #mAvisAsk.open{display:grid;position:fixed;inset:0;z-index:130;place-items:center;background:rgba(22,22,22,.5)}
+  #mAvisAsk .box{background:#fff;border-radius:16px;padding:20px;margin:24px;max-width:320px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 26px rgba(0,0,0,.32);font-size:15px}
+  #mAvisAsk p{margin:0;color:#3a3a3a}
 }
 </style>
 
@@ -962,6 +1019,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
 <body>
 <!-- Version mobile (écran étroit) : bouton flottant « + » et ses boutons -->
 <button id="mFab" type="button" aria-label="Actions" aria-expanded="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+<button id="mSomFab" type="button" aria-label="Sommaire" onclick="document.body.classList.add('m-sommaire')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></button>
 <div id="mDial">
   <button type="button" class="m-sd" data-act="point"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg><span>Point</span></button>
   <button type="button" class="m-sd" data-act="sommaire"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Sommaire</span></button>
@@ -2757,9 +2815,51 @@ const TREE_DATA = [
   {code:"31.x4.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.r4"},
   {code:"31.r5",label:"d'un côté de l'axe de la traversée :",ref:"Art. 31 (1) 1° b)",level:4,xr:6},
   {code:"31.r6",label:"Trottoir : bordure de 3 à 6 cm",long:"le trottoir dispose d'une bordure d'une hauteur de 3 cm à 6 cm",ref:"Art. 31 (1) 1° b)",level:5,xr:7},
+  {code:"31.n1",label:"i. Bande de direction de traversée",ref:"Art. 31 (1) 1° b) i",level:5},
+  {code:"31.n1.1",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) i",level:6},
+  {code:"31.n1.2",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 1° b) i",level:6},
+  {code:"31.n1.3",label:"en bordure du trottoir",ref:"Art. 31 (1) 1° b) i",level:6},
+  {code:"31.n1.4",label:"constituée de stries indiquant la direction",long:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 1° b) i",level:6},
+  {code:"31.n2",label:"ii. Bande de repérage",ref:"Art. 31 (1) 1° b) ii",level:5},
+  {code:"31.n2.1",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) ii",level:6},
+  {code:"31.n2.2",label:"dans la continuité de la bande de direction",long:"dans la continuité de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) ii",level:6},
+  {code:"31.n2.3",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6},
+  {code:"31.n2.4",label:"début en angle droit avec le bord intérieur",long:"début en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6},
+  {code:"31.n2.5",label:"constituée de plots",ref:"Art. 31 (1) 1° b) ii",level:6},
+  {code:"31.n3",label:"iii. Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 1° b) iii",level:5},
+  {code:"31.n3.1",label:"dans l'axe central de la traversée",ref:"Art. 31 (1) 1° b) iii",level:6},
+  {code:"31.n3.2",label:"à hauteur de la bande de direction",long:"à hauteur de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) iii",level:6},
+  {code:"31.n3.3",label:"à hauteur de la bande de repérage",ref:"Art. 31 (1) 1° b) iii",level:6},
+  {code:"31.n4",label:"c) de l'autre côté de l'axe central de la traversée",ref:"Art. 31 (1) 1° c)",level:4},
+  {code:"31.n4.1",label:"à 50 cm de l'axe central",ref:"Art. 31 (1) 1° c)",level:5},
+  {code:"31.n4.2",label:"Bordure abaissée ≤ 0,5 cm sur 100 à 120 cm",long:"bordure du trottoir est abaissée à haut. ≤ 0,5 cm sur une largeur de 100 cm à 120 cm",ref:"Art. 31 (1) 1° c)",level:5},
+  {code:"31.n4.3",label:"Sans bordure repérable : bande de barrage podotactile",long:"En absence de bordure repérable : présence d'une bande de barrage constituée d'éléments podotactiles",ref:"Art. 31 (1) 1° c)",level:5},
+  {code:"31.n4.4",label:"Bande de barrage",ref:"Art. 31 (1) 1° c)",level:5},
+  {code:"31.n4.4.1",label:"i. sur toute la longueur du passage abaissé",ref:"Art. 31 (1) 1° c) i",level:6},
+  {code:"31.n4.4.2",label:"prolongée de chaque côté où la bordure < 3 cm",long:"prolongée de chaque côté du passage où la bordure < 3 cm",ref:"Art. 31 (1) 1° c) i",level:7},
+  {code:"31.n4.4.3",label:"ii. profonde de 60 cm",ref:"Art. 31 (1) 1° c) ii",level:6},
+  {code:"31.n4.4.4",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (1) 1° c) ii",level:7},
+  {code:"31.n4.4.5",label:"iii. Si poteau : prolongation facultative",long:"Si poteau pour signaux colorés lumineux : prolongation de la bande de barrage facultative à la hauteur du poteau",ref:"Art. 31 (1) 1° c) iii",level:6},
   {code:"31.(1).2°",label:"Bordure de hauteur constante",long:"Passages et gués pour piétons à bordure de hauteur constante",ref:"Art. 31 (1) 2°",level:3,xr:34},
   {code:"31.(1).2°.a",label:"bordure hauteur ≤3 cm",ref:"Art. 31 (1) 2° a)",level:4,xr:35},
   {code:"31.(1).2°.b",label:"éléments podotactiles (cf. Art. 22)",ref:"Art. 31 (1) 2° b)",level:4,xr:36},
+  {code:"31.m1",label:"i. Bande de direction de traversée",ref:"Art. 31 (1) 2° b) i",level:5},
+  {code:"31.m1.1",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 2° b) i",level:6},
+  {code:"31.m1.2",label:"sur toute la largeur du passage contre la bordure",ref:"Art. 31 (1) 2° b) i",level:6},
+  {code:"31.m1.3",label:"constituée de stries indiquant la direction",long:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 2° b) i",level:6},
+  {code:"31.m2",label:"ii. Bande de repérage",ref:"Art. 31 (1) 2° b) ii",level:5},
+  {code:"31.m2.1",label:"large de 90 cm",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.2",label:"située au centre du passage",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.3",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.4",label:"en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.5",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.6",label:"Si passage dans l'axe du cheminement",ref:"Art. 31 (1) 2° b) ii",level:6},
+  {code:"31.m2.7",label:"remplacée par bande d'éveil à la vigilance",long:"bande de repérage remplacée par bande d'éveil à la vigilance posée contre la bande de direction de traversée",ref:"Art. 31 (1) 2° b) ii",level:7},
+  {code:"31.m2.8",label:"sur toute la largeur du passage",ref:"Art. 31 (1) 2° b) ii",level:7},
+  {code:"31.m2.9",label:"profondeur de 60 cm",ref:"Art. 31 (1) 2° b) ii",level:7},
+  {code:"31.m2.10",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:7},
+  {code:"31.m3",label:"iii. Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 2° b) iii",level:5},
+  {code:"31.m3.1",label:"se situent à côté de la bande de repérage",ref:"Art. 31 (1) 2° b) iii",level:6},
   {code:"31.x35.22.1",label:"Caractéristiques pour système de guidage",ref:"Art. 22",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.2",label:"Plots H 0,4–0,5 cm : attention particulière",long:"plots : H de 0,4 à 0,5 cm / indiquent une attention particulière",ref:"Art. 22 1°",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.3",label:"stries : H de 0,4 à 0,5 cm / indiquent direction",ref:"Art. 22 1°",level:5,ins:1,cf:"31.(1).2°.b"},
@@ -2797,11 +2897,34 @@ const TREE_DATA = [
   {code:"31.x35.22.35",label:"Extérieur : stries 0,5–1,5 cm, espacées 2,5–3,5 cm",long:"A l'extérieur, largeur des stries: 0,5 cm à 1,5 cm, espacées de 2,5 cm à 3,5 cm.",ref:"Art. 22 9°",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.36",label:"Plots en quinconce, ronds, Ø 2 à 3 cm",long:"Les plots, en quinconce, ronds, diamètre de 2 cm à 3 cm et",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(1).2°.b"},
+  {code:"31.(2)",label:"Gué pour piétons : bande de direction",long:"Si gué pour piétons: signalés avec une bande de direction",ref:"Art. 31 (2)",level:3},
+  {code:"31.(2).1",label:"Bande de repérage arrêtée à 60–90 cm devant la bande de direction",long:"Pour différencier les passages des gués, la bande de repérage s'arrête à 60 cm à 90 cm devant la bande de direction",ref:"Art. 31 (2)",level:4},
+  {code:"31.(3)",label:"Traversée pour cyclistes juxtaposée",long:"Si traversée pour cyclistes juxtaposée à traversée piétons",ref:"Art. 31 (3)",level:3},
+  {code:"31.(3).1",label:"1° Bordure de hauteur différenciée",long:"si bordure de hauteur différenciée (cf. paragraphe 1er, point 1°)",ref:"Art. 31 (3) 1°",level:4},
+  {code:"31.(3).1.1",label:"Traversée cyclistes du côté abaissé de la bordure",long:"la traversée pour cyclistes est du côté abaissé de la bordure",ref:"Art. 31 (3) 1°",level:5},
+  {code:"31.(3).2",label:"2° Hauteur de bordure cyclistes ≤ 3 cm",long:"si hauteur de la bordure pour cyclistes ≤ 3 cm",ref:"Art. 31 (3) 2°",level:4},
+  {code:"31.(3).2.1",label:"bande de barrage toute largeur",ref:"Art. 31 (3) 2°",level:5},
+  {code:"31.(3).2.2",label:"profonde de 60 cm",ref:"Art. 31 (3) 2°",level:5},
+  {code:"31.(3).2.3",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (3) 2°",level:5},
   {code:"31.(4)",label:"Signaux colorés lumineux pour piétons",long:"Règles générales pour signaux colorés lumineux pour piétons",ref:"Art. 31 (4)",level:3,xr:65},
   {code:"31.(4).1°",label:"centrés par rapport au passage",ref:"Art. 31 (4)",level:4,xr:66},
   {code:"31.(4).2°",label:"Éléments podotactiles : signal acoustique + tactile",long:"si présence d'éléments podotactiles au sol (cf. Art. 22)",ref:"Art. 31 (4)",level:4,xr:67},
   {code:"31.r67",label:"Signal acoustique placé à 210–230 cm",long:"info visuelle reprise par signal acoustique émis par un dispositif acoustique placé entre 210 cm et 230 cm",ref:"Art. 31 (4)",level:5,xr:68},
   {code:"31.(4).3°",label:"Fonctions sonore et visuelle activées (auto ou demande)",long:"fonctions acoustique et visuelle activées automatiquement ou à la demande en appuyant sur bouton vibrant.",ref:"Art. 31 (4)",level:5,xr:69},
+  {code:"31.n5",label:"Par signal acoustique",ref:"Art. 31 (4)",level:4},
+  {code:"31.n5.1",label:"signal intermittent",ref:"Art. 31 (4)",level:5},
+  {code:"31.n5.2",label:"pendant toute la durée de la phase verte",ref:"Art. 31 (4)",level:6},
+  {code:"31.n5.3",label:"fréquence de 4 Hz",ref:"Art. 31 (4)",level:6},
+  {code:"31.n5.4",label:"perceptible sur toute la longueur de la traversée",ref:"Art. 31 (4)",level:6},
+  {code:"31.n5.5",label:"En cas de besoin : signal acoustique hors phase verte",long:"En cas de besoin, sauf si gêne pour riverains : signal acoustique en dehors de la phase verte",ref:"Art. 31 (4)",level:5},
+  {code:"31.n5.6",label:"signal d'orientation permanent",ref:"Art. 31 (4)",level:6},
+  {code:"31.n5.7",label:"intermittent",ref:"Art. 31 (4)",level:7},
+  {code:"31.n5.8",label:"fréquence de 1,2 Hz",ref:"Art. 31 (4)",level:7},
+  {code:"31.n5.9",label:"repérable à une distance minimale de 450 cm",ref:"Art. 31 (4)",level:7},
+  {code:"31.n6",label:"Par signal tactile",ref:"Art. 31 (4)",level:4},
+  {code:"31.n6.1",label:"produit par un bouton vibrant",ref:"Art. 31 (4)",level:5},
+  {code:"31.n6.2",label:"sur la face inférieure du bouton-poussoir de commande",ref:"Art. 31 (4)",level:5},
+  {code:"31.n6.3",label:"actif pendant toute la phase verte",ref:"Art. 31 (4)",level:5},
   {code:"31.x66.22.1",label:"Caractéristiques pour système de guidage",ref:"Art. 22",level:4,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.2",label:"Plots H 0,4–0,5 cm : attention particulière",long:"plots : H de 0,4 à 0,5 cm / indiquent une attention particulière",ref:"Art. 22 1°",level:4,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.3",label:"stries : H de 0,4 à 0,5 cm / indiquent direction",ref:"Art. 22 1°",level:5,ins:1,cf:"31.(4).2°"},
@@ -3127,12 +3250,12 @@ function renderRubriquesTable() {
     const bullet = node.hasChildren ? (collapsedState[node.code] ? '►' : '▼') : '•';
     const labelOnclick = selPoint != null
       ? `togglePointNode('${node.code}', event)`
-      : `handleRowClick('${node.code}', event)`;
+      : (multiAvis != null ? `toggleMultiNode('${node.code}', event)` : `handleRowClick('${node.code}', event)`);
 
     html += `<tr data-code="${node.code}" class="${isSel ? 'sel' : ''}" onclick="handleRowClick('${node.code}', event)">
       <td class="c-code" onclick="toggleCollapse(event, '${node.code}')">${bullet}</td>
-      <td class="c-label ${indentClass}${node.ins?' ins':''}" title="${escAttr((node.ref?node.ref+' – ':'')+(node.long||node.label))}" onclick="${labelOnclick}">${rvBtn(node)}${selPoint!=null?`<input type="checkbox" class="selchk" ${(points.find(p=>p.id===selPoint)||{codes:[]}).codes.includes(node.code)?'checked':''} onclick="togglePointNode('${node.code}', event)">`:''}${numHtml(node)}${esc(node.label)}${pointsOf(node.code).map(id=>`<span class="pt">P${id}</span>`).join('')}${isHM(node.code)?'<span class="pt hm" title="Hors mission">HM</span>':''}</td>
-      <td class="c-avis ${avis}">${avis || ''}</td>
+      <td class="c-label ${indentClass}${node.ins?' ins':''}" title="${escAttr((node.ref?node.ref+' – ':'')+(node.long||node.label))}" onclick="${labelOnclick}">${rvBtn(node)}${selPoint!=null?`<input type="checkbox" class="selchk" ${(points.find(p=>p.id===selPoint)||{codes:[]}).codes.includes(node.code)?'checked':''} onclick="togglePointNode('${node.code}', event)">`:(multiAvis!=null?`<input type="checkbox" class="selchk" ${multiCodes.has(node.code)?'checked':''} onclick="toggleMultiNode('${node.code}', event)">`:'')}${numHtml(node)}${esc(node.label)}${pointsOf(node.code).map(id=>`<span class="pt">P${id}</span>`).join('')}${isHM(node.code)?'<span class="pt hm" title="Hors mission">HM</span>':''}</td>
+      <td class="c-avis ${multiAvis!=null&&multiCodes.has(node.code)?(multiAvis==='HM'?'prev':multiAvis+' prev'):avis}">${multiAvis!=null&&multiCodes.has(node.code)?multiAvis:(avis || '')}</td>
     </tr>`;
   });
   tbody.innerHTML = html;
@@ -3141,6 +3264,7 @@ function renderRubriquesTable() {
 
 function handleRowClick(code, event) {
   if (event && event.target.classList.contains('c-code')) return;
+  if (multiAvis != null) { toggleMultiNode(code, event); return; }
   const node = findNodeByCode(TREE_DATA, code);
   if (!node) return;
   if (node.ins && node.cf) renvoiOpen[node.cf] = true;
@@ -3624,6 +3748,7 @@ let points = [];
 let reportInfo = {};
 let selPoint = null;
 let selIncludeIns = false;
+let multiAvis = null, multiCodes = new Set(), multiPicked = new Set();   /* mode « Sélectionner » : un avis appliqué à plusieurs rubriques */
 let curPointId = null;
 const MARK = { F: 'R', D: 'NR', SO: 'SO' };
 const CITED = {};
@@ -3743,11 +3868,64 @@ function togglePointNode(code, ev){
 }
 function updateSelBanner(){
   const b = el('selBanner'); const p = points.find(x => x.id === selPoint);
+  const som = '<button type="button" class="sb-som" aria-label="Sommaire" onclick="document.body.classList.add(\'m-sommaire\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></button>';
+  if (multiAvis != null) {
+    b.style.display = 'flex';
+    b.innerHTML = `<span class="sb-txt"><b>Avis ${multiAvis}</b> — touchez les rubriques à renseigner <span class="sb-short">(${multiCodes.size})</span><span class="sb-full">(${multiCodes.size} sélectionnée${multiCodes.size > 1 ? 's' : ''})</span></span>
+      <label class="sb-ins"><input type="checkbox" ${selIncludeIns ? 'checked' : ''} onchange="selIncludeIns=this.checked"> <span class="sb-full">inclure les renvois</span><span class="sb-short">renvois</span></label>
+      <button type="button" class="sb-cancel" onclick="endMulti()">Annuler</button>${som}
+      <button type="button" class="sb-done" aria-label="Appliquer l'avis" onclick="applyMulti()"><span class="sb-full">✔ Appliquer ${multiAvis}</span></button>`;
+    return;
+  }
   if (!p) { b.style.display = 'none'; b.innerHTML = ''; return; }
   b.style.display = 'flex';
-  b.innerHTML = `<span class="sb-txt"><b>Point ${p.id}</b> ${esc(p.title)} — cliquez sur les rubriques concernées (${p.codes.length} rattachées, passées en NR)</span>
-    <label class="sb-ins"><input type="checkbox" ${selIncludeIns ? 'checked' : ''} onchange="selIncludeIns=this.checked"> inclure les renvois</label>
-    <button class="sb-done" onclick="endSelect()">✔ Terminer</button>`;
+  b.innerHTML = `<span class="sb-txt"><b>Point ${p.id}</b> ${esc(p.title)}<span class="sb-full"> — cliquez sur les rubriques concernées (${p.codes.length} rattachées, passées en NR)</span><span class="sb-short"> · ${p.codes.length}</span></span>
+    <label class="sb-ins"><input type="checkbox" ${selIncludeIns ? 'checked' : ''} onchange="selIncludeIns=this.checked"> <span class="sb-full">inclure les renvois</span><span class="sb-short">renvois</span></label>${som}
+    <button class="sb-done" aria-label="Terminer" onclick="endSelect()"><span class="sb-full">✔ Terminer</span></button>`;
+}
+/* « Sélectionner » : un avis (F, D, SO ou HM) appliqué d'un coup à plusieurs rubriques (contrairement à « Point », qui passe en NR) */
+function pendingAvis(){ if (selectedAvis) return selectedAvis; const c = el('chkHM'); return (c && c.checked) ? 'HM' : null; }
+function startMulti(){
+  const a = pendingAvis(); if (!a) return false;
+  multiAvis = a; multiCodes = new Set(); multiPicked = new Set(); document.body.classList.add('multi-selecting');
+  updateSelBanner(); renderRubriquesTable(); return true;
+}
+/* rubriques réellement concernées : les lignes cochées + (si « inclure les renvois ») les lignes qui les citent ;
+   une ligne de renvoi entraîne sa ligne citante et sa rubrique d'origine, comme pour « Ajouter un point » */
+function multiRecompute(){
+  const out = new Set();
+  multiPicked.forEach(c => {
+    out.add(c);
+    const n = findNodeByCode(TREE_DATA, c);
+    if (n && n.ins) [n.cf, srcOf(c)].forEach(x => { if (x) out.add(x); });
+  });
+  multiCodes = out;
+}
+function toggleMultiNode(code, ev){
+  if (ev) ev.stopPropagation();
+  const node = findNodeByCode(TREE_DATA, code); if (!node || multiAvis == null) return;
+  const on = multiPicked.has(code);
+  const list = collectBranch(node, selIncludeIns).slice();
+  if (selIncludeIns) list.slice().forEach(c => (CITED[c] || []).forEach(r => { if (!list.includes(r.code)) list.push(r.code); }));
+  list.forEach(c => on ? multiPicked.delete(c) : multiPicked.add(c));
+  multiRecompute(); renderRubriquesTable(); updateSelBanner();
+}
+function endMulti(){
+  multiAvis = null; multiCodes = new Set(); multiPicked = new Set(); document.body.classList.remove('multi-selecting');
+  updateSelBanner(); renderRubriquesTable();
+  if (selectedNode) { try { updateAvisButtons(); } catch (e) {} }
+}
+function applyMulti(){
+  const a = multiAvis; if (a == null) return;
+  multiCodes.forEach(code => {
+    const node = findNodeByCode(TREE_DATA, code); if (!node) return;
+    const st = nodesState[code] || (nodesState[code] = {});
+    if (a === 'HM') { if (PRESET_HM_CODES.has(code)) delete st.hm; else st.hm = true; }
+    else { st.avis = a; delete st.autoNR; delete st.prevAvis; }
+    if (!st.libelle) st.libelle = node.long || node.label;
+    if (!st.article) { const pa = findParentArticle(code); st.article = node.ref || (pa ? pa.label : ''); }
+  });
+  endMulti();
 }
 function startSelect(id){ selPoint = id; document.body.classList.add('point-selecting'); closeModal('pointsModal'); updateSelBanner(); renderRubriquesTable(); }
 function endSelect(){ selPoint = null; document.body.classList.remove('point-selecting'); updateSelBanner(); renderRubriquesTable(); renderPointsInfo(); openPoints(); }
@@ -5183,7 +5361,7 @@ initSommaire();
   var acts = document.createElement('div'); acts.id = 'mActions'; pb.appendChild(acts);
   var avisRow = pb.querySelector('.detail-row:not(.top)'); if (avisRow) acts.appendChild(avisRow);
   var bar = document.createElement('div'); bar.id = 'mSheetBar';
-  bar.innerHTML = '<button type="button" class="m-bt" data-nav="-1">' + svg('<path d="m15 5-7 7 7 7"/>') + 'Préc.</button><button type="button" class="m-bt m-pri" data-nav="1">Suiv.' + svg('<path d="m9 5 7 7-7 7"/>') + '</button><button type="button" class="m-bt" id="mAddPts2">' + svg('<path d="M12 5v14M5 12h14"/>') + 'Point</button>';
+  bar.innerHTML = '<button type="button" class="m-bt" id="mSheetBack">' + svg('<path d="m15 5-7 7 7 7"/>') + 'retour</button><button type="button" class="m-bt" id="mSelMulti">' + svg('<path d="M12 5v14M5 12h14"/>') + 'Sélectionner</button><button type="button" class="m-bt m-ico" data-nav="-1" aria-label="Précédent">' + svg('<path d="m15 5-7 7 7 7"/>') + '</button><button type="button" class="m-bt m-ico m-pri" data-nav="1" aria-label="Suivant">' + svg('<path d="m9 5 7 7-7 7"/>') + '</button>';
   acts.appendChild(bar);
 
   /* Sommaire : fermer + « Afficher la rubrique » dans la carte */
@@ -5218,7 +5396,16 @@ initSommaire();
   });
   document.querySelectorAll('.info-tab').forEach(function(t){ t.addEventListener('click', function(){ B.classList.remove('m-menu'); }); });
   ok.addEventListener('click', function(){ B.classList.remove('m-sommaire'); if (selectedNode) { try { scrollToRowFlash(selectedNode.code); } catch (e) {} } });
-  $('mAddPts2').addEventListener('click', function(){ tick(); closeAll(); openPoints(); });
+  $('mSheetBack').addEventListener('click', function(){ tick(); closeAll(); });
+  function askAvis(){
+    var d = $('mAvisAsk');
+    if (!d) { d = document.createElement('div'); d.id = 'mAvisAsk';
+      d.innerHTML = '<div class="box" role="dialog" aria-modal="true"><b>Choisissez d’abord un avis</b><p>Touchez F, D, SO ou HM, puis « Sélectionner » pour l’appliquer à plusieurs rubriques.</p><button type="button" class="m-bt m-pri">OK</button></div>';
+      document.body.appendChild(d);
+      d.addEventListener('click', function(e){ if (e.target === d || e.target.tagName === 'BUTTON') d.classList.remove('open'); }); }
+    d.classList.add('open');
+  }
+  $('mSelMulti').addEventListener('click', function(){ tick(); if (!startMulti()) { askAvis(); return; } closeAll(); });
   pb.querySelectorAll('[data-nav]').forEach(function(b){ b.addEventListener('click', function(){
     if (!selectedNode) return; tick(); var nx = navNext(selectedNode.code, +b.getAttribute('data-nav'));
     if (nx) { handleRowClick(nx, null); ensureRowVisible(nx); }
