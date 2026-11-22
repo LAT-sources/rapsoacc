@@ -260,6 +260,7 @@ body.point-selecting .c-label,body.multi-selecting .c-label{cursor:pointer}
 .stat-badge.f.active{background:var(--f-color,#2e7d32)!important;border-color:var(--f-color,#2e7d32)!important}
 .stat-badge.d.active{background:var(--d-color,#c62828)!important;border-color:var(--d-color,#c62828)!important}
 .stat-badge.so.active{background:var(--so-color,#1565c0)!important;border-color:var(--so-color,#1565c0)!important}
+.stat-badge.hm{background:#ececfe!important;color:#000091!important;border-color:#c5c5f0}.stat-badge.hm:hover{background:#dcdcfb!important}.stat-badge.hm.active{background:#000091!important;color:#fff!important;border-color:#000091!important}
 #btnToggleAll{min-width:30px;justify-content:center;font-size:12px}
 .lvl-wrap{position:relative}
 .lvl-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:300;width:176px;background:#fff;border:1px solid var(--border,#dde2ea);border-radius:12px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:8px;gap:5px;flex-wrap:wrap}
@@ -1052,6 +1053,7 @@ table.rubriques tbody td{border-bottom-color:#e3e3e3}
       <span class="stat-badge f" id="filterF" onclick="toggleFilter('F')" title="Filtrer les rubriques Favorables">F <b id="statF">0</b></span>
       <span class="stat-badge d" id="filterD" onclick="toggleFilter('D')" title="Filtrer les rubriques Défavorables">D <b id="statD">0</b></span>
       <span class="stat-badge so" id="filterSO" onclick="toggleFilter('SO')" title="Filtrer les rubriques Sans objet">SO <b id="statSO">0</b></span>
+      <span class="stat-badge hm" id="filterHM" onclick="toggleFilter('HM')" title="Filtrer les rubriques Hors mission">HM <b id="statHM">0</b></span>
       <span class="stat-badge conc" id="filterDesc" onclick="toggleFilter('C')" title="Rubriques avec un texte dans l'onglet Conception - Description (ouvre l'onglet)">Conc <b id="statDesc">0</b></span>
       <span class="stat-badge obs" id="filterObs" onclick="toggleFilter('O')" title="Rubriques avec Observations - Commentaires (ouvre l'onglet)">Obs <b id="statObs">0</b></span>
     </div>
@@ -2774,7 +2776,7 @@ const TREE_DATA = [
 
 /* ================= ART. 31 ================= */
 {code:"A31",label:"Art. 31. Passages et gués",level:2,sh:"Art.31.Passages et gués",children:[
-  {code:"31.(1)",label:"Bordure de hauteur différenciée",long:"Passages et gués pour piétons à bordure de hauteur différenciée",ref:"Art. 31 (1) 1°",level:3,xr:4},
+  {code:"31.(1)",label:"Passages et gués pour piétons à bordure de hauteur différenciée",ref:"Art. 31 (1) 1°",level:3,xr:4},
   {code:"31.r4",label:"éléments podotactiles pour avertir (voir Art 22)",ref:"Art. 31 (1) 1° a)",level:4,xr:5},
   {code:"31.x4.22.1",label:"Caractéristiques pour système de guidage",ref:"Art. 22",level:4,ins:1,cf:"31.r4"},
   {code:"31.x4.22.2",label:"Plots H 0,4–0,5 cm : attention particulière",long:"plots : H de 0,4 à 0,5 cm / indiquent une attention particulière",ref:"Art. 22 1°",level:4,ins:1,cf:"31.r4"},
@@ -2814,52 +2816,53 @@ const TREE_DATA = [
   {code:"31.x4.22.36",label:"Plots en quinconce, ronds, Ø 2 à 3 cm",long:"Les plots, en quinconce, ronds, diamètre de 2 cm à 3 cm et",ref:"Art. 22 9°",level:5,ins:1,cf:"31.r4"},
   {code:"31.x4.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.r4"},
   {code:"31.r5",label:"d'un côté de l'axe de la traversée :",ref:"Art. 31 (1) 1° b)",level:4,xr:6},
-  {code:"31.r6",label:"Trottoir : bordure de 3 à 6 cm",long:"le trottoir dispose d'une bordure d'une hauteur de 3 cm à 6 cm",ref:"Art. 31 (1) 1° b)",level:5,xr:7},
-  {code:"31.n1",label:"i. Bande de direction de traversée",ref:"Art. 31 (1) 1° b) i",level:5},
-  {code:"31.n1.1",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) i",level:6},
-  {code:"31.n1.2",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 1° b) i",level:6},
-  {code:"31.n1.3",label:"en bordure du trottoir",ref:"Art. 31 (1) 1° b) i",level:6},
-  {code:"31.n1.4",label:"constituée de stries indiquant la direction",long:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 1° b) i",level:6},
-  {code:"31.n2",label:"ii. Bande de repérage",ref:"Art. 31 (1) 1° b) ii",level:5},
-  {code:"31.n2.1",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) ii",level:6},
-  {code:"31.n2.2",label:"dans la continuité de la bande de direction",long:"dans la continuité de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) ii",level:6},
-  {code:"31.n2.3",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6},
-  {code:"31.n2.4",label:"début en angle droit avec le bord intérieur",long:"début en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6},
-  {code:"31.n2.5",label:"constituée de plots",ref:"Art. 31 (1) 1° b) ii",level:6},
-  {code:"31.n3",label:"iii. Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 1° b) iii",level:5},
-  {code:"31.n3.1",label:"dans l'axe central de la traversée",ref:"Art. 31 (1) 1° b) iii",level:6},
-  {code:"31.n3.2",label:"à hauteur de la bande de direction",long:"à hauteur de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) iii",level:6},
-  {code:"31.n3.3",label:"à hauteur de la bande de repérage",ref:"Art. 31 (1) 1° b) iii",level:6},
-  {code:"31.n4",label:"c) de l'autre côté de l'axe central de la traversée",ref:"Art. 31 (1) 1° c)",level:4},
-  {code:"31.n4.1",label:"à 50 cm de l'axe central",ref:"Art. 31 (1) 1° c)",level:5},
-  {code:"31.n4.2",label:"Bordure abaissée ≤ 0,5 cm sur 100 à 120 cm",long:"bordure du trottoir est abaissée à haut. ≤ 0,5 cm sur une largeur de 100 cm à 120 cm",ref:"Art. 31 (1) 1° c)",level:5},
-  {code:"31.n4.3",label:"Sans bordure repérable : bande de barrage podotactile",long:"En absence de bordure repérable : présence d'une bande de barrage constituée d'éléments podotactiles",ref:"Art. 31 (1) 1° c)",level:5},
-  {code:"31.n4.4",label:"Bande de barrage",ref:"Art. 31 (1) 1° c)",level:5},
-  {code:"31.n4.4.1",label:"i. sur toute la longueur du passage abaissé",ref:"Art. 31 (1) 1° c) i",level:6},
-  {code:"31.n4.4.2",label:"prolongée de chaque côté où la bordure < 3 cm",long:"prolongée de chaque côté du passage où la bordure < 3 cm",ref:"Art. 31 (1) 1° c) i",level:7},
-  {code:"31.n4.4.3",label:"ii. profonde de 60 cm",ref:"Art. 31 (1) 1° c) ii",level:6},
-  {code:"31.n4.4.4",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (1) 1° c) ii",level:7},
-  {code:"31.n4.4.5",label:"iii. Si poteau : prolongation facultative",long:"Si poteau pour signaux colorés lumineux : prolongation de la bande de barrage facultative à la hauteur du poteau",ref:"Art. 31 (1) 1° c) iii",level:6},
-  {code:"31.(1).2°",label:"Bordure de hauteur constante",long:"Passages et gués pour piétons à bordure de hauteur constante",ref:"Art. 31 (1) 2°",level:3,xr:34},
-  {code:"31.(1).2°.a",label:"bordure hauteur ≤3 cm",ref:"Art. 31 (1) 2° a)",level:4,xr:35},
-  {code:"31.(1).2°.b",label:"éléments podotactiles (cf. Art. 22)",ref:"Art. 31 (1) 2° b)",level:4,xr:36},
-  {code:"31.m1",label:"i. Bande de direction de traversée",ref:"Art. 31 (1) 2° b) i",level:5},
-  {code:"31.m1.1",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 2° b) i",level:6},
-  {code:"31.m1.2",label:"sur toute la largeur du passage contre la bordure",ref:"Art. 31 (1) 2° b) i",level:6},
-  {code:"31.m1.3",label:"constituée de stries indiquant la direction",long:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 2° b) i",level:6},
-  {code:"31.m2",label:"ii. Bande de repérage",ref:"Art. 31 (1) 2° b) ii",level:5},
-  {code:"31.m2.1",label:"large de 90 cm",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.2",label:"située au centre du passage",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.3",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.4",label:"en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.5",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.6",label:"Si passage dans l'axe du cheminement",ref:"Art. 31 (1) 2° b) ii",level:6},
-  {code:"31.m2.7",label:"remplacée par bande d'éveil à la vigilance",long:"bande de repérage remplacée par bande d'éveil à la vigilance posée contre la bande de direction de traversée",ref:"Art. 31 (1) 2° b) ii",level:7},
-  {code:"31.m2.8",label:"sur toute la largeur du passage",ref:"Art. 31 (1) 2° b) ii",level:7},
-  {code:"31.m2.9",label:"profondeur de 60 cm",ref:"Art. 31 (1) 2° b) ii",level:7},
-  {code:"31.m2.10",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:7},
-  {code:"31.m3",label:"iii. Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 2° b) iii",level:5},
-  {code:"31.m3.1",label:"se situent à côté de la bande de repérage",ref:"Art. 31 (1) 2° b) iii",level:6},
+  {code:"31.r6",label:"le trottoir dispose d'une bordure d'une hauteur de 3 cm à 6 cm",ref:"Art. 31 (1) 1° b)",level:5,xr:7},
+  {code:"31.w8",label:"bande de direction de traversée :",ref:"Art. 31 (1) 1° b) i",level:5,xr:8},
+  {code:"31.w9",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) i",level:6,xr:9},
+  {code:"31.w10",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 1° b) i",level:6,xr:10},
+  {code:"31.w11",label:"en bordure du trottoir",ref:"Art. 31 (1) 1° b) i",level:6,xr:11},
+  {code:"31.w12",label:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 1° b) i",level:6,xr:12},
+  {code:"31.w13",label:"bande de repérage",ref:"Art. 31 (1) 1° b) ii",level:5,xr:13},
+  {code:"31.w14",label:"large de 90 cm",ref:"Art. 31 (1) 1° b) ii",level:6,xr:14},
+  {code:"31.w15",label:"dans la continuité de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) ii",level:6,xr:15},
+  {code:"31.w16",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6,xr:16},
+  {code:"31.w17",label:"début en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 1° b) ii",level:6,xr:17},
+  {code:"31.w18",label:"constituée de plots",ref:"Art. 31 (1) 1° b) ii",level:6,xr:18},
+  {code:"31.w19",label:"Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 1° b) iii",level:5,xr:19},
+  {code:"31.w20",label:"dans l'axe central de la traversée",ref:"Art. 31 (1) 1° b) iii",level:6,xr:20},
+  {code:"31.w21",label:"à hauteur de la bande de direction de traversée",ref:"Art. 31 (1) 1° b) iii",level:6,xr:21},
+  {code:"31.w22",label:"à hauteur de la bande de repérage",ref:"Art. 31 (1) 1° b) iii",level:6,xr:22},
+  {code:"31.w23",label:"de l'autre côté de l’axe central de la traversée",ref:"Art. 31 (1) 1° c)",level:4,xr:23},
+  {code:"31.w24",label:"à 50 cm de l'axe central",ref:"Art. 31 (1) 1° c)",level:5,xr:24},
+  {code:"31.w25",label:"bordure du trottoir est abaissée à haut. ≤ 0,5 cm sur une largeur de 100 cm à 120 cm",ref:"Art. 31 (1) 1° c)",level:5,xr:25},
+  {code:"31.w26",label:"En absence de bordure repérable : présence d'une bande de barrage constituée d'éléments podotactiles",ref:"Art. 31 (1) 1° c)",level:5,xr:26},
+  {code:"31.w27",label:"Bande de barrage",ref:"Art. 31 (1) 1° c)",level:5,xr:27},
+  {code:"31.w28",label:"sur toute la longueur du passage abaissé",ref:"Art. 31 (1) 1° c) i",level:6,xr:28},
+  {code:"31.w29",label:"prolongée de chaque côté du passage où la bordure <3 cm",ref:"Art. 31 (1) 1° c) i",level:7,xr:29},
+  {code:"31.w30",label:"profonde de 60 cm",ref:"Art. 31 (1) 1° c) ii",level:6,xr:30},
+  {code:"31.w31",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (1) 1° c) ii",level:7,xr:31},
+  {code:"31.w32",label:"Si poteau pour signaux colorés lumineux : prolongation de la bande de barrage facultative à la hauteur du poteau",ref:"Art. 31 (1) 1° c) iii",level:6,xr:32},
+  {code:"31.(1).2°",label:"Passages et gués pour piétons à bordure de hauteur constante",ref:"Art. 31 (1) 2°",level:3,xr:33},
+  {code:"31.(1).2°.a",label:"bordure hauteur ≤3 cm",ref:"Art. 31 (1) 2° a)",level:4,xr:34},
+  {code:"31.(1).2°.b",label:"éléments podotactiles (cf. Art. 22)",ref:"Art. 31 (1) 2° b)",level:4,xr:35},
+  {code:"31.w36",label:"bande de direction de traversée",ref:"Art. 31 (1) 2° b) i",level:5,xr:36},
+  {code:"31.w37",label:"profonde de ≥ 60 cm",ref:"Art. 31 (1) 2° b) i",level:6,xr:37},
+  {code:"31.w38",label:"sur toute la largeur du passage contre la bordure",ref:"Art. 31 (1) 2° b) i",level:6,xr:38},
+  {code:"31.w39",label:"constituée de stries indiquant la direction de la traversée",ref:"Art. 31 (1) 2° b) i",level:6,xr:39},
+  {code:"31.w40",label:"bande de repérage",ref:"Art. 31 (1) 2° b) ii",level:5,xr:40},
+  {code:"31.w41",label:"large de 90 cm",ref:"Art. 31 (1) 2° b) ii",level:6,xr:41},
+  {code:"31.w42",label:"située au centre du passage",ref:"Art. 31 (1) 2° b) ii",level:6,xr:42},
+  {code:"31.w43",label:"sur toute la largeur restante du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6,xr:43},
+  {code:"31.w44",label:"en angle droit avec le bord intérieur du trottoir",ref:"Art. 31 (1) 2° b) ii",level:6,xr:44},
+  {code:"31.w45",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:6,xr:45},
+  {code:"31.w46",label:"si passage dans l'axe du cheminement",ref:"Art. 31 (1) 2° b) ii",level:6,xr:46},
+  {code:"31.w47",label:"bande de repérage remplacée par bande d'éveil à la vigilance",ref:"Art. 31 (1) 2° b) ii",level:7,xr:47},
+  {code:"31.w48",label:"posée contre la bande de direction de traversée",ref:"Art. 31 (1) 2° b) ii",level:7,xr:48},
+  {code:"31.w49",label:"sur toute la largeur du passage",ref:"Art. 31 (1) 2° b) ii",level:7,xr:49},
+  {code:"31.w50",label:"profondeur de 60 cm",ref:"Art. 31 (1) 2° b) ii",level:7,xr:50},
+  {code:"31.w51",label:"constituée de plots",ref:"Art. 31 (1) 2° b) ii",level:7,xr:51},
+  {code:"31.w52",label:"Si poteau pour signaux colorés lumineux",ref:"Art. 31 (1) 2° b) iii",level:5,xr:52},
+  {code:"31.w53",label:"se situent à côté de la bande de repérage",ref:"Art. 31 (1) 2° b) iii",level:6,xr:53},
   {code:"31.x35.22.1",label:"Caractéristiques pour système de guidage",ref:"Art. 22",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.2",label:"Plots H 0,4–0,5 cm : attention particulière",long:"plots : H de 0,4 à 0,5 cm / indiquent une attention particulière",ref:"Art. 22 1°",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.3",label:"stries : H de 0,4 à 0,5 cm / indiquent direction",ref:"Art. 22 1°",level:5,ins:1,cf:"31.(1).2°.b"},
@@ -2897,34 +2900,20 @@ const TREE_DATA = [
   {code:"31.x35.22.35",label:"Extérieur : stries 0,5–1,5 cm, espacées 2,5–3,5 cm",long:"A l'extérieur, largeur des stries: 0,5 cm à 1,5 cm, espacées de 2,5 cm à 3,5 cm.",ref:"Art. 22 9°",level:4,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.36",label:"Plots en quinconce, ronds, Ø 2 à 3 cm",long:"Les plots, en quinconce, ronds, diamètre de 2 cm à 3 cm et",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(1).2°.b"},
   {code:"31.x35.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(1).2°.b"},
-  {code:"31.(2)",label:"Gué pour piétons : bande de direction",long:"Si gué pour piétons: signalés avec une bande de direction",ref:"Art. 31 (2)",level:3},
-  {code:"31.(2).1",label:"Bande de repérage arrêtée à 60–90 cm devant la bande de direction",long:"Pour différencier les passages des gués, la bande de repérage s'arrête à 60 cm à 90 cm devant la bande de direction",ref:"Art. 31 (2)",level:4},
-  {code:"31.(3)",label:"Traversée pour cyclistes juxtaposée",long:"Si traversée pour cyclistes juxtaposée à traversée piétons",ref:"Art. 31 (3)",level:3},
-  {code:"31.(3).1",label:"1° Bordure de hauteur différenciée",long:"si bordure de hauteur différenciée (cf. paragraphe 1er, point 1°)",ref:"Art. 31 (3) 1°",level:4},
-  {code:"31.(3).1.1",label:"Traversée cyclistes du côté abaissé de la bordure",long:"la traversée pour cyclistes est du côté abaissé de la bordure",ref:"Art. 31 (3) 1°",level:5},
-  {code:"31.(3).2",label:"2° Hauteur de bordure cyclistes ≤ 3 cm",long:"si hauteur de la bordure pour cyclistes ≤ 3 cm",ref:"Art. 31 (3) 2°",level:4},
-  {code:"31.(3).2.1",label:"bande de barrage toute largeur",ref:"Art. 31 (3) 2°",level:5},
-  {code:"31.(3).2.2",label:"profonde de 60 cm",ref:"Art. 31 (3) 2°",level:5},
-  {code:"31.(3).2.3",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (3) 2°",level:5},
-  {code:"31.(4)",label:"Signaux colorés lumineux pour piétons",long:"Règles générales pour signaux colorés lumineux pour piétons",ref:"Art. 31 (4)",level:3,xr:65},
-  {code:"31.(4).1°",label:"centrés par rapport au passage",ref:"Art. 31 (4)",level:4,xr:66},
-  {code:"31.(4).2°",label:"Éléments podotactiles : signal acoustique + tactile",long:"si présence d'éléments podotactiles au sol (cf. Art. 22)",ref:"Art. 31 (4)",level:4,xr:67},
-  {code:"31.r67",label:"Signal acoustique placé à 210–230 cm",long:"info visuelle reprise par signal acoustique émis par un dispositif acoustique placé entre 210 cm et 230 cm",ref:"Art. 31 (4)",level:5,xr:68},
-  {code:"31.(4).3°",label:"Fonctions sonore et visuelle activées (auto ou demande)",long:"fonctions acoustique et visuelle activées automatiquement ou à la demande en appuyant sur bouton vibrant.",ref:"Art. 31 (4)",level:5,xr:69},
-  {code:"31.n5",label:"Par signal acoustique",ref:"Art. 31 (4)",level:4},
-  {code:"31.n5.1",label:"signal intermittent",ref:"Art. 31 (4)",level:5},
-  {code:"31.n5.2",label:"pendant toute la durée de la phase verte",ref:"Art. 31 (4)",level:6},
-  {code:"31.n5.3",label:"fréquence de 4 Hz",ref:"Art. 31 (4)",level:6},
-  {code:"31.n5.4",label:"perceptible sur toute la longueur de la traversée",ref:"Art. 31 (4)",level:6},
-  {code:"31.n5.5",label:"En cas de besoin : signal acoustique hors phase verte",long:"En cas de besoin, sauf si gêne pour riverains : signal acoustique en dehors de la phase verte",ref:"Art. 31 (4)",level:5},
-  {code:"31.n5.6",label:"signal d'orientation permanent",ref:"Art. 31 (4)",level:6},
-  {code:"31.n5.7",label:"intermittent",ref:"Art. 31 (4)",level:7},
-  {code:"31.n5.8",label:"fréquence de 1,2 Hz",ref:"Art. 31 (4)",level:7},
-  {code:"31.n5.9",label:"repérable à une distance minimale de 450 cm",ref:"Art. 31 (4)",level:7},
-  {code:"31.n6",label:"Par signal tactile",ref:"Art. 31 (4)",level:4},
-  {code:"31.n6.1",label:"produit par un bouton vibrant",ref:"Art. 31 (4)",level:5},
-  {code:"31.n6.2",label:"sur la face inférieure du bouton-poussoir de commande",ref:"Art. 31 (4)",level:5},
-  {code:"31.n6.3",label:"actif pendant toute la phase verte",ref:"Art. 31 (4)",level:5},
+  {code:"31.(2)",label:"Si gué pour piétons: signalés avec une bande de direction",ref:"Art. 31 (2)",level:3,xr:55},
+  {code:"31.(2).1",label:"Pour différencier les passages des gués, la bande de repérage s'arrête à 60 cm à 90 cm devant la bande de direction",ref:"Art. 31 (2)",level:4,xr:56},
+  {code:"31.(3)",label:"Si traversée pour cyclistes juxtaposée à traversée piétons",ref:"Art. 31 (3)",level:3,xr:57},
+  {code:"31.(3).1",label:"si bordure de hauteur différenciée (cf. paragraphe 1er, point 1° )",ref:"Art. 31 (3) 1°",level:4,xr:58},
+  {code:"31.(3).1.1",label:"la traversée pour cyclistes est du côté abaissé de la bordure",ref:"Art. 31 (3) 1°",level:5,xr:59},
+  {code:"31.(3).2",label:"si hauteur de la bordure pour cyclistes ≤ 3 cm",ref:"Art. 31 (3) 2°",level:4,xr:60},
+  {code:"31.(3).2.1",label:"bande de barrage toute largeur",ref:"Art. 31 (3) 2°",level:5,xr:61},
+  {code:"31.(3).2.2",label:"profonde de 60 cm",ref:"Art. 31 (3) 2°",level:5,xr:62},
+  {code:"31.(3).2.3",label:"composée de stries parallèles à la bordure",ref:"Art. 31 (3) 2°",level:5,xr:63},
+  {code:"31.(4)",label:"Règles générales pour signaux colorés lumineux pour piétons",ref:"Art. 31 (4)",level:3,xr:64},
+  {code:"31.(4).1°",label:"centrés par rapport au passage",ref:"Art. 31 (4)",level:4,xr:65},
+  {code:"31.(4).2°",label:"si présence d'éléments podotactiles au sol (cf. Art. 22)",ref:"Art. 31 (4)",level:4,xr:66},
+  {code:"31.r67",label:"info visuelle reprise par signal acoustique émis par un dispositif acoustique placé entre 210 cm et 230 cm",ref:"Art. 31 (4)",level:5,xr:67},
+  {code:"31.(4).3°",label:"fonctions acoustique et visuelle activées automatiquement ou à la demande en appuyant sur bouton vibrant.",ref:"Art. 31 (4)",level:5,xr:68},
   {code:"31.x66.22.1",label:"Caractéristiques pour système de guidage",ref:"Art. 22",level:4,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.2",label:"Plots H 0,4–0,5 cm : attention particulière",long:"plots : H de 0,4 à 0,5 cm / indiquent une attention particulière",ref:"Art. 22 1°",level:4,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.3",label:"stries : H de 0,4 à 0,5 cm / indiquent direction",ref:"Art. 22 1°",level:5,ins:1,cf:"31.(4).2°"},
@@ -2961,7 +2950,21 @@ const TREE_DATA = [
   {code:"31.x66.22.34",label:"Suivi de stries : point d'information",long:"Si suivi de stries parallèles à la ligne, il indique un point d'information.",ref:"Art. 22 8°",level:5,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.35",label:"Extérieur : stries 0,5–1,5 cm, espacées 2,5–3,5 cm",long:"A l'extérieur, largeur des stries: 0,5 cm à 1,5 cm, espacées de 2,5 cm à 3,5 cm.",ref:"Art. 22 9°",level:4,ins:1,cf:"31.(4).2°"},
   {code:"31.x66.22.36",label:"Plots en quinconce, ronds, Ø 2 à 3 cm",long:"Les plots, en quinconce, ronds, diamètre de 2 cm à 3 cm et",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(4).2°"},
-  {code:"31.x66.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(4).2°"}
+  {code:"31.x66.22.37",label:"avec un espacement orthogonal de 3 cm à 5 cm",ref:"Art. 22 9°",level:5,ins:1,cf:"31.(4).2°"},
+  {code:"31.w69",label:"par signal acoustique",ref:"Art. 31 (4)",level:4,xr:69},
+  {code:"31.w70",label:"signal intermittent",ref:"Art. 31 (4)",level:5,xr:70},
+  {code:"31.w71",label:"pendant toute la durée de la phase verte",ref:"Art. 31 (4)",level:6,xr:71},
+  {code:"31.w72",label:"fréquence de 4 Hz",ref:"Art. 31 (4)",level:6,xr:72},
+  {code:"31.w73",label:"perceptible sur toute la longueur de la traversée",ref:"Art. 31 (4)",level:6,xr:73},
+  {code:"31.w74",label:"En cas de besoin, sauf si gêne pour riverains : signal acoustique en dehors de la phase verte",ref:"Art. 31 (4)",level:5,xr:74},
+  {code:"31.w75",label:"signal d'orientation permanent",ref:"Art. 31 (4)",level:6,xr:75},
+  {code:"31.w76",label:"intermittent",ref:"Art. 31 (4)",level:7,xr:76},
+  {code:"31.w77",label:"fréquence de 1,2 Hz",ref:"Art. 31 (4)",level:7,xr:77},
+  {code:"31.w78",label:"repérable à une distance minimale de 450 cm",ref:"Art. 31 (4)",level:7,xr:78},
+  {code:"31.w79",label:"par signal tactile",ref:"Art. 31 (4)",level:4,xr:79},
+  {code:"31.w80",label:"produit par un bouton vibrant",ref:"Art. 31 (4)",level:5,xr:80},
+  {code:"31.w81",label:"sur la face inférieure du bouton-poussoir de commande",ref:"Art. 31 (4)",level:5,xr:81},
+  {code:"31.w82",label:"actif pendant toute la phase verte",ref:"Art. 31 (4)",level:5,xr:82},
 ]},
 
 /* ================= ART. 32 ================= */
@@ -3161,7 +3164,7 @@ let currentNodePath = [];
 let currentTab = 'desc';
 
 /* ✅ Filtres F / D / SO (0 = inactif, 1 = actif) */
-let filterF = 0, filterD = 0, filterSO = 0, filterT = 0, filterObs = 0, filterDesc = 0, levelFilter = 0;
+let filterF = 0, filterD = 0, filterSO = 0, filterHM = 0, filterT = 0, filterObs = 0, filterDesc = 0, levelFilter = 0;
 
 const SOMMAIRE_LEVELS = (function(){ function d(ns){ return Math.max(0,...ns.map(n=>1+(n.children?d(n.children):0))); } return Math.max(7,d(TREE_DATA)); })();
 
@@ -3188,7 +3191,7 @@ function findPathToNode(nodes, target, cur = []) {
 }
 function flattenTree(nodes, parentVisible = true, result = []) {
   nodes.forEach(node => {
-    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterT || filterObs || filterDesc);
+    const flt = typeof filterF !== 'undefined' && (filterF || filterD || filterSO || filterHM || filterT || filterObs || filterDesc);
     if (node.ins && !renvoiOpen[node.cf] && !flt) return;
     if (levelFilter && (node.level || 1) > levelFilter) return;
     const hasChildren = node.children && node.children.length > 0;
@@ -3219,12 +3222,13 @@ function isFilled(code) {
 function hasDesc(code) { const s = nodesState[code] || {}; return !!(s.desc && s.desc.trim()); }
 function hasObs(code) { const s = nodesState[code] || {}; return !!(s.obs && s.obs.trim()); }
 function nodeMatchesFilter(node) {
-  if (!filterF && !filterD && !filterSO && !filterT && !filterObs && !filterDesc) return true;
+  if (!filterF && !filterD && !filterSO && !filterHM && !filterT && !filterObs && !filterDesc) return true;
   const state = nodesState[node.code] || {};
   const av = state.avis;
   if (av === 'F' && filterF) return true;
   if (av === 'D' && filterD) return true;
   if (av === 'SO' && filterSO) return true;
+  if (filterHM && isHM(node.code)) return true;
   if (filterT && isFilled(node.code)) return true;
   if (filterObs && hasObs(node.code)) return true;
   if (filterDesc && hasDesc(node.code)) return true;
@@ -3241,7 +3245,7 @@ function renderRubriquesTable() {
   const flat = flattenTree(TREE_DATA);
   let html = '';
   flat.forEach(node => {
-    if ((filterF || filterD || filterSO || filterT || filterObs || filterDesc) && !nodeMatchesFilter(node)) return;
+    if ((filterF || filterD || filterSO || filterHM || filterT || filterObs || filterDesc) && !nodeMatchesFilter(node)) return;
 
     const state = nodesState[node.code] || {};
     const avis = state.avis || '';
@@ -3370,6 +3374,7 @@ function toggleFilter(type) {
   if (type === 'F') filterF = filterF ? 0 : 1;
   else if (type === 'D') filterD = filterD ? 0 : 1;
   else if (type === 'SO') filterSO = filterSO ? 0 : 1;
+  else if (type === 'HM') filterHM = filterHM ? 0 : 1;
   else if (type === 'T') filterT = filterT ? 0 : 1;
   else if (type === 'O') filterObs = filterObs ? 0 : 1;
   else if (type === 'C') filterDesc = filterDesc ? 0 : 1;
@@ -3377,7 +3382,7 @@ function toggleFilter(type) {
   renderRubriquesTable();
 }
 function resetFilters() {
-  filterF = filterD = filterSO = filterT = filterObs = filterDesc = 0;
+  filterF = filterD = filterSO = filterHM = filterT = filterObs = filterDesc = 0;
   updateFilterUI();
   renderRubriquesTable();
 }
@@ -3385,6 +3390,7 @@ function updateFilterUI() {
   document.getElementById('filterF').classList.toggle('active', !!filterF);
   document.getElementById('filterD').classList.toggle('active', !!filterD);
   document.getElementById('filterSO').classList.toggle('active', !!filterSO);
+  document.getElementById('filterHM').classList.toggle('active', !!filterHM);
   document.getElementById('filterTotal').classList.toggle('active', !!filterT);
   { const o = document.getElementById('filterObs'); if (o) o.classList.toggle('active', !!filterObs); }
   { const o = document.getElementById('filterDesc'); if (o) o.classList.toggle('active', !!filterDesc); }
@@ -3550,9 +3556,9 @@ document.addEventListener('keydown', function(e) {
 function navNext(code, dir) {
   const rows = Array.prototype.map.call(document.querySelectorAll('#rubriquesBody tr[data-code]'), tr => tr.getAttribute('data-code'));
   if (!rows.length) return null;
-  const flt = filterF || filterD || filterSO || filterT || filterObs || filterDesc;
+  const flt = filterF || filterD || filterSO || filterHM || filterT || filterObs || filterDesc;
   const direct = c => { const st = nodesState[c] || {}, av = st.avis;   // correspondance directe (nodeMatchesFilter inclut aussi les parents)
-    return !!((av === 'F' && filterF) || (av === 'D' && filterD) || (av === 'SO' && filterSO) || (filterT && isFilled(c)) || (filterObs && hasObs(c)) || (filterDesc && hasDesc(c))); };
+    return !!((av === 'F' && filterF) || (av === 'D' && filterD) || (av === 'SO' && filterSO) || (filterHM && isHM(c)) || (filterT && isFilled(c)) || (filterObs && hasObs(c)) || (filterDesc && hasDesc(c))); };
   const ok = c => !flt || direct(c);
   const i = rows.indexOf(code);
   if (dir > 0) { for (let j = i + 1; j < rows.length; j++) if (ok(rows[j])) return rows[j]; }
@@ -3638,7 +3644,7 @@ function loadFromLocalStorage() {
 }
 
 function updateStats() {
-  let t = 0, f = 0, d = 0, so = 0;
+  let t = 0, f = 0, d = 0, so = 0, hm = 0;
   function collect(nodes) {
     nodes.forEach(n => {
       const s = nodesState[n.code] || {};
@@ -3646,6 +3652,7 @@ function updateStats() {
       if (s.avis === 'F') f++;
       else if (s.avis === 'D') d++;
       else if (s.avis === 'SO') so++;
+      if (isHM(n.code)) hm++;
       if (n.children) collect(n.children);
     });
   }
@@ -3654,6 +3661,7 @@ function updateStats() {
   document.getElementById('statF').textContent = f;
   document.getElementById('statD').textContent = d;
   document.getElementById('statSO').textContent = so;
+  document.getElementById('statHM').textContent = hm;
 }
 
 function openReport() {
@@ -5373,9 +5381,9 @@ initSommaire();
   var reset = document.createElement('button'); reset.id = 'mFltReset'; reset.type = 'button'; reset.textContent = 'Réinitialiser'; fh.appendChild(reset);
   var done = document.createElement('button'); done.id = 'mFltDone'; done.type = 'button'; done.textContent = 'Fermer'; fh.appendChild(done);
   function direct(c){ var st = nodesState[c] || {}, av = st.avis;
-    return !!((av === 'F' && filterF) || (av === 'D' && filterD) || (av === 'SO' && filterSO) || (filterT && isFilled(c)) || (filterObs && hasObs(c)) || (filterDesc && hasDesc(c))); }
+    return !!((av === 'F' && filterF) || (av === 'D' && filterD) || (av === 'SO' && filterSO) || (filterHM && isHM(c)) || (filterT && isFilled(c)) || (filterObs && hasObs(c)) || (filterDesc && hasDesc(c))); }
   function updFlt(){
-    var flt = filterF || filterD || filterSO || filterT || filterObs || filterDesc;
+    var flt = filterF || filterD || filterSO || filterHM || filterT || filterObs || filterDesc;
     if (!flt) { done.textContent = 'Fermer'; return; }
     var n = 0; (function w(ns){ ns.forEach(function(x){ if (direct(x.code)) n++; if (x.children) w(x.children); }); })(TREE_DATA);
     done.textContent = 'Voir ' + n + ' rubrique' + (n > 1 ? 's' : '');
@@ -5433,7 +5441,7 @@ initSommaire();
   function vvfit(){ if (vv) document.documentElement.style.setProperty('--vvh', Math.round(vv.height) + 'px'); }
   if (vv) { vv.addEventListener('resize', vvfit); vvfit(); }
   /* pastille sur « + » quand un filtre est actif */
-  function dot(){ B.classList.toggle('has-filter', !!(filterF || filterD || filterSO || filterT || filterObs || filterDesc || levelFilter)); }
+  function dot(){ B.classList.toggle('has-filter', !!(filterF || filterD || filterSO || filterHM || filterT || filterObs || filterDesc || levelFilter)); }
   document.addEventListener('click', function(){ setTimeout(dot, 60); }); dot();
 
   /* Généralités : barre de navigation en bas (Fermer + 5 pages), glisser gauche/droite pour changer de page */
@@ -5499,6 +5507,37 @@ initSommaire();
   };
   mq.addEventListener && mq.addEventListener('change', function(){ if (!mob()) closeAll(); });
   if (selectedNode) setTitle();
+})();
+</script>
+<script>
+/* Position de l'arborescence conservée à l'entrée / à la sortie des modes de sélection (point, avis) :
+   on mémorise la première ligne visible et on la remet exactement au même endroit après le réaffichage. */
+(function(){
+  function scroller(){
+    var tb = document.getElementById('rubriquesBody'), sp = tb;
+    while (sp && sp !== document.body && sp !== document.documentElement) {
+      var o = getComputedStyle(sp).overflowY;
+      if ((o === 'auto' || o === 'scroll') && sp.scrollHeight > sp.clientHeight) return sp;
+      sp = sp.parentElement;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
+  function anchored(fn){
+    var tb = document.getElementById('rubriquesBody'), sp = scroller(), code = null, top = 0;
+    var isDoc = (sp === document.scrollingElement || sp === document.documentElement);
+    var base = isDoc ? 0 : sp.getBoundingClientRect().top;
+    var hd = document.querySelector('table.rubriques thead'); var hh = hd ? hd.getBoundingClientRect().height : 0;
+    if (tb) { var rows = tb.querySelectorAll('tr[data-code]');
+      for (var i = 0; i < rows.length; i++) { var b = rows[i].getBoundingClientRect(); if (b.bottom > base + hh + 4) { code = rows[i].getAttribute('data-code'); top = b.top; break; } } }
+    var r = fn();
+    if (tb && code) { var row = tb.querySelector('tr[data-code="' + code.replace(/"/g, '\\"') + '"]');
+      if (row) { var d = row.getBoundingClientRect().top - top; if (d) { if (isDoc) window.scrollBy(0, d); else sp.scrollTop += d; } } }
+    return r;
+  }
+  ['startSelect','endSelect','startMulti','endMulti','applyMulti','toggleMultiNode','togglePointNode'].forEach(function(n){
+    var f = window[n]; if (typeof f !== 'function') return;
+    window[n] = function(){ var a = arguments, t = this; return anchored(function(){ return f.apply(t, a); }); };
+  });
 })();
 </script>
 </body>
